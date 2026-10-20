@@ -6,7 +6,7 @@ Updated 20 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of
 
 Use each atomic card's exact owning test paths, actual public entry point and source/config manifest. UNIT requires stack syntax/type/lint checks and focused contract controls; INTEGRATION requires actual producer-to-reader, persistence reopen and installed consumer where relevant. MEASURE requires frozen permitted split, paired manifest, full failure ledger, proper denominators and raw artifact readback. Bind actual commands at P01; do not run imagined modules or download assets by credential presence.
 
-For current docs: `python docs/development/check_docs.py`, `python docs/development/check_docs.py --self-test`, an in-memory syntax compile, and `git diff --check`. Full semantic fidelity is main/end review, not checker output. For future Python proposal: approved uv environment, exact named pytest paths from cards, project lint/type/build commands and real installed CLI. No broad suite with ambient live credentials; identify destructive tests, use disposable synthetic stores and verify backups before any meaningful-state rewrite. No provider/service/network test is authorized by this document.
+For current docs: `python docs/development/check_docs.py`, `python docs/development/check_docs.py --self-test`, an in-memory syntax compile, and `git diff --check`. Full semantic fidelity is main/end review, not checker output. For future authorized implementation: reuse the owner-created uv environment, exact named pytest paths from cards, project lint/type/build commands and real installed CLI. No broad suite with ambient live credentials; identify destructive tests, use disposable synthetic stores and verify backups before any meaningful-state rewrite. No provider/service/network test is authorized by this document.
 
 Record positive and negative controls, actual reader, versions, command/exit, missing/skipped resources, interpretation limits and cleanup in EVIDENCE_LOG. Reuse end reviewer for resolution. Update phase-local receipts separately from whole-gate status. PASS requires all obligations in declared scope, not merely presence of a helper or reference test.
 
@@ -309,3 +309,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Negative / falsification control:** Missing artifacts/provider/model cannot be silently substituted; seal-breaking retest recorded; unresolved material proof keeps outcome open.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
 - **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+
+## Owner setup and generative integration boundary
+
+Existing `.venv/` and ignored `.env` do not close G-CONTRACT, G-INTEGRATION or any live-provider gate. Docs validation can use `.venv/Scripts/python.exe` now without credentials. Once an authorized feature uses generation, its real entry point must exercise Groq and one explicitly selected owner-permitted model through the actual downstream consumer; injected tests cover guards only. Provider/model identifiers and account availability are verified then, not inferred from key presence. Phase 1 remains WAIT_FOR_GO; this publication performs no runtime/provider test.

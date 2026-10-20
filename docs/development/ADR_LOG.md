@@ -16,13 +16,15 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 
 ## ADR-0002 — Runtime and package layout
 
-- **Status:** PROPOSED.
+- **Status:** PARTIALLY_ACCEPTED (Python/uv environment); package layout remains PROPOSED.
 - **Question:** Adopt a Python modular research package under `src/norn/`, managed with uv?
 - **Why:** The blueprint uses Python-oriented examples and requires training/evaluation. Palladion offers Python reference code. No runtime manifest exists in Norn.
 - **Options:** Python/uv proposal; another user-selected runtime/toolchain; separate runtime and training languages after a demonstrated need.
 - **Recommendation:** Python/uv, one package and in-process pilot; pin compatible versions after environment checks. MDP paths are proposed against this layout, not claims that files exist. If declined, update path mappings before implementation.
 - **What affects what:** P01 packaging, type contracts, CLI, testing commands, optional training adapters. No library/version/model/provider is selected by this recommendation.
-- **My answer (editable):** Pending owner direction before P01 runtime bootstrap.
+- **Prior answer record:** Pending owner direction before P01 runtime bootstrap (before the setup amendment).
+- **My answer (editable):** Owner created a uv `.venv/` and confirms it is the environment to reuse. Python/uv setup is accepted; `src/norn/` layout, package/dependency selection and implementation remain subject to their decisions and explicit Phase 1 GO. Do not recreate the environment during documentation work.
+- **Amendment authority:** User setup instruction, 20 October 2026; see ADR-0010.
 - **Authority:** Blueprint “Suggested project organization” is illustrative; current mandate authorizes planning only.
 - **Verification:** P01-T01, G-CONTRACT; fresh environment and installed consumer proof required.
 
@@ -76,13 +78,15 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 
 ## ADR-0007 — Model, provider, compute, and optional backends
 
-- **Status:** PROPOSED.
+- **Status:** PARTIALLY_ACCEPTED (Groq and permitted generative model options); remaining model/compute/backend choices PROPOSED.
 - **Question:** Which encoder/training backbone, token counter, hardware, provider, vector/graph backend, and resource envelope are available?
 - **Why:** Fair comparisons depend on pinned models and actual budgets; credentials are not intent to call a service.
 - **Options:** Local pinned assets; explicitly enabled paid/free provider; lightweight exact pilot before ANN/distributed engines.
 - **Recommendation:** First prove deterministic fixtures/exact baselines; select model and backend with compatibility, language, license, and cost evidence. Keep Redis/Qdrant/Neo4j optional later treatments. No heavy per-region hypernetworks or implicit provider fallback.
 - **What affects what:** P03 dense/reranker, P04 training, P06 graph, P07 generated branches, P10 compression, P11 operational adapters.
-- **My answer (editable):** Pending; no download, training job, provider call, listener, or runtime dependency installation authorized by suite creation.
+- **Prior answer record:** Pending; no download, training job, provider call, listener, or runtime dependency installation authorized by suite creation.
+- **My answer (editable):** Use Groq whenever an authorized task needs generative LLM inference. Allowed options: Qwen 3.8 27B, GPT OSS 120B, GPT OSS 20B. Select explicitly per run; no default or silent fallback inferred. Verify exact Groq API identifiers/account availability before first authorized integration. Embedding/reranker/training backbones, tokenizer, compute, backends and budgets remain unresolved. The supplied key is not permission to call now; wait for Phase 1 GO.
+- **Amendment authority:** User model/setup instruction, 20 October 2026; ADR-0010.
 - **Authority:** Blueprint I10 and staged experiments.
 - **Verification:** G-BUDGET/G-RESEARCH; manifest pins, explicit enable flags, failed-attempt accounting, no-network disabled path.
 
@@ -109,3 +113,27 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 - **My answer (editable):** Pending before P01 schema freeze.
 - **Authority:** Blueprint “Encoding and write pipeline,” “Pilot simplification,” “Transactional outbox,” Stage5.
 - **Verification:** G-INGEST/G-SNAPSHOT/G-OPS with phase-local obligations kept separate.
+
+## ADR-0010 — Owner setup, Groq policy, scoped publication and Phase 1 hold
+
+- **Status:** ACCEPTED.
+- **Question:** Which new owner instructions change current setup and publication scope?
+- **Why:** Owner supplied a repository-root `.env` with a Groq key, `.gitignore`, and existing uv environment; requested documentation updates/publication and explicitly said to wait for GO for Phase 1.
+- **Options:** Reuse owner setup and record explicit policy; recreate environment or infer a broader runtime mandate.
+- **Recommendation / decision:** Reuse `.venv/`; preserve `.gitignore` excluding `.env`, `venv/`, `.venv/`. For future authorized generative inference use Groq with explicit choice among Qwen 3.8 27B, GPT OSS 120B and GPT OSS 20B. No default, silent fallback or encoder selection inferred. This task updates/publishes documentation/configuration only. Phase 1 remains WAIT_FOR_GO.
+- **What affects what:** Current MDP/setup/commands, project context, risks/readiness, instruction file and scoped push to established origin/main. Credential values remain local and ignored; no runtime implementation or provider call.
+- **My answer (editable):** Direct current user instruction authorizes these setup/model choices, documentation changes and this scoped push; it explicitly withholds Phase 1 until GO.
+- **Authority:** User messages, 20 October 2026. This publication approval is scoped, not standing permission for later main pushes.
+- **Verification:** E-DOC-005; file existence, ignored-status and venv interpreter metadata checked without reading `.env`; docs CLI/negative controls/staged checks required. Key variable name, validity and model-account availability are not tested.
+
+## ADR-0011 — Single Norn instruction file adapted from both references
+
+- **Status:** ACCEPTED.
+- **Question:** How should the project-owned Palladion instruction files be combined?
+- **Why:** Owner explicitly requested reading the multiple Palladion AGENTS files, combining their useful rules, tailoring them to Norn and pushing one root instruction file.
+- **Options:** Concatenate reference text; tailor one Norn root AGENTS with links to canonical records.
+- **Recommendation / decision:** Root `AGENTS.md` combines source grounding, exact task/consumer proof, reviewer boundaries, secret/live-data safety, metric/custody controls, decision history, no-stale records and scoped closeout. Do not import payment-domain architecture, HTTP-only benchmark constraint, historical Haiku model or prior project publication exceptions. Current GPT6 Luna Medium standing rule governs.
+- **What affects what:** Whole-repository workflow and documentation navigation. Runtime design remains in MDP and current status in PROGRESS, not duplicated architecture/state histories in instructions.
+- **My answer (editable):** Direct current user request authorizes creating and publishing this single project instruction file.
+- **Authority:** User's follow-up instruction, 20 October 2026.
+- **Verification:** E-DOC-005; both project-owned reference AGENTS read in full, Norn links/checker and scoped independent end review; no foreign files modified.

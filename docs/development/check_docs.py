@@ -109,6 +109,9 @@ def validate(root: Path) -> CheckResult:
         texts[navigation] = navigation.read_text(encoding="utf-8")
     else:
         errors.append("missing-document: parent docs/README.md")
+    instructions = root.parent.parent / "AGENTS.md"
+    if instructions.is_file():
+        texts[instructions] = instructions.read_text(encoding="utf-8")
     anchor_cache: dict[Path, set[str]] = {}
     for unique in ("PROJECT_MEMORY.md", "PROJECT_MAP.md", "GOAL.md"):
         if len(list(root.rglob(unique))) != 1:
@@ -298,6 +301,8 @@ def self_test(root: Path) -> int:
             shutil.copytree(root.parent / "vision", copied.parent / "vision")
             if (root.parent / "README.md").is_file():
                 shutil.copy2(root.parent / "README.md", copied.parent / "README.md")
+            if (root.parent.parent / "AGENTS.md").is_file():
+                shutil.copy2(root.parent.parent / "AGENTS.md", copied.parent.parent / "AGENTS.md")
             target = copied / filename
             if mutate is None:
                 target.unlink()

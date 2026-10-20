@@ -1,8 +1,8 @@
 # Norn development suite
 
-Updated 20 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. Runtime components are **planned**, not implemented. The current mandate is the development suite only.
+Updated 20 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. Runtime components are **planned**, not implemented. Current mandate includes the owner setup/instructions amendment and scoped publication; Phase 1 remains **WAIT_FOR_GO**.
 
-Start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
+Read the root [project instructions](../../AGENTS.md), then start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
 
 | Document | Owns | Read when |
 |---|---|---|
@@ -29,12 +29,14 @@ All durable agent-created project work records belong in this folder. Do not add
 
 ## Validation now
 
-From the repository root:
+Owner setup: existing uv `.venv/`, ignored root `.env` and `.gitignore`. Future authorized generative inference uses Groq with explicit Qwen 3.8 27B, GPT OSS 120B or GPT OSS 20B selection (ADR-0010); key/API availability are not tested now. Package layout/dependencies and other runtime decisions remain separate.
+
+From the repository root, using the existing environment:
 
 ```powershell
-python docs/development/check_docs.py
-python docs/development/check_docs.py --self-test
-python -c "from pathlib import Path; p=Path('docs/development/check_docs.py'); compile(p.read_text(encoding='utf-8'),str(p),'exec')"
+.venv/Scripts/python.exe docs/development/check_docs.py
+.venv/Scripts/python.exe docs/development/check_docs.py --self-test
+.venv/Scripts/python.exe -c "from pathlib import Path; p=Path('docs/development/check_docs.py'); compile(p.read_text(encoding='utf-8'),str(p),'exec')"
 git diff --check
 ```
 

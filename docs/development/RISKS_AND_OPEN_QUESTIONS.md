@@ -4,12 +4,12 @@ Updated 20 October 2026 (Asia/Bangkok). Owners are roles, not invented named ass
 
 | ID | Mechanism / consequence | Owner and decision point | Mitigation / proof | State |
 |---|---|---|---|---|
-| Q01 | Runtime/layout/dependency proposal could be mistaken for accepted architecture | User; before P01-T01, ADR-0002 | Confirm language/toolchain, then bind actual package and commands | OPEN |
+| Q01 | Python/uv setup accepted, package/layout/dependencies still proposed | User; Phase 1 GO and ADR-0002 | Reuse existing venv; resolve remaining package decisions before binding actual commands | PARTIALLY_RESOLVED |
 | Q02 | RETRACTED as epistemic value conflicts with independent origin/status | User; before P01-T02, ADR-0003 | Preserve all external values and original provenance; approve internal mapping explicitly | OPEN |
 | Q03 | Immutable evidence versus physical erasure/audit/backups/model parameters | User; before retention/private data, ADR-0004 | Synthetic-only pilot, serving denial first, policy-specific purge receipts and restore tests | OPEN |
 | Q04 | Timezone/precision/as-of basis and snapshot security ambiguity | User; before P01 temporal freeze, ADR-0005 | Explicit clocks, intervals/unknowns, current security on old content | OPEN |
 | Q05 | Copying tightly coupled or changing Palladion code imports foreign contracts/licenses | Main plus user; before any port, ADR-0006 | Pin verified source, license/fork delta and real Norn consumer proof; no foreign checkout import | OPEN |
-| Q06 | Model/backend/hardware/license/provider budgets unknown | User; before downloads/training/services, ADR-0007 | Explicit enablement, pins, workload envelope, approved compute | OPEN |
+| Q06 | Groq/options accepted; API availability, embedding/training/backends/hardware/budgets unknown | User; authorized implementation and ADR-0007/0010 | Explicit model selection, verify IDs/account at first authorized call, pins and bounded compute | PARTIALLY_RESOLVED |
 | Q07 | Local outbox versus delayed distributed track could confuse pilot guarantees | User; before schema, ADR-0009 | Local atomic journal early, external delivery/leases/recovery measured P11 | OPEN |
 | R01 | Facets duplicate signal; larger backbone explains gains | Main; P04 | Same-capacity single encoder and conditional view ablations | UNMEASURED |
 | R02 | Shared code/separation destroys partial-cue generalization | Main; P04/P05 | Multi-positive ambiguity, same-event positives, held-out identity and cue curves | UNMEASURED |

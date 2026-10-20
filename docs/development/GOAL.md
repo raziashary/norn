@@ -4,7 +4,7 @@ Updated 20 October 2026 (Asia/Bangkok). The immediate objective is the user's re
 
 ## Current documentation mandate
 
-Create `docs/development` with an extensive MDP containing algorithms, schemas, flows, ownership, dependencies, atomic tasks and proof; supporting records follow the useful Palladion anchor format and Arcana's technical depth. Preserve the vision unchanged. No runtime implementation, dependency installation, provider use, foreign-project edit or remote publication is included.
+Create `docs/development` with an extensive MDP containing algorithms, schemas, flows, ownership, dependencies, atomic tasks and proof; supporting records follow the useful Palladion anchor format and Arcana's technical depth. Preserve the vision unchanged. Initial suite creation excluded runtime implementation, dependency installation, provider use, foreign-project edits and remote publication. The owner now separately authorizes publishing the suite and setup/instructions amendment (ADR-0010/0011); Phase 1 remains WAIT_FOR_GO.
 
 | Outcome | Checkable requirement | Proof | State |
 |---|---|---|---|
@@ -38,10 +38,10 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 
 ## Baseline and dependencies
 
-Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. Runtime/toolchain/model/backends, detailed time/retraction/retention interpretation and code-reuse direction remain pending ADRs. A plan path is not evidence that its producer exists.
+Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. The owner subsequently selected Python/uv setup and Groq generative options and created `.venv/`, `.env` and `.gitignore`. Package/dependency/embedding/reranker/training/backends, time/retraction/retention and reuse choices remain pending ADRs. A plan path is not evidence that its producer exists.
 
 The phase sequence preserves Stage0-6 and hierarchical ablations. Do not run a giant Cartesian product. Freeze practical numeric efficacy/regression margins after pilot power estimation and before locked testing; current unknown targets are not a reason to invent numbers. Integrity controls apply from P01. More expensive mechanisms require their own prerequisites; rejecting them does not stop evaluation of a simpler retained winner.
 
 ## Completion discipline
 
-For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current owner mandate ends at the suite; future runtime and publication need the applicable authorization. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
+For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate covers the suite, setup/instructions amendment and its scoped publication. Wait for explicit Phase 1 GO before runtime work; later publication needs its applicable authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.

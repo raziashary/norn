@@ -5,6 +5,10 @@ Updated 20 October 2026 (Asia/Bangkok). Coverage: actual planning repository and
 ## Actual repository
 
 ```text
+AGENTS.md                                # single project workflow; user-authorized
+.gitignore                               # owner exclusion rules, committed unchanged
+.env                                     # ignored owner credential file; never committed
+.venv/                                   # ignored existing uv CPython3.14.7 environment
 docs/
   README.md
   vision/subcortical_memory_blueprint.md   # authoritative research intent, unchanged
@@ -64,4 +68,4 @@ No runtime edge points to hidden labels. Data flows preserve event→atom→sour
 
 ## Verification map
 
-Actual documentation entry point: `python docs/development/check_docs.py`, plus its self-tests. Planned runtime tests are owned in exact atomic cards and bound to real executable commands after P01 approval. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.
+Actual documentation entry point: `.venv/Scripts/python.exe docs/development/check_docs.py`, plus its self-tests. Planned runtime tests are owned in exact atomic cards and bound to real executable commands after P01 approval. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.

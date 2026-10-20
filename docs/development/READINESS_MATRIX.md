@@ -5,7 +5,7 @@ Updated 20 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior
 | Capability | Implementation | Behavioral proof | Efficacy outcome | Evidence / blocker |
 |---|---|---|---|---|
 | Development suite | VERIFIED_DOCUMENTATION | DOC_CLI_AND_REVIEW_PASS | NOT_APPLICABLE | P00 complete; E-DOC-001 through E-DOC-004; no runtime capability implied |
-| Canonical contracts and durable source memory | PLANNED | NOT_RUN | NOT_EVALUATED | P01; pending runtime/state/time/retention ADRs |
+| Canonical contracts and durable source memory | PLANNED | NOT_RUN | NOT_EVALUATED | P01 WAIT_FOR_GO; uv environment selected/existing, package/state/time/retention decisions remain pending |
 | Hidden world and evaluation harness | PLANNED | NOT_RUN | NOT_EVALUATED | P02; custody/scorer controls absent |
 | Strong R0-R3 and qualified recall | PLANNED | NOT_RUN | NOT_EVALUATED | P03; no actual model/index/source reader |
 | Functional views/shared binding | PLANNED | NOT_RUN | NOT_EVALUATED | P04; B0-B5 studies absent |
@@ -24,3 +24,5 @@ Updated 20 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior
 A capability advances only with the exact owning test/consumer and declared scope. A successful experiment can conclude REJECT or INCONCLUSIVE and retain a simpler implementation. Efficacy cannot become RETAIN because a source file compiles. An unsupported optional branch gets explicit capability/error/disposition, never a fake test score. Required comparator absence limits the final claim even if supported arms finish. Current runtime gate states are all NOT_RUN.
 
 Cross-store durability, deletion completion, latency/capacity, semantic correctness, external validity and neural equivalence have no current evidence. Future negative results and scoped failures remain visible alongside positive results. See MDP phase exits and TESTING_GATES for actual proof contracts.
+
+Owner setup exists, not runtime capability: ignored `.env`/`.venv/` and owner `.gitignore`; venv interpreter3.14.7 verified. Groq generative provider and allowed Qwen3.8 27B/GPT OSS120B/GPT OSS20B options accepted. No key validity/API availability/live inference or runtime dependency proof. Publication does not start Phase 1. See ADR-0010/0011 and E-DOC-005.

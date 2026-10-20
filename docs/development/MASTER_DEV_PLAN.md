@@ -1,6 +1,6 @@
 # Norn master development plan
 
-Version 1.0, 20 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **No Norn runtime, schema, model, dataset, tests, or benchmark results exist yet.** Only the documentation suite and its structural checker are being delivered now.
+Version 1.1, 20 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **No Norn runtime, schema, model, dataset, tests, or benchmark results exist yet.** Only the documentation suite and its structural checker are being delivered now.
 
 The user requested an extensive engineering MDP, not merely a phase list. This document therefore owns the proposed algorithms, data contracts, logical schema, read/write/recovery flows, module responsibilities, experimental decomposition, and atomic implementation cards. Supporting records own goals, decisions, proof, traceability, and current state. Do not split these technical contracts into competing subsystem specifications.
 
@@ -36,7 +36,15 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. All Python paths and command shapes below are conditional on ADR-0002. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope ends at the documentation suite. P01 runtime work requires a new implementation mandate and its affected pending answers.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. All Python paths and command shapes below are conditional on ADR-0002. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 remains WAIT_FOR_GO: do not start runtime implementation until the user gives GO and affected pending answers permit the work.
+
+### Owner setup and generative LLM policy
+
+The owner created `.venv/` using uv, supplied a repository-root `.env` with a Groq API key and created `.gitignore`. The existing environment is CPython3.14.7 (uv0.13.1 metadata); reuse it without recreation. `.env`, `venv/` and `.venv/` are ignored. No key contents/variable name or provider validity were read or verified in the documentation task. No runtime package/dependency manifest exists yet.
+
+For any future **authorized task requiring generative LLM inference**, use **Groq**, selecting explicitly from **Qwen 3.8 27B**, **GPT OSS 120B**, **GPT OSS 20B**. Record the actual API model ID/provider in run manifests; verify identifiers and account availability before first authorized call. The options do not imply a default or silent fallback. This does not select embedding/reranker/training backbones or hardware. Root `.env` loads only for the specific explicitly enabled bounded command; never expose or commit secrets. An implemented generative path needs actual Groq-to-consumer proof, not only injected unit responses.
+
+Use existing `.venv/Scripts/python.exe` for docs-only validation. Keep ordinary future uv commands `--no-env-file`; no live inference, dependency installation or training is authorized now. Owner explicitly authorized pushing the suite plus setup/instructions amendment and asked to wait for Phase 1 GO. See root [AGENTS](../../AGENTS.md), ADR-0010/0011 and PROGRESS.
 
 ### Task reading protocol
 
@@ -715,7 +723,7 @@ P04's binding decision is preliminary within Stage1. P05's already specified los
 
 Atomic IDs are stable `Pnn-Tnn`. Parent phase owns rationale/stage/dependencies/exit. Each task owns exact files, producer→consumer change, positive/negative proof, gate, source headings, evidence and status. File paths without Markdown links are planned until created; a dependency ID is an actual plan object, not proof that its runtime file exists. Planned command profiles below are conditional, do not exist now, and must be reconciled at P01 bootstrap before execution.
 
-Command profile DOC is runnable now: `python docs/development/check_docs.py` and `--self-test`. Proposed UNIT/INTEGRATION/MEASURE profiles use uv only after ADR-0002 acceptance: `uv run --no-env-file python -m pytest <named owning test>`; `uv run --no-env-file python -m norn.cli <declared synthetic operation>`; `uv run --no-env-file python -m benchmark.runs.cli --config <frozen development manifest>`. P01 binds exact executable command/fixture/profile to each gate before use. Test-path ownership below is an intended proof contract, not a claim that pytest or those modules are installed. Installed-wheel smoke and per-phase cleanup remain mandatory where runnable output exists.
+Command profile DOC is runnable now: `python docs/development/check_docs.py` and `--self-test`. Python/uv is owner-selected and `.venv/` already exists. UNIT/INTEGRATION/MEASURE profiles still require Phase 1 GO, accepted package/dependency decisions and actual entry points: `uv run --no-env-file python -m pytest <named owning test>`; `uv run --no-env-file python -m norn.cli <declared synthetic operation>`; `uv run --no-env-file python -m benchmark.runs.cli --config <frozen development manifest>`. P01 binds exact executable command/fixture/profile to each gate before use. Test-path ownership below is an intended proof contract, not a claim that pytest or those modules are installed. Installed-wheel smoke and per-phase cleanup remain mandatory where runnable output exists.
 
 <a id="p00"></a>
 
@@ -856,7 +864,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Files:** `pyproject.toml`, `uv.lock`, `src/norn/cli.py`, `tests/test_package.py`, `docs/development/ADR_LOG.md`.
 - **Depends:** P00-T06.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
-- **Change:** Accept runtime/layout direction before pinning compatible environment/dependencies; bind planned command profiles to verified executables.
+- **Change:** Reuse the owner-created uv `.venv/`; verify compatibility without recreating it. After Phase 1 GO, resolve remaining package/layout direction and pin approved dependencies; bind planned command profiles to verified executables. Generative LLM provider/options follow ADR-0010, with actual API IDs verified at authorized integration.
 - **Consumer:** Installed CLI and test runner consume the built package in a fresh isolated environment.
 - **Positive proof:** Wheel/import/capability smoke works without optional model/backend assets.
 - **Negative proof:** No pending owner answer becomes approval; absent optional component cannot trigger downloads or provider calls.
