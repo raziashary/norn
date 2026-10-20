@@ -153,6 +153,7 @@ def validate(root: Path) -> CheckResult:
     if len(set(gate_ids)) != len(gate_ids):
         errors.append("duplicate-gate: definitions must be unique")
     gate_states: dict[str, str] = {}
+    gate_tasks: dict[str, set[str]] = {}
     for i, m in enumerate(gate_matches):
         body = gate_text[m.end():gate_matches[i+1].start() if i+1 < len(gate_matches) else len(gate_text)]
         state = field(body, "State").rstrip(".")
@@ -160,6 +161,7 @@ def validate(root: Path) -> CheckResult:
         if state not in GATE_STATES:
             errors.append(f"invalid-gate-state: {m[1]} {state}")
         refs = set(TASK_ID.findall(field(body, "Owning atomic tasks")))
+        gate_tasks[m[1]] = refs
         if not refs or not refs <= set(ids):
             errors.append(f"invalid-gate-tasks: {m[1]}")
     states: dict[str, str] = {}
@@ -194,23 +196,20 @@ def validate(root: Path) -> CheckResult:
                     errors.append(f"missing-done-file: {tid} {filename}")
         if state == "DEFERRED" and not all(word in body.lower() for word in ("reason", "owner", "destination")):
             errors.append(f"unowned-deferral: {tid}")
-    visiting: set[str] = set()
+    remaining = {tid: set(dependencies.get(tid, set())) & set(ids) for tid in ids}
+    ready = [tid for tid, deps in remaining.items() if not deps]
     visited: set[str] = set()
-
-    def walk(node: str) -> None:
-        if node in visiting:
-            errors.append(f"dependency-cycle: {node}")
-            return
-        if node in visited:
-            return
-        visiting.add(node)
-        for dep in dependencies.get(node, set()):
-            walk(dep)
-        visiting.remove(node)
+    while ready:
+        node = ready.pop()
         visited.add(node)
-
+        for dependent, deps in remaining.items():
+            if node in deps:
+                deps.remove(node)
+                if not deps and dependent not in visited:
+                    ready.append(dependent)
+    for node in sorted(set(ids) - visited):
+        errors.append(f"dependency-cycle: {node}")
     for tid in ids:
-        walk(tid)
         if states.get(tid) == "DONE" and any(states.get(d) != "DONE" for d in dependencies[tid]):
             errors.append(f"unfinished-dependency: {tid}")
     adr = texts.get(root / "ADR_LOG.md", "")
@@ -258,6 +257,9 @@ def validate(root: Path) -> CheckResult:
     if not total or tuple(map(int, total.groups())) != (len(ids), done):
         errors.append("stale-total-count: progress register")
     runtime_exists = (root.parent.parent / "src" / "norn").exists()
+    for gid, state in gate_states.items():
+        if state == "PASS" and any(states.get(tid) != "DONE" for tid in gate_tasks[gid]):
+            errors.append(f"false-runtime-gate: {gid} has unfinished owning tasks")
     if not runtime_exists:
         for gid, state in gate_states.items():
             if gid != "G-DOC" and state != "NOT_RUN":
@@ -283,13 +285,13 @@ def self_test(root: Path) -> int:
         ("duplicate task", "duplicate-task", "MASTER_DEV_PLAN.md", lambda s: s + "\n### P00-T01 — Duplicate\n"),
         ("missing consumer", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Consumer:\*\*.*\n", "", s, count=1, flags=re.M)),
         ("missing negative proof", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Negative proof:\*\*.*\n", "", s, count=1, flags=re.M)),
-        ("false completed task", "false-done", "MASTER_DEV_PLAN.md", lambda s: s.replace("- [ ] **P01-T01**\n- **State:** PLANNED.", "- [x] **P01-T01**\n- **State:** DONE.", 1)),
+        ("false completed task", "false-done", "MASTER_DEV_PLAN.md", lambda s: s.replace("- [ ] **P02-T01**\n- **State:** PLANNED.", "- [x] **P02-T01**\n- **State:** DONE.", 1)),
         ("undefined dependency", "undefined-dependency", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P99-T99.", 1)),
         ("cyclic dependency", "dependency-cycle", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P00-T02.", 1)),
         ("undefined gate", "undefined-gate", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Gate:** G-DOC.", "- **Gate:** G-NOSUCH.", 1)),
         ("missing coverage", "missing-coverage", "REQUIREMENTS_TRACEABILITY.md", lambda s: re.sub(r"^\| SEC01 .*\n", "", s, flags=re.M)),
         ("stale count", "stale-progress-count", "PROGRESS.md", lambda s: s.replace("| P00 | 6 |", "| P00 | 600 |", 1)),
-        ("false runtime", "false-runtime-gate", "TESTING_GATES.md", lambda s: re.sub(r"(## G-CONTRACT[^\n]*\n\n- \*\*State:\*\*) NOT_RUN", r"\1 PASS", s, count=1)),
+        ("false runtime", "false-runtime-gate", "TESTING_GATES.md", lambda s: re.sub(r"(## G-RETRIEVAL[^\n]*\n\n- \*\*State:\*\*) NOT_RUN", r"\1 PASS", s, count=1)),
         ("unknown ADR", "undefined-adr", "GOAL.md", lambda s: s + "\nADR-9999\n"),
         ("duplicate authority", "single-authority", "PROJECT_MEMORY.md", "DUPLICATE"),
     ]
@@ -303,6 +305,15 @@ def self_test(root: Path) -> int:
                 shutil.copy2(root.parent / "README.md", copied.parent / "README.md")
             if (root.parent.parent / "AGENTS.md").is_file():
                 shutil.copy2(root.parent.parent / "AGENTS.md", copied.parent.parent / "AGENTS.md")
+            for directory in ("src", "tests"):
+                source = root.parent.parent / directory
+                if source.is_dir():
+                    shutil.copytree(source, copied.parent.parent / directory,
+                                    ignore=shutil.ignore_patterns("__pycache__"))
+            for filename_root in ("pyproject.toml", "uv.lock"):
+                source = root.parent.parent / filename_root
+                if source.is_file():
+                    shutil.copy2(source, copied.parent.parent / filename_root)
             target = copied / filename
             if mutate is None:
                 target.unlink()

@@ -16,63 +16,67 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 
 ## ADR-0002 — Runtime and package layout
 
-- **Status:** PARTIALLY_ACCEPTED (Python/uv environment); package layout remains PROPOSED.
+- **Status:** ACCEPTED for P01; timezone data decision recorded separately.
 - **Question:** Adopt a Python modular research package under `src/norn/`, managed with uv?
-- **Why:** The blueprint uses Python-oriented examples and requires training/evaluation. Palladion offers Python reference code. No runtime manifest exists in Norn.
+- **Why:** The blueprint uses Python-oriented examples and requires training/evaluation. Palladion offers Python reference code. At the initial P00 decision, no runtime manifest existed in Norn.
 - **Options:** Python/uv proposal; another user-selected runtime/toolchain; separate runtime and training languages after a demonstrated need.
 - **Recommendation:** Python/uv, one package and in-process pilot; pin compatible versions after environment checks. MDP paths are proposed against this layout, not claims that files exist. If declined, update path mappings before implementation.
 - **What affects what:** P01 packaging, type contracts, CLI, testing commands, optional training adapters. No library/version/model/provider is selected by this recommendation.
 - **Prior answer record:** Pending owner direction before P01 runtime bootstrap (before the setup amendment).
-- **My answer (editable):** Owner created a uv `.venv/` and confirms it is the environment to reuse. Python/uv setup is accepted; `src/norn/` layout, package/dependency selection and implementation remain subject to their decisions and explicit Phase 1 GO. Do not recreate the environment during documentation work.
+- **My answer (editable):** Owner approved the recommended setup through the question tool: `src/norn/`, standard-library SQLite/dataclasses/argparse runtime, Hatchling, pytest, Ruff, mypy and build, reusing the existing uv environment. Earlier setup-only answer is preserved above as the prior answer record. Timezone data was subsequently found absent on this Windows host; the owner approved tzdata in the subsequent question-tool response (ADR-0012).
 - **Amendment authority:** User setup instruction, 20 October 2026; see ADR-0010.
-- **Authority:** Blueprint “Suggested project organization” is illustrative; current mandate authorizes planning only.
+- **Authority:** Blueprint “Suggested project organization” is illustrative; the later owner question-tool response and ADR-0012 authorize P01 implementation.
 - **Verification:** P01-T01, G-CONTRACT; fresh environment and installed consumer proof required.
 
 ## ADR-0003 — Evidence, event identity, and independent state axes
 
-- **Status:** PROPOSED.
+- **Status:** ACCEPTED for the synthetic P01 pilot; see owner answer below.
 - **Question:** Adopt the MDP's typed event/assertion/edge/source contracts and explicit retraction handling?
 - **Why:** Blueprint “Epistemic types” includes RETRACTED while later calling epistemic and lifecycle state orthogonal. Retraction changes serving eligibility without changing how the original assertion was obtained.
 - **Options:** Rewrite epistemic origin to RETRACTED; preserve original origin and append a retraction status event with a compatibility representation of RETRACTED.
 - **Recommendation:** Preserve all seven blueprint values at import/export; internally store `epistemic_origin` plus append-only `assertion_status` events. RETRACTED inputs require a known original origin or UNKNOWN-origin quarantine, not fabricated observation authority. Effective API state can expose RETRACTED plus original origin. Seek owner confirmation before freezing this interpretation.
 - **What affects what:** P01 contracts/schema, P03 evidence gate, P08 consolidation, P09 historical recall. No shipped contract exists yet.
-- **My answer (editable):** Pending; do not treat the recommended resolution as a narrowing of the blueprint.
+- **Prior answer record:** Pending before the P01 question-tool answers.
+- **My answer (editable):** Owner approved preserving original epistemic origin with append-only retraction status, including all seven blueprint import/export values. Status ACCEPTED for P01; unknown original origin remains quarantined rather than fabricated.
 - **Authority:** Blueprint “Memory ontology,” “Three orthogonal kinds of state,” and universal decision escalation.
 - **Verification:** P01-T02/P01-T03, G-CONTRACT/G-TEMPORAL; history/origin round-trip controls.
 
 ## ADR-0004 — Retention, immutable evidence, and physical deletion
 
-- **Status:** PROPOSED.
+- **Status:** ACCEPTED for the synthetic P01 pilot.
 - **Question:** What source content, audit metadata, backups, traces, and learned parameters must be purged, on which schedule?
 - **Why:** Immutable history and authorized erasure must be reconciled explicitly. A tombstone blocks serving but is not proof of erasure everywhere.
 - **Options:** Synthetic-only pilot with explicit test purge policies; production retention design after requirements; personalized online training with a separately approved unlearning/retraining contract.
 - **Recommendation:** Synthetic-only pilot. Append denial/tombstone controls first; preserve only permitted minimal audit metadata. Track purge acknowledgments by artifact and backup generation. Do not train on private personal data or claim parameter unlearning without a measured policy.
 - **What affects what:** P01 deletion model, P08 aggregate invalidation, P11 worker/cache/backup recovery, P12 privacy proofs. Exact time limits remain unset until owner requirements.
-- **My answer (editable):** Pending before retention policy or any real data is introduced.
+- **Prior answer record:** Pending before the P01 question-tool answers.
+- **My answer (editable):** Owner approved a synthetic-only P01 pilot, local SQLite/blobs, immediate serving denial with explicit pending physical-purge obligations, and no personal-data training. Status ACCEPTED for this pilot; production schedules and parameter erasure remain unapproved.
 - **Authority:** Blueprint “Deletion, revocation, and retention,” open Q12, I1/I5/I6.
 - **Verification:** G-DELETION; denied serving during outages plus explicit physical-purge reconciliation and restore controls.
 
 ## ADR-0005 — Time, snapshots, and query interpretation
 
-- **Status:** PROPOSED.
+- **Status:** ACCEPTED for the synthetic P01 pilot.
 - **Question:** Freeze UTC-aware stored instants, explicit source timezone/precision, and per-namespace sequence snapshots with current security checks?
 - **Why:** Event time, observation time, recorded time, valid time, and knowledge-at-time differ. An old content snapshot cannot resurrect revoked permissions.
 - **Options:** Single current clock; explicit typed temporal context with declared basis and unknown/interval times.
 - **Recommendation:** The MDP temporal contract; query-relative language uses the request evaluation clock and declared timezone. Unknown time remains unknown. Content uses a declared snapshot; access and erasure use current authoritative controls. Reject mixed projection versions or disclose degraded capability.
 - **What affects what:** P01/P03 contracts, P06 graph eligibility, P09 replay, P11 projection publication. Cross-partition global ordering is not implied by local commit_seq.
-- **My answer (editable):** Pending before freezing runtime contracts.
+- **Prior answer record:** Pending before the P01 question-tool answers.
+- **My answer (editable):** Owner approved explicit UTC-aware event/valid/knowledge/query clocks and current ACL checks for historical reads. Status ACCEPTED for P01; valid-to is exclusive as proposed in the approved temporal semantics.
 - **Authority:** Blueprint “Bitemporal reasoning,” “Snapshot/read consistency,” I6/I7.
 - **Verification:** G-TEMPORAL/G-SNAPSHOT; late-arrival, DST, historical correction and mid-read revoke controls.
 
 ## ADR-0006 — Palladion reuse boundary
 
-- **Status:** PROPOSED.
+- **Status:** ACCEPTED for the synthetic P01 pilot.
 - **Question:** Which reference components should be ported or reached through adapters?
 - **Why:** Provenance, exact source resolution, hybrid baselines, manifests, scoring, and statistics are useful; Palladion memory categories, session rules, payment policy, and classifier are different contracts.
 - **Options:** Copy the system; selective audited adaptation; clean implementation against source-backed contracts.
 - **Recommendation:** Selective adaptation with provenance/license/source-commit receipts; no runtime dependency on a foreign checkout. Keep benchmark/agent consumers behind explicit adapters and prevent evaluation gold from entering the runtime package.
 - **What affects what:** P01 utility review, P02 harness, P03 baseline, P09 consumers. Pin a verified source checkpoint; current reference checkout contains changing work.
-- **My answer (editable):** Pending code reuse approval; documentation may describe candidates now.
+- **Prior answer record:** Pending before the P01 question-tool answers.
+- **My answer (editable):** Owner approved original Norn implementation informed by reference patterns, without copying Palladion code. Status ACCEPTED for P01. No foreign runtime dependency or code port is authorized.
 - **Authority:** Current investigation accepted as planning input; no blanket code-copy authority inferred.
 - **Verification:** G-REUSE, dependency/license/consumer tests and recorded fork delta before porting.
 
@@ -85,7 +89,7 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 - **Recommendation:** First prove deterministic fixtures/exact baselines; select model and backend with compatibility, language, license, and cost evidence. Keep Redis/Qdrant/Neo4j optional later treatments. No heavy per-region hypernetworks or implicit provider fallback.
 - **What affects what:** P03 dense/reranker, P04 training, P06 graph, P07 generated branches, P10 compression, P11 operational adapters.
 - **Prior answer record:** Pending; no download, training job, provider call, listener, or runtime dependency installation authorized by suite creation.
-- **My answer (editable):** Use Groq whenever an authorized task needs generative LLM inference. Allowed options: Qwen 3.8 27B, GPT OSS 120B, GPT OSS 20B. Select explicitly per run; no default or silent fallback inferred. Verify exact Groq API identifiers/account availability before first authorized integration. Embedding/reranker/training backbones, tokenizer, compute, backends and budgets remain unresolved. The supplied key is not permission to call now; wait for Phase 1 GO.
+- **My answer (editable):** Use Groq whenever an authorized task needs generative LLM inference. Allowed options: Qwen 3.8 27B, GPT OSS 120B, GPT OSS 20B. Select explicitly per run; no default or silent fallback inferred. Verify exact Groq API identifiers/account availability before first authorized integration. Embedding/reranker/training backbones, tokenizer, compute, backends and budgets remain unresolved. The supplied key alone is not permission to call; P01 GO does not need a generative call, and any later provider integration still needs explicit enablement/budgets.
 - **Amendment authority:** User model/setup instruction, 20 October 2026; ADR-0010.
 - **Authority:** Blueprint I10 and staged experiments.
 - **Verification:** G-BUDGET/G-RESEARCH; manifest pins, explicit enable flags, failed-attempt accounting, no-network disabled path.
@@ -104,13 +108,14 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 
 ## ADR-0009 — Pilot outbox and later operational projection track
 
-- **Status:** PROPOSED.
+- **Status:** ACCEPTED for the synthetic P01 pilot.
 - **Question:** Preserve canonical event+outbox atomicity in the local pilot while delaying external stores?
 - **Why:** Blueprint write invariants require coherent commits; its deployment sequence postpones distributed infrastructure to isolate algorithms.
 - **Options:** No durable projection journal until Stage5; local transactional outbox from P01 and in-process consumers, external workers in P11.
 - **Recommendation:** Local transactional outbox and idempotent in-process projections from P01/P03. P11 adds durable external delivery, leases, retries, shadow rebuilds and operational metrics without changing event identity or retrospectively crediting vendor changes as algorithmic gains.
 - **What affects what:** P01 atomic schema, P03 local ready snapshot, P11 external publication. A pilot outbox row does not prove distributed recovery.
-- **My answer (editable):** Pending before P01 schema freeze.
+- **Prior answer record:** Pending before the P01 question-tool answers.
+- **My answer (editable):** Owner approved atomic canonical event plus local outbox writes in the synthetic SQLite/blob pilot. Status ACCEPTED for P01; external projection workers remain later-phase work.
 - **Authority:** Blueprint “Encoding and write pipeline,” “Pilot simplification,” “Transactional outbox,” Stage5.
 - **Verification:** G-INGEST/G-SNAPSHOT/G-OPS with phase-local obligations kept separate.
 
@@ -126,6 +131,8 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 - **Authority:** User messages, 20 October 2026. This publication approval is scoped, not standing permission for later main pushes.
 - **Verification:** E-DOC-005; file existence, ignored-status and venv interpreter metadata checked without reading `.env`; docs CLI/negative controls/staged checks required. Key variable name, validity and model-account availability are not tested.
 
+**Superseded scope:** ADR-0012 supersedes the historical Phase 1 hold above. Its scoped documentation push is fulfilled; provider/setup policy remains applicable.
+
 ## ADR-0011 — Single Norn instruction file adapted from both references
 
 - **Status:** ACCEPTED.
@@ -137,3 +144,27 @@ Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verif
 - **My answer (editable):** Direct current user request authorizes creating and publishing this single project instruction file.
 - **Authority:** User's follow-up instruction, 20 October 2026.
 - **Verification:** E-DOC-005; both project-owned reference AGENTS read in full, Norn links/checker and scoped independent end review; no foreign files modified.
+
+## ADR-0012 — P01 implementation mandate and approved foundation
+
+- **Status:** ACCEPTED.
+- **Question:** May P01 implementation begin, and which pending foundation choices are resolved?
+- **Why:** The owner explicitly requested completing P01 and approved all three question-tool decision groups on 20 October 2026.
+- **Options:** Continue the earlier hold; implement the approved local synthetic foundation.
+- **Recommendation / decision:** Implement P01-T01 through T12 in dependency order. ADR-0002/0003/0004/0005/0006/0009 answers above are accepted within their stated P01 scope. The owner separately approved `tzdata`: this Windows environment has zero IANA zones and `ZoneInfo('UTC')` fails without it. Runtime uses standard-library SQLite/dataclasses/argparse/zoneinfo plus that timezone data package. No Groq call is necessary for deterministic fixtures.
+- **What affects what:** Packaging, clocks, source contracts, SQLite schema, canonical reader, journal and installed facade. P03 search and P11 workers remain future work. The earlier ADR-0010 hold is superseded for P01 only; its historical publication authority remains scoped.
+- **My answer (editable):** Owner approved recommended setup, semantics and synthetic pilot, then approved tzdata through the question tool. No new main push approval has been given.
+- **Authority:** Current P01 goal and question-tool responses, 20 October 2026.
+- **Verification:** Start adversary read the full blueprint and P01 contracts/cards; phase evidence will be recorded as executed. Initial state was IN_PROGRESS; final P01 proof and review closure are E-P01-003.
+
+## ADR-0013 — Ground the physical foundation in governed references
+
+- **Status:** IMPLEMENTATION_DECISION within accepted P01 contracts.
+- **Question:** How do local physical IDs and controls implement the MDP's identity, time and source obligations?
+- **Why:** Integration checks found that labels alone are not governed subject identity, and later-added support must not appear in an earlier knowledge/snapshot view.
+- **Options:** Retain label equality or add wrappers around reads; fix the owning canonical representations and queries.
+- **Recommendation / decision:** At atomic ingestion create an occurrence-qualified provisional entity and source-backed alias; atoms reference entities through actual namespace composite FKs. Identical bytes/labels across occurrences do not merge identities. Explicit targeted correction binds to its target identity only after current access and alias checks, followed by matching predicate/qualifiers/scope and ADMIN for supersession. Source/support recording sequences and times constrain historical citation reads. Time serialization stays in contracts, avoiding a dependency from extraction back into registry. All traversal/cycle checks are iterative.
+- **What affects what:** P01-T02/T05/T07/T08/T10/T11, canonical identity/schema/registry, subject/object entity FKs/current access, lineage selectors, reader and regression controls. No shipped contract or foreign code is changed. P03 authority and P11 external guarantees remain future work.
+- **My answer (editable):** Main implementation detail grounded in approved synthetic semantics and existing MDP identity/FK obligations; not an invented additional owner response.
+- **Authority:** Accepted ADR-0003/0005/0012; MDP contracts, canonical schema and identity decision table; blueprint I1-I7.
+- **Verification:** E-P01-001/E-P01-002 and tests/test_identity.py, test_corrections.py, test_contracts.py. Verified by E-P01-003 and resolved independent end review.

@@ -1,37 +1,28 @@
 # Norn project working memory
 
-Updated 20 October 2026 (Asia/Bangkok). This is the single concise navigation memory; vision/source/MDP/ADRs remain authoritative.
+Updated 20 October 2026 (Asia/Bangkok). One navigation memory; source/vision/MDP/ADRs remain authoritative.
 
-## Stable baseline
+## Current mandate and state
 
-- Repository: Norn; initial suite baseline `81badbd`, main, one worktree, vision only.
-- Vision: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md), 19 October 2026, 27 sections. It proposes research, not measured superiority.
-- Current mandate: publish the verified suite plus owner setup/model policy and one tailored root AGENTS. Phase 1 is **WAIT_FOR_GO**; no runtime implementation or foreign-project edits.
-- [MDP](MASTER_DEV_PLAN.md) owns technical contracts/schema/algorithms/flows and stable atomic cards. [README](README.md) assigns every supporting document's role.
-- Actual runtime: absent. Proposed `src/norn/`, benchmark and test layout is conditional on [ADR-0002](ADR_LOG.md#adr-0002--runtime-and-package-layout). Owner-selected Python/uv environment exists at `.venv/`. Groq and three allowed generative options are accepted; runtime dependencies, embedding/reranker/training models, package layout and backends are not yet selected/installed.
+Complete P01 under explicit owner GO and question-tool approvals (ADR-0012). P00 is complete. P01 source/schema/tests/CLI and all12 cards are DONE, final proof E-P01-003; 18/139 tasks complete overall. Later research phases remain planned. No authority for another main push; earlier scoped docs publication is fulfilled. Baseline for this phase: clean main at 5c06dd9, one checkout.
 
-## Architecture to preserve
+## Actual foundation
 
-One source-backed event can have multiple functional views. Event identity, atomic assertions, typed relationships and rebuildable projections are distinct. Similarity, activation, salience and model agreement never create authority. Current ACL/erasure applies before candidate ranking/traversal and again at return, even for historical content snapshots. Query evaluation clock and temporal basis are explicit. Read/derive may append permitted analytics, never edit facts silently.
+- src/norn/contracts: frozen namespace/IDs, tagged values, all seven external epistemic values, independent origin/status, aware clock/precision/interval/unknown contracts.
+- canonical: immutable digest-addressed UTF-8 source/spans, original occurrence/entity identity, schema1 evidence/control/journal tables, additive schema2 derivation lineage, atomic write/correction/outbox and versioned backup/upgrade safeguards.
+- governance: trusted-host namespace-wide current READ/WRITE/ADMIN grants and epoch, explicit request-time interpretation, current tombstones with bounded downstream purge selectors. Physical purge remains pending.
+- extraction: explicit deterministic source-anchored fixture annotations and uncertainty; no arbitrary NLP or approval inference.
+- integration/CLI: local operator facade, source-backed read, knowledge/valid/snapshot replay, retraction/correction, journal replay, deny, backup. Held evidence serialization rechecks current access. No model/provider/index/worker loaded; INDEX_PENDING is not searchable.
+- pyproject.toml/uv.lock: owner environment reused, Python3.14, Hatchling1.32.4, pytest/Ruff/mypy/build, tzdata for Windows IANA zones. .env remains ignored/unread. Approved future generative policy remains Groq with explicit allowed model choice; IDs/availability not verified and no call occurred.
 
-Pilot proposal is local canonical SQL/blobs, transactional local outbox and in-process projections. External stores, distributed delivery, caches/replicas/shards are later measured operational treatments. Binding, loss, separation, graph, reconstruction, salience and consolidation are independent experiments with simpler winners retained when justified.
+## Architecture and boundaries
 
-## Verified documentation checkpoint
+Canonical events, atoms, typed relationships, sources and rebuildable derived data remain separate. Similarity/name/activation/model agreement never grant identity, truth or access. Current security overrides historical content. Canonical SUPPORT is anchored fixture evidence, not normative approval or measured semantic accuracy. Future P03 retrieval/approval/source gates and P11 worker/backup reconciliation keep their own obligations. External host authentication is the embedding host's responsibility; local CLI principal options are trusted operator configuration.
 
-P00 complete: MDP technical design plus 14 phases/139 atomic tasks, 30 gates and 137 traceability rows. Actual docs CLI checks all 15 Markdown files and passes 15 deliberate failure controls; main/full-blueprint end review resolved. Only six P00 cards and G-DOC are complete; 133 runtime/research cards and 29 runtime gates remain unexecuted. No model/data/provider/backend installed or called. Evidence: E-DOC-001 through E-DOC-004.
+Read PROGRESS, GOAL, MDP exact card/dependencies, ADR owner answers, TESTING_GATES and EVIDENCE_LOG before continuing. Start adversary and end reviewer only, GPT6 Luna Medium; main performs all exploration/code/tests. Reviewers receive no credentials, runtime execution or git mutation.
 
-## Decisions and next work
+## Evidence and remaining work
 
-Read [PROGRESS](PROGRESS.md) for the current task, [GOAL](GOAL.md) for checkable outcomes, [ADRs](ADR_LOG.md) for owner answers, [gates](TESTING_GATES.md) for proof, and [evidence](EVIDENCE_LOG.md) for observations. Pending runtime choices include package layout/dependencies, RETRACTED origin/status interpretation, retention/purge/parameter erasure, time/snapshot semantics, code reuse, embedding/reranker/training models/compute/backends and local-outbox translation. Recommendations are not accepted answers.
+E-P01-001/002 retain approvals, environment failure, earlier artifacts and meaningful failures/fixes; E-P01-003 owns final closure. Final main suite63 passed/no skips, format/lint/type/build/docs controls pass. Final wheel installed scenario and24-file byte parity pass; sole independent full-blueprint end review and resolutions pass. All tests use disposable synthetic temporary stores, no existing meaningful state or listeners. No task processes remain; policy blocked deletion of the static wheel-test environment in Windows Temp (E-P01-003). Schema upgrade makes a verified backup first. Source bytes may remain unreferenced after rollback; automatic garbage collection/physical purge is outside this foundation.
 
-Only start/end reviewers may be delegated; current standing model is GPT6 Luna Medium. Main owns research, implementation and tests. No credentials/provider access goes to reviewers. End reviewer is reused for resolution. The current user separately authorized this scoped suite/setup/instructions push to main; it does not grant future main publication or Phase 1 GO.
-
-## Reference limits and evidence
-
-Palladion provides governed memory, source/provenance/reconciliation and independent benchmark examples, but its categories/session boundaries/payment policy are not Norn's multi-view memory. Source-checkpoint/license/consumer review precedes any port. Arcana's referenced old development plan is explicitly partly superseded and is format/depth guidance only. References were inspected read-only.
-
-Documentation checker commands are in [README](README.md#validation-now). Runtime commands/tests in task cards are planned profiles only. No listener or provider is needed for suite validation. Update this memory at verified checkpoints without copying the full plan or status history.
-
-## Owner setup amendment
-
-ADR-0010/0011 record Groq options (Qwen 3.8 27B; GPT OSS 120B; GPT OSS 20B), explicit per-run selection without silent fallback, ignored root `.env`, owner `.gitignore`, existing uv `.venv/` and one root `AGENTS.md`. Interpreter metadata confirms CPython3.14.7. Key contents/validity and API model availability remain unverified; no live call occurred. Current amendment evidence is E-DOC-005.
+Palladion/Arcana were read-only design/format references. Owner approved original Norn code without copying either checkout. No foreign runtime dependency. Pending decisions concern later embedding/training/compute/backends, production retention and experimental thresholds, not the accepted P01 pilot.

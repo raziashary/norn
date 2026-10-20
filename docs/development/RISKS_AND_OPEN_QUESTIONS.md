@@ -4,13 +4,13 @@ Updated 20 October 2026 (Asia/Bangkok). Owners are roles, not invented named ass
 
 | ID | Mechanism / consequence | Owner and decision point | Mitigation / proof | State |
 |---|---|---|---|---|
-| Q01 | Python/uv setup accepted, package/layout/dependencies still proposed | User; Phase 1 GO and ADR-0002 | Reuse existing venv; resolve remaining package decisions before binding actual commands | PARTIALLY_RESOLVED |
-| Q02 | RETRACTED as epistemic value conflicts with independent origin/status | User; before P01-T02, ADR-0003 | Preserve all external values and original provenance; approve internal mapping explicitly | OPEN |
-| Q03 | Immutable evidence versus physical erasure/audit/backups/model parameters | User; before retention/private data, ADR-0004 | Synthetic-only pilot, serving denial first, policy-specific purge receipts and restore tests | OPEN |
-| Q04 | Timezone/precision/as-of basis and snapshot security ambiguity | User; before P01 temporal freeze, ADR-0005 | Explicit clocks, intervals/unknowns, current security on old content | OPEN |
-| Q05 | Copying tightly coupled or changing Palladion code imports foreign contracts/licenses | Main plus user; before any port, ADR-0006 | Pin verified source, license/fork delta and real Norn consumer proof; no foreign checkout import | OPEN |
+| Q01 | P01 Python/src/tooling/tzdata choices accepted; later model dependencies pending | User; Phase 1 GO and ADR-0002 | Reuse existing venv; ADR-0012 resolves P01 setup; verify installed consumers | PARTIALLY_RESOLVED |
+| Q02 | RETRACTED as epistemic value conflicts with independent origin/status | User; before P01-T02, ADR-0003 | Owner approved origin/status mapping; all seven persisted round trips tested | RESOLVED_P01 |
+| Q03 | Immutable evidence versus physical erasure/audit/backups/model parameters | User; before retention/private data, ADR-0004 | Synthetic pilot accepted; pending per-artifact purge/backups remain explicit; production policy unresolved | RESOLVED_P01_ONLY |
+| Q04 | Timezone/precision/as-of basis and snapshot security ambiguity | User; before P01 temporal freeze, ADR-0005 | Owner approved explicit clocks/current security; deterministic controls pass | RESOLVED_P01 |
+| Q05 | Copying tightly coupled or changing Palladion code imports foreign contracts/licenses | Main plus user; before any port, ADR-0006 | Owner approved original implementation without copying; no foreign runtime dependency | RESOLVED_P01 |
 | Q06 | Groq/options accepted; API availability, embedding/training/backends/hardware/budgets unknown | User; authorized implementation and ADR-0007/0010 | Explicit model selection, verify IDs/account at first authorized call, pins and bounded compute | PARTIALLY_RESOLVED |
-| Q07 | Local outbox versus delayed distributed track could confuse pilot guarantees | User; before schema, ADR-0009 | Local atomic journal early, external delivery/leases/recovery measured P11 | OPEN |
+| Q07 | Local outbox versus delayed distributed track could confuse pilot guarantees | User; before schema, ADR-0009 | Owner approved atomic local journal; replay tested; distributed guarantees remain P11 | RESOLVED_P01 |
 | R01 | Facets duplicate signal; larger backbone explains gains | Main; P04 | Same-capacity single encoder and conditional view ablations | UNMEASURED |
 | R02 | Shared code/separation destroys partial-cue generalization | Main; P04/P05 | Multi-positive ambiguity, same-event positives, held-out identity and cue curves | UNMEASURED |
 | R03 | Graph extraction/hubs/wrong seeds create spurious identity or causal chains | Main; P06 | Gold/derived tracks, edge quality, typed/current eligibility, fixed-seed BFS/PPR controls | UNMEASURED |

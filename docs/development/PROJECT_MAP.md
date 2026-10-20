@@ -1,6 +1,6 @@
 # Norn project map
 
-Updated 20 October 2026 (Asia/Bangkok). Coverage: actual planning repository and proposed memory/research module boundaries. This map makes no claim that planned runtime exists.
+Updated 20 October 2026 (Asia/Bangkok). Coverage: actual planning repository and proposed memory/research module boundaries. P01 paths below exist; later research paths remain proposals.
 
 ## Actual repository
 
@@ -20,12 +20,12 @@ docs/
     ADR_LOG.md, RISKS_AND_OPEN_QUESTIONS.md
     TESTING_GATES.md, REQUIREMENTS_TRACEABILITY.md
     RESEARCH_PROTOCOL.md, PROJECT_LEARNING.md, EVIDENCE_LOG.md
-    check_docs.py                        # actual docs-only runnable tool
+    check_docs.py                        # actual documentation checker
 ```
 
-There is no runtime source tree, package/dependency manifest, SQL migration, model, dataset or application CLI. Directory/file names in the following map are proposals under ADR-0002, not discovered implementation.
+Actual runtime now also includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,governance,extraction,integration}, src/norn/cli.py and tests/test_*.py. canonical/schema.sql is schema1; 002_governance.sql is additive schema2 lineage. Tests and installed CLI consume the same owners; no foreign checkout import, model, dataset, network service or benchmark exists. See E-P01-003 for proof scope.
 
-## Proposed module map
+## Module ownership map (P01 actual; later phases proposed)
 
 | Module | Responsibility and owner boundary | Producer / consumer | Phase |
 |---|---|---|---|
@@ -68,4 +68,4 @@ No runtime edge points to hidden labels. Data flows preserve event→atom→sour
 
 ## Verification map
 
-Actual documentation entry point: `.venv/Scripts/python.exe docs/development/check_docs.py`, plus its self-tests. Planned runtime tests are owned in exact atomic cards and bound to real executable commands after P01 approval. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.
+Documentation entry point: `.venv/Scripts/python.exe docs/development/check_docs.py`, plus its self-tests. P01 tests and CLI are real and bound in README Local foundation; later runtime paths remain planned. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.

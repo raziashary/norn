@@ -1,6 +1,6 @@
 # Norn master development plan
 
-Version 1.1, 20 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **No Norn runtime, schema, model, dataset, tests, or benchmark results exist yet.** Only the documentation suite and its structural checker are being delivered now.
+Version 1.2, 20 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **P01 canonical runtime/schema/tests are implemented and verified (E-P01-003).** Later retrieval, models, datasets and benchmark results remain absent. The pre-runtime baseline is historical, not the current source state.
 
 The user requested an extensive engineering MDP, not merely a phase list. This document therefore owns the proposed algorithms, data contracts, logical schema, read/write/recovery flows, module responsibilities, experimental decomposition, and atomic implementation cards. Supporting records own goals, decisions, proof, traceability, and current state. Do not split these technical contracts into competing subsystem specifications.
 
@@ -36,15 +36,15 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. All Python paths and command shapes below are conditional on ADR-0002. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 remains WAIT_FOR_GO: do not start runtime implementation until the user gives GO and affected pending answers permit the work.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01 Python paths and executables are accepted under ADR-0002/0012; later paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. Implement its bounded synthetic pilot; later phases and publication retain their own authority.
 
 ### Owner setup and generative LLM policy
 
-The owner created `.venv/` using uv, supplied a repository-root `.env` with a Groq API key and created `.gitignore`. The existing environment is CPython3.14.7 (uv0.13.1 metadata); reuse it without recreation. `.env`, `venv/` and `.venv/` are ignored. No key contents/variable name or provider validity were read or verified in the documentation task. No runtime package/dependency manifest exists yet.
+The owner created `.venv/` using uv, supplied a repository-root `.env` with a Groq API key and created `.gitignore`. The existing environment is CPython3.14.7 (uv0.13.1 metadata); reuse it without recreation. `.env`, `venv/` and `.venv/` are ignored. No key contents/variable name or provider validity were read or verified in the documentation task. P01 now supplies pyproject.toml and uv.lock under ADR-0012; existing environment is reused.
 
 For any future **authorized task requiring generative LLM inference**, use **Groq**, selecting explicitly from **Qwen 3.8 27B**, **GPT OSS 120B**, **GPT OSS 20B**. Record the actual API model ID/provider in run manifests; verify identifiers and account availability before first authorized call. The options do not imply a default or silent fallback. This does not select embedding/reranker/training backbones or hardware. Root `.env` loads only for the specific explicitly enabled bounded command; never expose or commit secrets. An implemented generative path needs actual Groq-to-consumer proof, not only injected unit responses.
 
-Use existing `.venv/Scripts/python.exe` for docs-only validation. Keep ordinary future uv commands `--no-env-file`; no live inference, dependency installation or training is authorized now. Owner explicitly authorized pushing the suite plus setup/instructions amendment and asked to wait for Phase 1 GO. See root [AGENTS](../../AGENTS.md), ADR-0010/0011 and PROGRESS.
+Use existing `.venv/Scripts/python.exe` for docs-only validation. Use `uv run --no-env-file` for ordinary execution. `uv sync` does not accept that flag and does not load .env. Approved P01 tools/tzdata may be installed; live inference/training remain disabled. The owner subsequently gave P01 GO and approved foundation decisions (ADR-0012); earlier publication authority does not authorize another main push. See root [AGENTS](../../AGENTS.md), ADR-0010/0011 and PROGRESS.
 
 ### Task reading protocol
 
@@ -194,7 +194,19 @@ flowchart TD
 
 ## Typed contracts
 
-These are complete **logical contract proposals**, not a shipped SDK or runnable migration. Physical column types, enum representation, indexes and language types are finalized in P01 after ADR answers. Never equate UNKNOWN, empty, missing, denied, expired, unindexed and nonexistent. All public IDs are opaque within an authenticated namespace. All strings, arrays, blobs and recursive structures have configurable validated bounds before work begins.
+These are the complete **logical design contracts**. P01 implements the local canonical subset described below; later retrieval/research contracts remain proposals. Actual physical column types and migrations live in src/norn/canonical and preserve accepted P01 semantics. Never equate UNKNOWN, empty, missing, denied, expired, unindexed and nonexistent. All public IDs are opaque within an authenticated namespace. All strings, arrays, blobs and recursive structures have configurable validated bounds before work begins.
+
+### Implemented P01 physical profile
+
+The accepted synthetic pilot uses `src/norn/`, standard-library runtime owners plus tzdata, Hatchling1.32.4 and uv.lock. Namespace is a validated tenant/workspace/partition triple serialized without separators inside components; every object FK includes its exact namespace key. Schema1 contains normalized evidence, identity, access, correction, journal and denial tables; additive schema2 introduces derivation lineage. Both are authored initial profiles, not a claim of a previously deployed legacy release. Opening an older populated profile takes and verifies a uniquely named backup first; a dirty migration is refused until operator recovery. Canonical UPDATE/DELETE and replacement are guarded; schema catalog, versions and migration digests are checked on open.
+
+The trusted embedding host constructs HostIdentity. The CLI is a local OS/filesystem-trusted operator, not a remote authenticator; principal options are host configuration, never accepted from write JSON. Namespace-wide READ/WRITE/ADMIN grants are current and epoch-versioned. Explicit targeted corrections bind to the target entity after access/alias checks; SUPERSEDES requires ADMIN; contradiction/additional evidence cannot silently choose a winner. Purpose-specific authority tables reserve the normalized contract; P01 never promotes a fixture/source to normative approval. That gate belongs to P03.
+
+Sources are UTF-8 content-addressed bytes published before the SQL write. Every atom references a governed entity via a real namespace FK. Provisional entity identity additionally includes the occurrence's atom ID, so shared identical bytes do not prove identical people. Fixture annotations carry exact spans, typed values and uncertainty; they are not arbitrary-language semantic extraction. Canonical read SUPPORT means eligible anchored fixture evidence, not established real-world truth or measured entailment. Inference/hypothesis/aggregate alone cannot produce that outcome. Seven external epistemic values survive export, including unknown-origin retractions quarantined as UNRESOLVED.
+
+All source/event/atom/support/delivery/relationship/journal writes for ingestion/correction share one transaction. Journal pages have explicit cursors, digests and read-only replay; INDEX_PENDING remains unsearchable. Source bytes may be orphaned after a failed transaction, but never acknowledged without a canonical reference; automatic physical garbage collection is not implemented. Current denial closes source/entity/contained-event/atom/edge/derived dependencies, with actual blob digest purge selectors; shared bytes remain pending reference/retention reconciliation; purge selectors remain PENDING for SQL/blobs/representations/traces/backups. P01 does not claim full erasure, old-backup reconciliation, external publication, ANN/graph/search or power-loss proof; P03/P11/P12 own those consumers.
+
+Finite pilot limits are safety bounds, not performance targets: source1MiB, request2MiB, atoms64, qualifiers16, per-atom controls/relations256, supports64, total returned citation bytes1MiB, journal page1000, lineage10,000 unique objects/100,000 pending transitions, SQLite busy timeout5s and backup progress deadline5s. Exceeding a bound is an explicit error. No provider/model/backbone is loaded. Full validation and installed scenario commands are in the README and evidence log.
 
 ### Primitive and temporal types
 
@@ -239,7 +251,7 @@ Recall result statuses are answer-level SUPPORTED, PARTIALLY_SUPPORTED, CONFLICT
 
 ### Canonical relations and field-level obligations
 
-Logical fields are normative within this proposal; persistence mechanics await ADR-0002/0003/0004/0005/0009. All foreign keys include namespace. Creation/recording actors come from the authenticated host. Canonical assertion content is immutable except physical purge under an approved erasure policy; changes to authority, permissions, status and lifecycle are auditable separate control records. No on-disk store is authoritative merely because it contains a JSON `approved=true` field.
+Logical obligations govern the design; approved P01 persistence mechanics are recorded in ADR-0012 and implemented in the canonical SQL migrations. Later projection/operational fields retain their later owning tasks. All foreign keys include namespace. Creation/recording actors come from the authenticated host. Canonical assertion content is immutable except physical purge under an approved erasure policy; changes to authority, permissions, status and lifecycle are auditable separate control records. No on-disk store is authoritative merely because it contains a JSON `approved=true` field.
 
 | Table | Key and required fields | Constraints / reader |
 |---|---|---|
@@ -337,7 +349,7 @@ Verify expected **IDs and digests**, model/tokenizer/normalization, source state
 
 Temporal basis is explicit: EVENT_TIME asks what happened; KNOWLEDGE_AT asks what was recorded by the cutoff; VALID_TIME asks which assertion applies; policy-specific basis belongs to an externally declared domain rule. A late-arriving correction can change today's account of Tuesday while remaining unknown in a knowledge-at-Tuesday replay. Query timezone resolves relative words using evaluation_time, never ingestion time or machine wall time. Ambiguous date, incomplete offset, DST fold, interval overlap and unknown time produce typed ambiguity, not a guessed single episode.
 
-Store original precision/zone plus normalized comparable bounds. valid_to is exclusive in the proposal; ADR-0005 must confirm before contract freeze. Unknown is distinct from unbounded. No blanket latest-wins rule: a supersession must match assertion, authority, scope, and applicable period. Historical content reads always enforce current security/erasure restrictions.
+Store original precision/zone plus normalized comparable bounds. valid_to is exclusive in the proposal; ADR-0005 confirms this for P01. Unknown is distinct from unbounded. No blanket latest-wins rule: a supersession must match assertion, authority, scope, and applicable period. Historical content reads always enforce current security/erasure restrictions.
 
 ### Independent state axes
 
@@ -721,9 +733,9 @@ P04's binding decision is preliminary within Stage1. P05's already specified los
 
 ## Atomic execution register
 
-Atomic IDs are stable `Pnn-Tnn`. Parent phase owns rationale/stage/dependencies/exit. Each task owns exact files, producer→consumer change, positive/negative proof, gate, source headings, evidence and status. File paths without Markdown links are planned until created; a dependency ID is an actual plan object, not proof that its runtime file exists. Planned command profiles below are conditional, do not exist now, and must be reconciled at P01 bootstrap before execution.
+Atomic IDs are stable `Pnn-Tnn`. Parent phase owns rationale/stage/dependencies/exit. Each task owns exact files, producer→consumer change, positive/negative proof, gate, source headings, evidence and status. File paths without Markdown links are planned until created; a dependency ID is an actual plan object, not proof that its runtime file exists. P01 UNIT and INTEGRATION profiles are bound below; MEASURE and later research paths remain planned.
 
-Command profile DOC is runnable now: `python docs/development/check_docs.py` and `--self-test`. Python/uv is owner-selected and `.venv/` already exists. UNIT/INTEGRATION/MEASURE profiles still require Phase 1 GO, accepted package/dependency decisions and actual entry points: `uv run --no-env-file python -m pytest <named owning test>`; `uv run --no-env-file python -m norn.cli <declared synthetic operation>`; `uv run --no-env-file python -m benchmark.runs.cli --config <frozen development manifest>`. P01 binds exact executable command/fixture/profile to each gate before use. Test-path ownership below is an intended proof contract, not a claim that pytest or those modules are installed. Installed-wheel smoke and per-phase cleanup remain mandatory where runnable output exists.
+Command profile DOC is runnable now: `python docs/development/check_docs.py` and `--self-test`. Python/uv is owner-selected and `.venv/` already exists. P01 GO and package decisions are accepted. UNIT/INTEGRATION are actual; MEASURE remains planned: `uv run --no-env-file python -m pytest <named owning test>`; `uv run --no-env-file python -m norn.cli <declared synthetic operation>`; `uv run --no-env-file python -m benchmark.runs.cli --config <frozen development manifest>`. P01 binds exact executable command/fixture/profile to each gate before use. P01 paths/pytest are implemented and installed as verified in E-P01-003; later test paths remain intended proof contracts. Installed-wheel smoke and per-phase cleanup remain mandatory where runnable output exists.
 
 <a id="p00"></a>
 
@@ -853,14 +865,14 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Source headings:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts.
 - **Entry:** P00-T06 plus affected ADR owner answers and implementation mandate.
 - **Exit:** Installed local synthetic write/reopen/read/correction/revocation works with canonical provenance and atomic outbox; no external backends required.
-- **State:** PLANNED.
+- **State:** DONE.
 
 <a id="p01-t01"></a>
 
 ### P01-T01 — Resolve runtime and executable profiles
 
-- [ ] **P01-T01**
-- **State:** PLANNED.
+- [x] **P01-T01**
+- **State:** DONE.
 - **Files:** `pyproject.toml`, `uv.lock`, `src/norn/cli.py`, `tests/test_package.py`, `docs/development/ADR_LOG.md`.
 - **Depends:** P00-T06.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -869,16 +881,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Wheel/import/capability smoke works without optional model/backend assets.
 - **Negative proof:** No pending owner answer becomes approval; absent optional component cannot trigger downloads or provider calls.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_package.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_package.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t02"></a>
 
 ### P01-T02 — Freeze typed identities values and evidence contracts
 
-- [ ] **P01-T02**
-- **State:** PLANNED.
+- [x] **P01-T02**
+- **State:** DONE.
 - **Files:** `src/norn/contracts/identity.py`, `src/norn/contracts/evidence.py`, `tests/test_contracts.py`.
 - **Depends:** P01-T01.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -887,16 +899,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Observation/report/hypothesis/retraction round-trip preserve original source, scope and independent states.
 - **Negative proof:** Malformed IDs, unknown tags/schema, nonfinite values and forged authority reject before writes.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_contracts.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_contracts.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t03"></a>
 
 ### P01-T03 — Own query clock and independent state axes
 
-- [ ] **P01-T03**
-- **State:** PLANNED.
+- [x] **P01-T03**
+- **State:** DONE.
 - **Files:** `src/norn/contracts/time.py`, `src/norn/governance/temporal.py`, `tests/test_temporal.py`.
 - **Depends:** P01-T02.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -905,16 +917,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Late arrival/correction replays distinguish event time and knowledge time; yesterday uses query zone.
 - **Negative proof:** READY hypothesis never becomes verified; ambiguous DST/date-only time is not silently precise.
 - **Gate:** G-TEMPORAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_temporal.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_temporal.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t04"></a>
 
 ### P01-T04 — Persist immutable bytes and exact source spans
 
-- [ ] **P01-T04**
-- **State:** PLANNED.
+- [x] **P01-T04**
+- **State:** DONE.
 - **Files:** `src/norn/canonical/sources.py`, `tests/test_sources.py`.
 - **Depends:** P01-T02.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -923,16 +935,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Repeat bytes reuse content handle; full/range reads recover identical bytes after reopen.
 - **Negative proof:** Corruption, missing blob, invalid span/UTF8 and path/symlink escape cannot yield usable evidence.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_sources.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sources.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t05"></a>
 
 ### P01-T05 — Separate delivery occurrence and entity identity
 
-- [ ] **P01-T05**
-- **State:** PLANNED.
+- [x] **P01-T05**
+- **State:** DONE.
 - **Files:** `src/norn/canonical/identity.py`, `tests/test_identity.py`.
 - **Depends:** P01-T03.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -941,16 +953,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Same words at two times remain distinct; repeated delivery has one stable event/journal effect.
 - **Negative proof:** Same key with changed payload rejects; same-name different-tenant entities cannot merge by similarity.
 - **Gate:** G-IDENTITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_identity.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_identity.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t06"></a>
 
 ### P01-T06 — Enforce trusted principal and current access controls
 
-- [ ] **P01-T06**
-- **State:** PLANNED.
+- [x] **P01-T06**
+- **State:** DONE.
 - **Files:** `src/norn/governance/access.py`, `tests/test_access.py`.
 - **Depends:** P01-T02.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -959,17 +971,17 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Allowed synthetic principal succeeds; revoked permission fails on reopened reader.
 - **Negative proof:** Forged identity in memory, stale grant cache and private ID cannot leak text or existence.
 - **Gate:** G-ACL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_access.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_access.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t07"></a>
 
 ### P01-T07 — Create normalized schema and upgrade safeguards
 
-- [ ] **P01-T07**
-- **State:** PLANNED.
-- **Files:** `src/norn/canonical/schema.sql`, `src/norn/canonical/database.py`, `tests/test_schema.py`.
+- [x] **P01-T07**
+- **State:** DONE.
+- **Files:** `src/norn/canonical/schema.sql`, `src/norn/canonical/002_governance.sql`, `src/norn/canonical/database.py`, `tests/test_schema.py`, `tests/test_integrity.py`.
 - **Depends:** P01-T03,P01-T04,P01-T05,P01-T06.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
 - **Change:** Implement actual namespace FKs, event/atom/support/control/lineage/outbox constraints and migration versioning.
@@ -977,16 +989,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Fresh schema and populated upgrade/restore preserve history with verified backups.
 - **Negative proof:** Unknown foreign store refuses mutation; interrupted upgrade cannot report READY; destructive tests use disposable state.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_schema.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_schema.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t08"></a>
 
 ### P01-T08 — Commit source-backed events and local outbox atomically
 
-- [ ] **P01-T08**
-- **State:** PLANNED.
+- [x] **P01-T08**
+- **State:** DONE.
 - **Files:** `src/norn/canonical/registry.py`, `src/norn/canonical/outbox.py`, `tests/test_ingest.py`.
 - **Depends:** P01-T07.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -995,16 +1007,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Racing identical deliveries create one effect; source/atoms/journal read back after reopen.
 - **Negative proof:** Rollback/crash leaves no partial canonical set; pending projections never advertised searchable; no provider call under write lock.
 - **Gate:** G-INGEST. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_ingest.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ingest.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t09"></a>
 
 ### P01-T09 — Extract fixture atoms and typed uncertainty
 
-- [ ] **P01-T09**
-- **State:** PLANNED.
+- [x] **P01-T09**
+- **State:** DONE.
 - **Files:** `src/norn/extraction/atoms.py`, `tests/test_extraction.py`.
 - **Depends:** P01-T08.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -1013,16 +1025,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Known exact spans produce typed atoms whose source hashes and offsets re-resolve.
 - **Negative proof:** Absent action, ambiguous entity and causal speculation remain missing/unresolved/hypothesis; extraction cannot approve sources.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_extraction.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_extraction.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t10"></a>
 
 ### P01-T10 — Append scoped corrections and retractions
 
-- [ ] **P01-T10**
-- **State:** PLANNED.
+- [x] **P01-T10**
+- **State:** DONE.
 - **Files:** `src/norn/canonical/corrections.py`, `tests/test_corrections.py`.
 - **Depends:** P01-T09.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -1031,16 +1043,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Current corrected value and prior knowledge-at value are both recoverable under current access.
 - **Negative proof:** Wrong scope, supersession cycle, blanket latest-wins and read-time factual mutation reject.
 - **Gate:** G-TEMPORAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_corrections.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_corrections.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t11"></a>
 
 ### P01-T11 — Implement serving denial and lineage purge selectors
 
-- [ ] **P01-T11**
-- **State:** PLANNED.
+- [x] **P01-T11**
+- **State:** DONE.
 - **Files:** `src/norn/governance/deletion.py`, `tests/test_deletion.py`.
 - **Depends:** P01-T10.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -1049,16 +1061,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Deleted source is denied even while derived purge stays pending.
 - **Negative proof:** Old snapshot, unavailable graph/cache and missing parameter policy cannot justify serving or claiming complete erasure.
 - **Gate:** G-DELETION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_deletion.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_deletion.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p01-t12"></a>
 
 ### P01-T12 — Prove installed write reopen read facade
 
-- [ ] **P01-T12**
-- **State:** PLANNED.
+- [x] **P01-T12**
+- **State:** DONE.
 - **Files:** `src/norn/integration/engine.py`, `src/norn/cli.py`, `tests/test_foundation_cli.py`.
 - **Depends:** P01-T11.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
@@ -1067,8 +1079,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Two episodes, repeated delivery, correction and revoke work after restart with owning stack checks.
 - **Negative proof:** Read cannot mutate facts or load credentials; typed failure and no dangling owned process/listener required.
 - **Gate:** G-INGEST. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_foundation_cli.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_foundation_cli.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02"></a>

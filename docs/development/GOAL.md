@@ -1,10 +1,10 @@
 # Norn goal and acceptance
 
-Updated 20 October 2026 (Asia/Bangkok). The immediate objective is the user's requested comprehensive development suite. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 20 October 2026 (Asia/Bangkok). The immediate objective is completing the twelve P01 foundation tasks under ADR-0012; the earlier documentation mandate is complete. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Current documentation mandate
 
-Create `docs/development` with an extensive MDP containing algorithms, schemas, flows, ownership, dependencies, atomic tasks and proof; supporting records follow the useful Palladion anchor format and Arcana's technical depth. Preserve the vision unchanged. Initial suite creation excluded runtime implementation, dependency installation, provider use, foreign-project edits and remote publication. The owner now separately authorizes publishing the suite and setup/instructions amendment (ADR-0010/0011); Phase 1 remains WAIT_FOR_GO.
+Create `docs/development` with an extensive MDP containing algorithms, schemas, flows, ownership, dependencies, atomic tasks and proof; supporting records follow the useful Palladion anchor format and Arcana's technical depth. Preserve the vision unchanged. Initial suite creation excluded runtime implementation, dependency installation, provider use, foreign-project edits and remote publication. The owner separately authorized and published the suite/setup/instructions amendment (ADR-0010/0011), then approved P01 under ADR-0012. P01 is verified in E-P01-003.
 
 | Outcome | Checkable requirement | Proof | State |
 |---|---|---|---|
@@ -25,7 +25,7 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 
 | Outcome | Required capability / baseline | Owner and proof | State |
 |---|---|---|---|
-| O01 | Source-backed event/atom/edge identity and independent epistemic/time/scope contracts | P01; G-CONTRACT/G-SOURCE/G-IDENTITY; installed write/reopen/source read | PLANNED |
+| O01 | Source-backed event/atom/edge identity and independent epistemic/time/scope contracts | P01 foundation complete, E-P01-003; later source/retrieval paths keep their own gates | DONE |
 | O02 | Current ACL, correction, historical knowledge and deletion controls | P01/P03/P09/P11/P12; G-ACL/G-TEMPORAL/G-DELETION; actual reader negative controls | PLANNED |
 | O03 | Fair conventional strong baseline and evidence-qualified recall | P02/P03; G-CUSTODY/G-RETRIEVAL/G-ABSTENTION; paired runner and source citations | PLANNED |
 | O04 | Measured views/binding/loss/separation value or justified simpler winner | P04/P05; G-BINDING/G-LEARNING/G-SEPARATION; matched ablations and raw outcomes | PLANNED |
@@ -38,10 +38,20 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 
 ## Baseline and dependencies
 
-Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. The owner subsequently selected Python/uv setup and Groq generative options and created `.venv/`, `.env` and `.gitignore`. Package/dependency/embedding/reranker/training/backends, time/retraction/retention and reuse choices remain pending ADRs. A plan path is not evidence that its producer exists.
+Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. The owner subsequently selected Python/uv setup and Groq generative options and created `.venv/`, `.env` and `.gitignore`. P01 package/time/retraction/synthetic retention/original-code choices are approved. Embedding/reranker/training, production retention and external backends remain pending. A plan path is not evidence that its producer exists.
 
 The phase sequence preserves Stage0-6 and hierarchical ablations. Do not run a giant Cartesian product. Freeze practical numeric efficacy/regression margins after pilot power estimation and before locked testing; current unknown targets are not a reason to invent numbers. Integrity controls apply from P01. More expensive mechanisms require their own prerequisites; rejecting them does not stop evaluation of a simpler retained winner.
 
 ## Completion discipline
 
-For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate covers the suite, setup/instructions amendment and its scoped publication. Wait for explicit Phase 1 GO before runtime work; later publication needs its applicable authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
+For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate covers the suite, setup/instructions amendment and its scoped publication. The explicit Phase 1 GO is recorded in ADR-0012; later publication needs its applicable authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
+
+## P01 acceptance — verified
+
+- Package built and installed in a fresh isolated environment; actual CLI starts with no optional assets or providers.
+- Typed namespace/value/time/epistemic contracts reject malformed input; immutable UTF-8 bytes/spans reopen exactly.
+- Event/atom/support/delivery/outbox commit atomically, racing retries have one effect, failed/crashed transactions roll back, and journal replay is stable.
+- Corrections/retractions retain origin and history; current ACL and serving denial override old snapshots; lineage enumerates pending purge without an erasure claim.
+- Populated upgrade, verified backup/restore, installed restarted reader, main checks, sole end review, current records and resource cleanup complete.
+
+All five P01 outcomes are DONE, E-P01-003. No task processes/listeners remain; deleting the static wheel-test environment was blocked by automatic approval policy and is explicitly recorded. Later phases are outside this mandate.

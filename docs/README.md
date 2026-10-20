@@ -5,4 +5,4 @@
 - [Development suite](development/README.md): implementation planning, contracts, algorithms, task register, gates, decisions, and evidence.
 - [Master development plan](development/MASTER_DEV_PLAN.md): the detailed technical starting point.
 
-The repository is at the planning stage. Documentation completeness does not imply implemented memory capabilities or measured superiority.
+P01 local canonical runtime is implemented and verified (development/EVIDENCE_LOG E-P01-003); later research phases remain planned. Documentation completeness does not imply implemented memory capabilities or measured superiority.

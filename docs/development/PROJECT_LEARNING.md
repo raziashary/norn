@@ -8,7 +8,7 @@ Arcana's named historical MDP explicitly says parts are superseded. Its rich sch
 
 ## L002 — Independent state dimensions expose real design choices
 
-The blueprint lists RETRACTED with epistemic values while describing independent state axes, and immutable evidence alongside erasure. The start adversary correctly required explicit interpretation. ADR-0003/0004 retain unresolved owner answers and proposed alternatives. Future method: preserve original requirements and make the tension reviewable before freezing schema; do not silently choose a convenient meaning.
+The blueprint lists RETRACTED with epistemic values while describing independent state axes, and immutable evidence alongside erasure. The start adversary correctly required explicit interpretation. At P00, ADR-0003/0004 retained unresolved owner answers and alternatives; P01 approvals are now explicit in ADR-0012. Future method: preserve original requirements and make the tension reviewable before freezing schema; do not silently choose a convenient meaning.
 
 ## L003 — Windows command-size limit during authoring
 
@@ -20,4 +20,16 @@ The end reviewer identified ambiguous P04-T09/P05 entry wording. The earlier bro
 
 ## Experimental evidence remains pending
 
-No runtime, training, retrieval, latency, security, recovery or benchmark result exists. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+P01 local integrity/security/process recovery has narrow synthetic evidence. Training, retrieval efficacy, latency/capacity and benchmark results remain absent. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+
+## L005 — Provenance history needs its own recording sequence
+
+An additional evidence link initially lacked a recorded sequence, allowing later support into older snapshots. The owner fix stores/filter support recording sequence and source recording time; a regression reads the old snapshot and verifies one citation instead of two. Shared source bytes also cannot establish entity equality: provisional identity now includes its occurrence atom. See E-P01-001/E-P01-002.
+
+## L006 — Test cycles and Windows path guards directly
+
+The first lineage negative control caught an inverted reachability check; fixing the owning direction made the control fail correctly. Symlink creation was unavailable without privilege on this Windows host; a real junction control exercises rejection without elevation. No skip remains. Existing recursive documentation DAG traversal was replaced by iterative topological checking, retaining the cycle rejection control per the owner's no-recursive-function requirement.
+
+## L007 — Verify guard definitions and every selector direction
+
+The end reviewer found that matching trigger names alone did not prove immutable behavior, and that entity/derivation selectors omitted canonical purge dependencies. Full normalized trigger definitions are now checked. Deletion traverses subject/object entity references, contained events, derivation records and outputs; real blob digest selectors remain PENDING, especially when shared by other occurrences. Dedicated tampering/entity/derivation/ref controls pass. Main then rebuilt the wheel and proved installed bytes match all24 source/SQL files before rerunning the process scenario. See E-P01-003.

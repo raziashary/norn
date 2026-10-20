@@ -1,6 +1,6 @@
 # Testing gates
 
-Updated 20 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC is the only immediately runnable scope. All runtime gates start NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
+Updated 20 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC and implemented P01 checks are runnable. Unimplemented runtime gates remain NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
 
 ## Execution and evidence rules
 
@@ -22,73 +22,73 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 ## G-CONTRACT — Typed canonical schema and package contracts
 
-- **State:** NOT_RUN.
+- **State:** PASS.
 - **Owner phases:** P01.
 - **Owning atomic tasks:** P01-T01, P01-T02, P01-T07.
 - **Positive / completion contract:** Fresh installed producer/reader validate namespace IDs tagged values all epistemic imports time/control axes source locators real migrations and compatible package versions.
 - **Negative / falsification control:** Unknown schema/foreign store malformed values and partial upgrade reject; populated backup/restore tested separately from fresh install.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. All owning P01 contract tasks complete. No research/production guarantee implied.
 
 ## G-SOURCE — Exact source provenance and recovery
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P03,P06.
 - **Owning atomic tasks:** P01-T04, P01-T09, P03-T07, P06-T08.
 - **Positive / completion contract:** Write/reopen/cite exact original bytes or authenticated observation and every atom/edge/derived lineage under current purpose authority.
 - **Negative / falsification control:** Corrupt bytes/hash/range forged approval model-inference promotion and revoked source never become usable evidence.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-IDENTITY — Occurrence delivery and entity identity
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P05.
 - **Owning atomic tasks:** P01-T05.
 - **Positive / completion contract:** Same delivery/payload idempotent; similar distinct episodes stay distinct; reviewed scoped identity and additional support preserved.
 - **Negative / falsification control:** Changed duplicate payload same-name cross-tenant merge false negative pairs and arbitrary vague-cue target reject.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-ACL — Eligibility before search traversal and return
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P03,P06,P09,P11,P12.
 - **Owning atomic tasks:** P01-T06, P06-T03, P09-T04, P11-T04, P12-T03.
 - **Positive / completion contract:** Current host-granted scope applied before candidate windows/ranking/subgraph normalization and at final read; allowed path still works.
 - **Negative / falsification control:** Denied text node intermediary existence counts ranks paths and stale-cache/TOCTOU canaries absent across actual outputs.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-INGEST — Atomic commit local outbox and real reader
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P03.
 - **Owning atomic tasks:** P01-T08, P01-T12.
 - **Positive / completion contract:** Events/atoms/support/journal commit together with truthful receipt; restarted CLI and projector consume exactly committed versions.
 - **Negative / falsification control:** Racing retry/crash/rollback cannot duplicate event or expose partial set; COMMITTED never impersonates fully searchable READY.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-TEMPORAL — Explicit clocks historical scope and corrections
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P03,P09.
 - **Owning atomic tasks:** P01-T03, P01-T10, P09-T03.
 - **Positive / completion contract:** Event/observed/recorded/valid/query clocks distinct; late arrival correction and knowledge-at replay select correct source under current security.
 - **Negative / falsification control:** Naive/DST/unknown time not guessed; wrong scope/latest-wins and historical grant resurrection reject.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-DELETION — Serving denial physical purge and restore policy
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P08,P11,P12.
 - **Owning atomic tasks:** P01-T11, P08-T06, P11-T09, P12-T05.
 - **Positive / completion contract:** Canonical denial immediate; lineage invalidates aggregate/cache/graph and per-artifact purge acknowledgments reflect declared backup/trace/parameter obligations.
 - **Negative / falsification control:** Outage/rebuild/restore cannot resurrect content; tombstone alone not complete erasure; unknown unlearning remains explicit.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-CUSTODY — Hidden world and study information barrier
 
@@ -232,13 +232,13 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 ## G-INTEGRATION — Real agent memory and next-turn consumer
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P01,P09.
 - **Owning atomic tasks:** P09-T01, P09-T02.
 - **Positive / completion contract:** Installed facade write/reopen then actual new host request consumes bounded attributed context/gaps/handles under explicit scope.
 - **Negative / falsification control:** Context not authority or implicit session restriction; old answer/source cannot substitute fresh required observation.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
 
 ## G-TRANSFER — Source-compatible external memory tracks
 
