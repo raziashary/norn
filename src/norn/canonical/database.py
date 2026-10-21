@@ -15,8 +15,8 @@ from norn.contracts.identity import digest
 from norn.contracts.time import stamp
 
 APPLICATION_ID = 0x4E4F524E
-SCHEMA_VERSION = 2
-MIGRATIONS = ("schema.sql", "002_governance.sql")
+SCHEMA_VERSION = 3
+MIGRATIONS = ("schema.sql", "002_governance.sql", "003_projection.sql")
 MUTABLE_TABLES = {"namespaces", "migration_state"}
 
 
@@ -40,7 +40,7 @@ def immutable_trigger(table: str, operation: str) -> str:
 
 class Database:
     def __init__(self, path: Path, *, create: bool = False, target: int = SCHEMA_VERSION):
-        require(target in (1, SCHEMA_VERSION), "UNSUPPORTED_SCHEMA")
+        require(target in range(1, SCHEMA_VERSION + 1), "UNSUPPORTED_SCHEMA")
         safe_path(path)
         existed = path.exists()
         require(existed or create, "STORE_NOT_FOUND")

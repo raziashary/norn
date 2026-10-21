@@ -18,6 +18,8 @@ from benchmark.fixtures.world import build_world
 from benchmark.runs.manifest import code_digest, file_digest, hardware, write_once
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import canonical, digest
+from norn.embedding.assets import METHODS, MODELS
+from norn.retrieval.rerank import EvidenceTokenizer
 
 CONTROL_NAMES = (
     "perfect",
@@ -34,6 +36,10 @@ CONTROL_NAMES = (
 
 
 def arm_spec(name: str) -> ArmSpec:
+    if name in {"R0", "R1", "R2", "R3"}:
+        from benchmark.adapters.baseline import spec
+
+        return spec(name)
     if name == "perfect":
         return ArmSpec(
             name,
@@ -74,6 +80,8 @@ def run_controls(
     names: tuple[str, ...] = ("perfect", "empty", "shuffled"),
     sample_only: bool = False,
     judgments_path: Path | None = None,
+    model_root: Path | None = None,
+    enable_models: bool = False,
 ) -> dict[str, Any]:
     authorize_partition(role, tier)
     require(not destination.exists(), "RUN_DIRECTORY_EXISTS")
@@ -82,6 +90,14 @@ def run_controls(
         "ARM_BUDGET_OR_DUPLICATE",
     )
     specs = {name: arm_spec(name) for name in names}
+    source_revision = code_digest()
+    baselines = any(name in {"R0", "R1", "R2", "R3"} for name in names)
+    require(
+        not baselines
+        or (set(names) <= {"R0", "R1", "R2", "R3"} and model_root is not None and enable_models),
+        "BASELINE_ENABLEMENT_REQUIRED",
+    )
+    token_counter = EvidenceTokenizer(model_root) if baselines and model_root is not None else None
     started = time.perf_counter_ns()
     world = build_world(seed, partition(seed, tier))
     cases = scenarios(world)
@@ -103,24 +119,37 @@ def run_controls(
     for query_id, public in inputs.items():
         path = "published/" + query_id + ".json"
         artifacts[path] = write_once(destination / path, public.payload())
-    manifest = {
+    preparations = {}
+    if baselines:
+        from benchmark.adapters.baseline import prepare
+
+        assert model_root is not None
+        for query_id, public in inputs.items():
+            preparations[query_id] = prepare(
+                public, destination / "stores" / query_id, model_root, enable_models
+            )
+        artifacts["preparations.json"] = write_once(destination / "preparations.json", preparations)
+    manifest: dict[str, Any] = {
         "schema": 1,
-        "run_kind": "SYNTHETIC_HARNESS_CONTROLS",
+        "run_kind": "CONVENTIONAL_RETRIEVAL_DEVELOPMENT"
+        if baselines
+        else "SYNTHETIC_HARNESS_CONTROLS",
         "sealed": False,
         "partition": tier,
         "partition_role": role,
         "seed": seed,
         "world_digest": world.sha256,
         "partition_digest": world.partition.sha256,
-        "code_digest": code_digest(),
+        "code_digest": source_revision,
         "arms": {name: asdict(spec) for name, spec in specs.items()},
         "planned_pairs": [[c.query.query_id, name] for c in cases for name in names],
         "artifacts": artifacts,
         "hardware": hardware(),
         "evaluation_time": "2026-10-23T00:00:00+00:00",
-        "model": "NONE",
+        "model": {name: spec.model for name, spec in specs.items()} if baselines else "NONE",
         "config": {
             "sample_only": sample_only,
+            "baseline_profile": "PUBLIC_SOURCE_RECORDS_E5_PACKET_V1" if baselines else None,
             "max_attempts": 1,
             "benefit_estimand": "SUPPORTED_CASE_COMPLETE_SET_ITT_FAILURE_ZERO",
             "safety_estimand": "OBSERVED_RESPONSE_ONLY; UNOBSERVED_IS_UNKNOWN",
@@ -132,6 +161,23 @@ def run_controls(
         "offline_ns": time.perf_counter_ns() - started,
         "created_at": datetime.now(UTC).isoformat(),
     }
+    if baselines:
+        from importlib.metadata import version
+
+        manifest["retrieval_models"] = MODELS
+        manifest["retrieval_methods"] = METHODS
+        manifest["retrieval_packages"] = {
+            name: version(name) for name in ("numpy", "tokenizers", "onnxruntime", "faiss-cpu")
+        }
+        manifest["hardware"].update(
+            {
+                "cache": "COLD_ENGINE_THEN_SECOND_QUERY; ONE_RESIDENT_MODEL",
+                "tokenizer": "e5-small-pinned-tokenizer-v1",
+                "native_provider": "CPUExecutionProvider",
+                "ort_threads": 2,
+            }
+        )
+    require(code_digest() == source_revision, "RUN_CODE_CHANGED_DURING_PREPARATION")
     manifest_hash = write_once(destination / "manifest.json", manifest)
     chain = manifest_hash
     ledger_path = destination / "ledger.jsonl"
@@ -147,9 +193,23 @@ def run_controls(
                 tick = time.perf_counter_ns()
                 raw: Result | None = None
                 reason = None
+                diagnostics: dict[str, Any] | None = None
                 try:
                     if name == "perfect":
                         raw = oracle(arm_input, case)
+                    elif baselines:
+                        from benchmark.adapters.baseline import Baseline
+
+                        assert model_root is not None
+                        baseline = Baseline(
+                            name,
+                            destination / "stores" / case.query.query_id,
+                            model_root,
+                            enable_models,
+                            preparations[case.query.query_id],
+                        )
+                        raw = baseline.query(arm_input)
+                        diagnostics = baseline.diagnostics
                     else:
                         adapter: Adapter = (
                             NativeUnavailable(name)
@@ -157,12 +217,18 @@ def run_controls(
                             else CommonControl(name)
                         )
                         raw = adapter.query(arm_input)
-                    tokens = validate_result(arm_input, raw, specs[name])
+                    tokens = validate_result(arm_input, raw, specs[name], token_counter)
                     normalized = raw
                 except NornError as error:
                     reason = error.code
                     tokens = 0
-                    normalized = Result("INVALID", None, (), reason=reason, coverage="UNAVAILABLE")
+                    normalized = Result(
+                        "INVALID" if raw is not None else "ERROR",
+                        None,
+                        (),
+                        reason=reason,
+                        coverage="UNAVAILABLE",
+                    )
                 except Exception:
                     reason = "ADAPTER_EXCEPTION"
                     tokens = 0
@@ -181,11 +247,14 @@ def run_controls(
                     "provider_calls": 0,
                     "previous_digest": chain,
                 }
+                if baselines:
+                    record["baseline_diagnostics"] = diagnostics
                 chain = digest(canonical(record).encode())
                 stream.write((canonical({**record, "record_digest": chain}) + "\n").encode())
                 stream.flush()
                 os.fsync(stream.fileno())
                 counts[normalized.disposition] = counts.get(normalized.disposition, 0) + 1
+    require(code_digest() == source_revision, "RUN_CODE_CHANGED_DURING_EXECUTION")
     completion = {
         "manifest_digest": manifest_hash,
         "ledger_digest": file_digest(ledger_path),

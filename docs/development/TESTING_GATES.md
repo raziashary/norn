@@ -1,6 +1,6 @@
 # Testing gates
 
-Updated 21 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC and implemented P01/P02 checks are runnable. Unimplemented runtime gates remain NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
+Updated 21 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC and implemented P01–P03 checks are runnable. Unimplemented runtime gates remain NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
 
 ## Execution and evidence rules
 
@@ -38,7 +38,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Write/reopen/cite exact original bytes or authenticated observation and every atom/edge/derived lineage under current purpose authority.
 - **Negative / falsification control:** Corrupt bytes/hash/range forged approval model-inference promotion and revoked source never become usable evidence.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
+- **Evidence:** E-P01-003/E-P03-003: exact canonical bytes, qualifiers, hashes and locators revalidated through actual installed recall; poisoned packets reject. P06 graph/path lineage remains NOT_RUN; provenance is not entailment.
 
 ## G-IDENTITY — Occurrence delivery and entity identity
 
@@ -58,17 +58,17 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Current host-granted scope applied before candidate windows/ranking/subgraph normalization and at final read; allowed path still works.
 - **Negative / falsification control:** Denied text node intermediary existence counts ranks paths and stale-cache/TOCTOU canaries absent across actual outputs.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
+- **Evidence:** E-P01-003/E-P03-003: eligibility before candidate windows, private-flood controls, held-output recheck, current revocation/denial and full-envelope canaries. Zero observed canaries is not a population bound; P06/P12 remain NOT_RUN.
 
 ## G-INGEST — Atomic commit local outbox and real reader
 
-- **State:** PARTIAL.
+- **State:** PASS.
 - **Owner phases:** P01,P03.
 - **Owning atomic tasks:** P01-T08, P01-T12.
 - **Positive / completion contract:** Events/atoms/support/journal commit together with truthful receipt; restarted CLI and projector consume exactly committed versions.
 - **Negative / falsification control:** Racing retry/crash/rollback cannot duplicate event or expose partial set; COMMITTED never impersonates fully searchable READY.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
+- **Evidence:** E-P01-003/E-P03-003: atomic journal/source writes, rollback/idempotence controls and actual restarted projector/CLI readback pass; commit and READY remain distinct. This closes the local P01/P03 contract, not P11 external delivery.
 
 ## G-TEMPORAL — Explicit clocks historical scope and corrections
 
@@ -78,7 +78,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Event/observed/recorded/valid/query clocks distinct; late arrival correction and knowledge-at replay select correct source under current security.
 - **Negative / falsification control:** Naive/DST/unknown time not guessed; wrong scope/latest-wins and historical grant resurrection reject.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
+- **Evidence:** E-P01-003/E-P03-003: explicit clocks, scoped corrections, stale projection refusal/rebuild and current security on historical reads pass locally. P09 longitudinal/agent proof remains NOT_RUN.
 
 ## G-DELETION — Serving denial physical purge and restore policy
 
@@ -98,7 +98,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Runtime/adapters receive only authorized rendered input; family/entity split before paraphrases; trainer/dev/calibration/locked roles distinct.
 - **Negative / falsification control:** Gold/answers/slots leak in filenames IDs metadata prompts vectors graphs traces imports or tuning makes run invalid.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P02-003; P02 synthetic harness/publication/adapter/metric/CLI/installed proof and sole end-review resolution PASS. G-REUSE also retains P01 evidence E-P01-003. Later owning research/study/adapter obligations are NOT_RUN; whole gate remains PARTIAL.
+- **Evidence:** E-P02-003/E-P03-003: public-only input and canonical readback mapping, immutable paired report and six rehashed corruption rejections pass. All135 P03 development labels unaudited; P04/P13 sealed study obligations remain NOT_RUN.
 
 ## G-REUSE — Audited references and independent adapters
 
@@ -108,47 +108,47 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Before port record source commit/license/symbol/fork delta and actual Norn reader; evaluator/foreign agent boundary explicit.
 - **Negative / falsification control:** No foreign checkout imports hidden labels copied domain authority or reference test count masquerades as Norn proof.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P02-003; P02 synthetic harness/publication/adapter/metric/CLI/installed proof and sole end-review resolution PASS. G-REUSE also retains P01 evidence E-P01-003. Later owning research/study/adapter obligations are NOT_RUN; whole gate remains PARTIAL.
+- **Evidence:** E-P01-003/E-P02-003/E-P03-003: original Norn implementation, independent public adapter and actual installed reader; pinned model artifacts/licenses/methods. No foreign checkout runtime import. P09 external/native comparator proof remains NOT_RUN.
 
 ## G-RETRIEVAL — Strong actual R0-R3 and stage evidence
 
-- **State:** NOT_RUN.
+- **State:** PASS.
 - **Owner phases:** P03.
 - **Owning atomic tasks:** P03-T01, P03-T02, P03-T03, P03-T04, P03-T05, P03-T06, P03-T12.
 - **Positive / completion contract:** Exact lexical dense/ANN/fusion/reranker source paths use pinned geometry and actual token budgets; exhaustive ANN control and installed source readback.
 - **Negative / falsification control:** Wrong IDs/version nonfinite vectors duplicate votes unequal budgets and unobserved retrieval stages cannot claim performance.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P03-003: all12 cards complete;131 tests,540 development pairs with full failure ledger, observed stages, same token budgets,444 actual ANN measurements/native reload,80-file installed parity and all-arm exact source consumers; sole end review resolved. Scientific outcome INCONCLUSIVE; tiny N1–7 ANN corpora do not establish speed/scaling or general semantic accuracy.
 
 ## G-ABSTENTION — Evidence sufficiency ambiguity and selective answers
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P03,P09.
 - **Owning atomic tasks:** P03-T08, P09-T08.
 - **Positive / completion contract:** Five statuses plus explicit permitted missing inputs; complete and incomplete evidence twins measure false answer and false abstention.
 - **Negative / falsification control:** Runtime gold-slot leakage always-refuse false positive causal promotion and sensitive denied-source explanations fail.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P03-003: five field-support statuses, EN/ID missing-prerequisite public consumer, source-normalized complete/partial/ambiguity results and explicit failure denominators pass locally. Observed false answers6/83, false abstentions9/50 remain; typed-path/general entailment and P09 agent proof unestablished.
 
 ## G-SNAPSHOT — Exact manifests and declared content snapshot
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P03,P10,P11.
 - **Owning atomic tasks:** P03-T09, P10-T06, P11-T02, P11-T03, P11-T06.
 - **Positive / completion contract:** Required index IDs/digests/versions and capability watermarks agree before atomic ready publication; current security checked separately.
 - **Negative / falsification control:** Counts-only partial ack mixed geometry stale tombstone or independent partition seq cannot advertise global current snapshot.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P03-003: schema3 verified-backup populated upgrade, exact immutable manifest/readback, interrupted publication/replay, compatible legacy backup/reopen and actual installed stale refusal/rebuild pass. P10/P11 compression/external-store obligations remain NOT_RUN.
 
 ## G-BUDGET — Global costs cancellation retry and cleanup
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P03,P06,P11,P12.
 - **Owning atomic tasks:** P03-T10, P06-T09, P11-T12, P12-T07.
 - **Positive / completion contract:** Shared candidate/token/model/graph unique and repeated work/time/retry/queue bounds are actual; normal input succeeds and cancel closes owned resources.
 - **Negative / falsification control:** Per-iteration-only cap retry storm timeout-as-complete hidden provider and orphan process fail; old services remain untouched.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P03-003: actual query/SQLite/model token-attempt limits, full-packet token checks, redacted stages and installed native in-flight cancel/deadline terminate owned workers; cleanup passes. P06 graph repeated work and P11/P12 queues/security envelopes remain NOT_RUN.
 
 ## G-BINDING — Complementary views and aligned cue geometry
 
@@ -298,7 +298,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Paired published inputs, source/model/budget/clock manifests, hand-calculated and perfect/empty/shuffled scorer controls, observed retrieval stages, full attempt/failure accounting, family-cluster uncertainty and pilot-frozen decision criteria. Actual report reopens exact raw artifacts and declares inference scope.
 - **Negative / falsification control:** Dropped errors, hidden label access, unequal resources, unobserved-stage metrics, model/coordinator labels called independent human truth, test tuning and post-result changed thresholds invalidate the affected claim. Null and unsupported outcomes remain visible.
 - **Phase-local boundary:** P02 proves harness/scorer mechanics; later phases prove specific mechanism experiments. Neither establishes P13 locked superiority. Whole-gate PASS requires declared multi-phase scope and evidence, not a successful control alone.
-- **Evidence:** E-P02-003; P02 synthetic harness/publication/adapter/metric/CLI/installed proof and sole end-review resolution PASS. G-REUSE also retains P01 evidence E-P01-003. Later owning research/study/adapter obligations are NOT_RUN; whole gate remains PARTIAL.
+- **Evidence:** E-P02-003/E-P03-003:540 paired observations, all14 categories/language/variant strata, applicability denominators, offline/cold/repeated costs and exploratory clustered uncertainty read back. Outcome INCONCLUSIVE; unaudited/reused development instances, no frozen practical margin/power or sealed/external study. Later owners remain NOT_RUN.
 
 ## G-REPRODUCIBLE — Clean consumer and complete final evidence
 

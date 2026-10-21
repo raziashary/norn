@@ -20,7 +20,7 @@ The end reviewer identified ambiguous P04-T09/P05 entry wording. The earlier bro
 
 ## Experimental evidence remains pending
 
-P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. Training, retrieval efficacy, latency/capacity and scientific benchmark outcomes remain absent. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. P03 adds actual conventional-retrieval development outcomes and descriptive CPU-serial costs (E-P03-003), with scientific superiority INCONCLUSIVE. Training, locked/external efficacy and production capacity remain unmeasured. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
 
 ## L005 — Provenance history needs its own recording sequence
 
@@ -60,3 +60,44 @@ this is still no arbitrary-code sandbox. The docs self-test also depended on P02
 PLANNED and did not copy the new benchmark owner. It now damages a real completed card's
 evidence and verifies each complete copied baseline before applying its intended fault.
 Negative checks need a valid starting point and an observable intended rejection.
+
+
+## L012 — Native cancellation needs an owned termination boundary
+
+P03's actual encoder controls showed cancellation/deadline expiry can terminate an owned
+native worker, retain failed-attempt token reservations and close the process/IPC sender.
+Cooperative checks alone do not interrupt ONNX native execution. Python ranking/packing
+and SQLite progress need the same query owner too; the first development attempt was
+retained as incomplete when main found those gaps. Scope: local synthetic controls,
+not arbitrary OS I/O hang containment or production scheduling guarantees (E-P03-001).
+
+## L013 — Canonical readback and reply immutability are separate checks
+
+A ranked candidate must re-resolve exact IDs, span bytes, event time, aliases, origin,
+applicability and authority. A held reply also needs a detached serialized payload so
+mutating one returned dictionary cannot poison later reads. New controls reject forged
+text/authority/locators and verify a fresh serialization after mutation. Current denial
+still overrides a held snapshot; source assertion support does not authorize action.
+These are source/reader controls, not general semantic entailment (E-P03-001).
+
+## L014 — Freeze source before long measurements and lineage-sensitive tests
+
+Main started multiple long measurements before completing the source audit, then stopped
+those attempts for confirmed budget, source-coverage and identity-scope gaps. Those raw
+artifacts remain incomplete and version-scoped. Main also edited source during a full
+suite; the run-lineage guard correctly rejected it, and a frozen-source rerun passed130
+tests. Future method: finish the bounded source audit, freeze runtime/evaluator code, then
+run the expensive measurement. Preserve every interrupted run; do not relabel it or tune
+labels/thresholds from its results. E-P03-001 records these avoidable restarts openly.
+
+## L015 — Evidence availability cannot redefine an explicit prerequisite
+
+The completed v2 development report exposed a real adapter defect: a question asked for
+release AND rollback, but the interpreter detected only predicates present in sources and
+bypassed its own compound cue. Release-only evidence was mislabeled fully supported.
+Runtime field sufficiency itself correctly handled an explicit two-field request; the
+public adapter failed to ask it. v3 preserves declared schema/cue prerequisites independently
+of evidence. Actual public EN/ID Engine write/project/recall regression, exact source
+readback and the same reviewer resolve the mechanism (E-P03-002/ADR-0019). The replacement005
+comparison and installed007 consumer pass in E-P03-003, preserving old results and remaining errors. A perfect/oracle harness control or
+an interpreter-only assertion cannot substitute for this actual public consumer proof.

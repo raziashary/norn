@@ -304,7 +304,7 @@ def self_test(root: Path) -> int:
         ("undefined gate", "undefined-gate", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Gate:** G-DOC.", "- **Gate:** G-NOSUCH.", 1)),
         ("missing coverage", "missing-coverage", "REQUIREMENTS_TRACEABILITY.md", lambda s: re.sub(r"^\| SEC01 .*\n", "", s, flags=re.M)),
         ("stale count", "stale-progress-count", "PROGRESS.md", lambda s: s.replace("| P00 | 6 |", "| P00 | 600 |", 1)),
-        ("false runtime", "false-runtime-gate", "TESTING_GATES.md", lambda s: re.sub(r"(## G-RETRIEVAL[^\n]*\n\n- \*\*State:\*\*) NOT_RUN", r"\1 PASS", s, count=1)),
+        ("false runtime", "false-runtime-gate", "TESTING_GATES.md", lambda s: re.sub(r"(## (?!G-DOC)G-[^\n]*\n\n- \*\*State:\*\*) (?:NOT_RUN|PARTIAL|FAIL|BLOCKED)", r"\1 PASS", s, count=1)),
         ("unknown ADR", "undefined-adr", "GOAL.md", lambda s: s + "\nADR-9999\n"),
         ("duplicate authority", "single-authority", "PROJECT_MEMORY.md", "DUPLICATE"),
     ]

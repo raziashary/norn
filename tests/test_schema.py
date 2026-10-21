@@ -3,7 +3,7 @@ import sqlite3
 import pytest
 from conftest import HOST, clock, request
 
-from norn.canonical.database import Database
+from norn.canonical.database import SCHEMA_VERSION, Database
 from norn.canonical.registry import Registry
 from norn.canonical.sources import SourceStore
 from norn.contracts.errors import NornError
@@ -21,7 +21,7 @@ def test_populated_upgrade_verified_backup_restore_and_immutable_rows(tmp_path):
     receipt = registry.ingest(request())
     old.close()
     upgraded = Database(path)
-    assert upgraded.connection.execute("PRAGMA user_version").fetchone()[0] == 2
+    assert upgraded.connection.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION
     assert upgraded.connection.execute("SELECT id FROM events").fetchone()[0] == receipt["event_id"]
     backup = upgraded.connection.execute("SELECT backup_ref FROM schema_migrations WHERE version=2")
     backup_path = backup.fetchone()[0]
@@ -58,7 +58,7 @@ def test_foreign_future_and_interrupted_store_refused(tmp_path):
     with pytest.raises(NornError, match="UNSUPPORTED_SCHEMA"):
         Database(path)
     with sqlite3.connect(path) as connection:
-        connection.execute("PRAGMA user_version=2")
+        connection.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
         connection.execute("UPDATE migration_state SET dirty=1")
     with pytest.raises(NornError, match="INTERRUPTED_UPGRADE"):
         Database(path)

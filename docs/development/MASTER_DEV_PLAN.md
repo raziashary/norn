@@ -1,6 +1,6 @@
 # Norn master development plan
 
-Version 1.3, 21 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **P01 canonical runtime/schema/tests are implemented and verified (E-P01-003).** P02 synthetic evaluator/harness is implemented and verified (E-P02-003). Later retrieval/models/external datasets and efficacy results remain absent. The pre-runtime baseline is historical, not the current source state.
+Version 1.3, 21 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **P01 canonical runtime/schema/tests are implemented and verified (E-P01-003).** P02 synthetic evaluator/harness is implemented and verified (E-P02-003). P03 conventional retrieval/models are verified locally (E-P03-003); external datasets and sealed efficacy results remain absent. The pre-runtime baseline is historical, not the current source state.
 
 The user requested an extensive engineering MDP, not merely a phase list. This document therefore owns the proposed algorithms, data contracts, logical schema, read/write/recovery flows, module responsibilities, experimental decomposition, and atomic implementation cards. Supporting records own goals, decisions, proof, traceability, and current state. Do not split these technical contracts into competing subsystem specifications.
 
@@ -36,7 +36,7 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03+ and another main push retain their own authority.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03 models/schema/workers are approved in ADR-0017/0018 and verified by E-P03-003. P04+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03 GO is accepted in ADR-0017 and closes with E-P03-003. P04+ and another main push retain their own authority.
 
 ### Owner setup and generative LLM policy
 
@@ -119,7 +119,7 @@ Palladion's small graph pilot retained graph-disabled defaults after no incremen
 
 ## Architecture and module ownership
 
-Everything in the following runtime tree is **PLANNED** under ADR-0002. Do not scaffold empty files merely to match the map. Create a file only with its producer/consumer slice. Package imports flow toward contracts/canonical/governance, never from those owners into an agent, provider, or hidden evaluator.
+The tree separates implemented P01–P03 owners and planned P04+ research owners. MDP card states and evidence establish the actual boundary under ADR-0002/0017. Do not scaffold empty files merely to match the map. Create a file only with its producer/consumer slice. Package imports flow toward contracts/canonical/governance, never from those owners into an agent, provider, or hidden evaluator.
 
 ```text
 src/norn/
@@ -206,7 +206,7 @@ Sources are UTF-8 content-addressed bytes published before the SQL write. Every 
 
 All source/event/atom/support/delivery/relationship/journal writes for ingestion/correction share one transaction. Journal pages have explicit cursors, digests and read-only replay; INDEX_PENDING remains unsearchable. Source bytes may be orphaned after a failed transaction, but never acknowledged without a canonical reference; automatic physical garbage collection is not implemented. Current denial closes source/entity/contained-event/atom/edge/derived dependencies, with actual blob digest purge selectors; shared bytes remain pending reference/retention reconciliation; purge selectors remain PENDING for SQL/blobs/representations/traces/backups. P01 does not claim full erasure, old-backup reconciliation, external publication, ANN/graph/search or power-loss proof; P03/P11/P12 own those consumers.
 
-Finite pilot limits are safety bounds, not performance targets: source1MiB, request2MiB, atoms64, qualifiers16, per-atom controls/relations256, supports64, total returned citation bytes1MiB, journal page1000, lineage10,000 unique objects/100,000 pending transitions, SQLite busy timeout5s and backup progress deadline5s. Exceeding a bound is an explicit error. No provider/model/backbone is loaded. Full validation and installed scenario commands are in the README and evidence log.
+Finite pilot limits are safety bounds, not performance targets: source1MiB, request2MiB, atoms64, qualifiers16, per-atom controls/relations256, supports64, total returned citation bytes1MiB, journal page1000, lineage10,000 unique objects/100,000 pending transitions, SQLite busy timeout5s and backup progress deadline5s. Exceeding a bound is an explicit error. The P01/default asset-free path loads no provider/model/backbone. P03 explicit model paths are separate. Full validation and installed scenario commands are in the README and evidence log.
 
 ### Primitive and temporal types
 
@@ -1311,15 +1311,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Source headings:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families.
 - **Entry:** P02-T11.
 - **Exit:** Real R0-R3 paths measured under equal published inputs; local source/ACL/time/snapshot/budget gates and installed consumer smoke pass.
-- **State:** PLANNED.
+- **State:** DONE.
+- **Exit proof:** E-P03-003; all12 cards, real R0–R3 equal-input measurement, phase-local source/ACL/time/snapshot/budget controls and fresh installed consumer verified. Scientific superiority remains INCONCLUSIVE; P04+ not authorized.
 
 <a id="p03-t01"></a>
 
 ### P03-T01 — Index exact IDs aliases and time fields
 
-- [ ] **P03-T01**
-- **State:** PLANNED.
-- **Files:** `src/norn/retrieval/exact.py`, `tests/test_exact.py`.
+- [x] **P03-T01**
+- **State:** DONE.
+- **Files:** `src/norn/retrieval/exact.py`, `src/norn/retrieval/contracts.py`, `tests/test_exact.py`.
 - **Depends:** P02-T11.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** Use canonical equality/time constraints with scope and tombstone filtering before bounded result windows.
@@ -1327,16 +1328,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Actor/date and exact event read recover correct episode after reopen.
 - **Negative proof:** Unknown structured ID cannot substitute similar ID; private flood cannot starve allowed results.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_exact.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_exact.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t02"></a>
 
 ### P03-T02 — Implement lexical R0 and declared tokenization
 
-- [ ] **P03-T02**
-- **State:** PLANNED.
+- [x] **P03-T02**
+- **State:** DONE.
 - **Files:** `src/norn/retrieval/lexical.py`, `benchmark/adapters/r0.py`, `tests/test_lexical.py`.
 - **Depends:** P03-T01.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1345,17 +1346,17 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Rare code and lexical cue read correct original evidence.
 - **Negative proof:** Empty punctuation, unindexed source and language limits give honest coverage not exhaustive absence.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_lexical.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_lexical.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t03"></a>
 
 ### P03-T03 — Add pinned dense encoder and exhaustive R1
 
-- [ ] **P03-T03**
-- **State:** PLANNED.
-- **Files:** `src/norn/embedding/baseline.py`, `src/norn/retrieval/dense.py`, `benchmark/adapters/r1.py`, `tests/test_dense.py`.
+- [x] **P03-T03**
+- **State:** DONE.
+- **Files:** `src/norn/embedding/baseline.py`, `src/norn/embedding/assets.py`, `src/norn/retrieval/dense.py`, `benchmark/adapters/r1.py`, `tests/test_dense.py`.
 - **Depends:** P03-T02.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** After approval pin query/document methods, tokenizer, dimension, metric and normalization; retain exhaustive control.
@@ -1363,16 +1364,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Reloaded pinned local vectors reproduce exact source-ID nearest neighbors.
 - **Negative proof:** Missing assets/disabled provider, wrong dimension/revision, zero/nonfinite vectors cannot produce fake embedding.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_dense.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_dense.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t04"></a>
 
 ### P03-T04 — Measure ANN approximation separately
 
-- [ ] **P03-T04**
-- **State:** PLANNED.
+- [x] **P03-T04**
+- **State:** DONE.
 - **Files:** `src/norn/retrieval/ann.py`, `benchmark/runs/ann_recall.py`, `tests/test_ann.py`.
 - **Depends:** P03-T03.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1381,16 +1382,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** ANN recall/latency/memory curve records actual configuration and readback.
 - **Negative proof:** Changed encoder/corpus invalidates comparison; HNSW graph is not associative completion.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_ann.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ann.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t05"></a>
 
 ### P03-T05 — Fuse exact lexical and dense as R2
 
-- [ ] **P03-T05**
-- **State:** PLANNED.
+- [x] **P03-T05**
+- **State:** DONE.
 - **Files:** `src/norn/retrieval/fusion.py`, `benchmark/adapters/r2.py`, `tests/test_fusion.py`.
 - **Depends:** P03-T04.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1399,16 +1400,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-ranked RRF and actual union match expected IDs and scores.
 - **Negative proof:** Duplicate channel votes and same-text distinct-event collapse are rejected.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_fusion.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_fusion.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t06"></a>
 
 ### P03-T06 — Add fixed reranker and actual evidence token budget R3
 
-- [ ] **P03-T06**
-- **State:** PLANNED.
+- [x] **P03-T06**
+- **State:** DONE.
 - **Files:** `src/norn/retrieval/rerank.py`, `benchmark/adapters/r3.py`, `tests/test_rerank.py`.
 - **Depends:** P03-T05.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1417,16 +1418,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Actual local model reranks frozen pool and tokenizer checks final budget.
 - **Negative proof:** Extra hidden candidates/context/generator strength cannot be attributed to architecture; language limitations disclosed.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_rerank.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_rerank.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t07"></a>
 
 ### P03-T07 — Resolve exact canonical evidence after ranking
 
-- [ ] **P03-T07**
-- **State:** PLANNED.
+- [x] **P03-T07**
+- **State:** DONE.
 - **Files:** `src/norn/retrieval/resolve.py`, `tests/test_resolve.py`.
 - **Depends:** P03-T06.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1435,16 +1436,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Ranked candidate resolves original bytes and attributed origin after reopen.
 - **Negative proof:** Index payload poisoning, revoked source, corrupt locator and wrong geometry never enter evidence.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_resolve.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_resolve.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t08"></a>
 
 ### P03-T08 — Assemble sufficient support and five answer statuses
 
-- [ ] **P03-T08**
-- **State:** PLANNED.
+- [x] **P03-T08**
+- **State:** DONE.
 - **Files:** `src/norn/governance/sufficiency.py`, `src/norn/retrieval/assembly.py`, `tests/test_sufficiency.py`.
 - **Depends:** P03-T07.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1453,17 +1454,17 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Complete/partial/conflict/insufficient/outage controls yield distinct expected outputs.
 - **Negative proof:** Citation existence not entailment; denied-source existence not leaked; always-refuse loses answerable coverage.
 - **Gate:** G-ABSTENTION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_sufficiency.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sufficiency.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t09"></a>
 
 ### P03-T09 — Publish local exact-readback manifests and snapshots
 
-- [ ] **P03-T09**
-- **State:** PLANNED.
-- **Files:** `src/norn/projection/local.py`, `src/norn/canonical/snapshots.py`, `tests/test_snapshots.py`.
+- [x] **P03-T09**
+- **State:** DONE.
+- **Files:** `src/norn/projection/local.py`, `src/norn/canonical/snapshots.py`, `src/norn/canonical/003_projection.sql`, `src/norn/canonical/database.py`, `src/norn/governance/deletion.py`, `tests/test_schema.py`, `tests/test_snapshots.py`.
 - **Depends:** P03-T08.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** Idempotent local outbox consumers verify exact IDs/digests/versions before required-capability snapshot publication.
@@ -1471,17 +1472,17 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Crash/replay converges stable projection identity and honest pending/ready coverage.
 - **Negative proof:** Counts alone, mixed model, missing required index and stale tombstone cannot publish false READY.
 - **Gate:** G-SNAPSHOT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_snapshots.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_snapshots.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t10"></a>
 
 ### P03-T10 — Coordinate query budgets cancellation and redacted traces
 
-- [ ] **P03-T10**
-- **State:** PLANNED.
-- **Files:** `src/norn/contracts/budgets.py`, `src/norn/retrieval/service.py`, `src/norn/telemetry/query.py`, `tests/test_query_budgets.py`.
+- [x] **P03-T10**
+- **State:** DONE.
+- **Files:** `src/norn/contracts/budgets.py`, `src/norn/retrieval/service.py`, `src/norn/integration/engine.py`, `src/norn/telemetry/resources.py`, `src/norn/telemetry/query.py`, `tests/test_query_budgets.py`.
 - **Depends:** P03-T09.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** One owner bounds candidates/models/rerank/tokens/deadline/retries and cleans canceled work.
@@ -1489,17 +1490,17 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Normal/exhausted/canceled recalls return truthful envelopes and close handles.
 - **Negative proof:** Timeout cannot claim full absence; private/credential canaries absent in trace and error outputs.
 - **Gate:** G-BUDGET. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_query_budgets.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_query_budgets.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t11"></a>
 
 ### P03-T11 — Measure baseline quality costs and security strata
 
-- [ ] **P03-T11**
-- **State:** PLANNED.
-- **Files:** `benchmark/runs/baselines.py`, `tests/test_baseline_report.py`, `docs/development/evidence/baselines.md`.
+- [x] **P03-T11**
+- **State:** DONE.
+- **Files:** `benchmark/runs/baselines.py`, `benchmark/adapters/baseline.py`, `benchmark/adapters/contracts.py`, `benchmark/adapters/common.py`, `benchmark/runs/runner.py`, `benchmark/runs/validate.py`, `benchmark/metrics/normalize.py`, `benchmark/metrics/retrieval.py`, `tests/test_baseline_report.py`, `docs/development/evidence/baselines.md`.
 - **Depends:** P03-T10.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** Pair R0-R3 development results with observed stage counts, raw failures, evidence completeness and warm/cold resources.
@@ -1507,16 +1508,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Full per-family report reproduces normalized scores and separates retrieval from generation error.
 - **Negative proof:** Final packet cannot be called unobserved retrieval@20; unequal clock/principal/hash/token budgets invalidate pairing.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_baseline_report.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_baseline_report.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03-t12"></a>
 
 ### P03-T12 — Close baseline installed entry-point proof
 
-- [ ] **P03-T12**
-- **State:** PLANNED.
+- [x] **P03-T12**
+- **State:** DONE.
 - **Files:** `src/norn/cli.py`, `tests/test_recall_cli.py`, `docs/development/EVIDENCE_LOG.md`.
 - **Depends:** P03-T11.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
@@ -1525,8 +1526,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Fresh installed client returns exact source, historical scope and honest missing-capability statuses.
 - **Negative proof:** Mock/helper score cannot replace actual model/index proof; task-owned ports/processes must be clean.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_recall_cli.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_recall_cli.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04"></a>

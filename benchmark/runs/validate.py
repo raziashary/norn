@@ -19,6 +19,8 @@ from benchmark.runs.runner import arm_spec
 from benchmark.statistics.paired import PairedValue, paired_difference
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import canonical, digest
+from norn.embedding.assets import METHODS, MODELS
+from norn.retrieval.rerank import EvidenceTokenizer
 
 
 def result_from(raw: dict[str, Any]) -> Result:
@@ -40,19 +42,23 @@ def gold_from(raw: dict[str, Any]) -> Gold:
     return Gold(**data)
 
 
-def validate_run(root: Path) -> dict[str, Any]:
+def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any]:
     manifest = load(root / "manifest.json")
     completion = load(root / "completion.json")
+    baselines = manifest["run_kind"] == "CONVENTIONAL_RETRIEVAL_DEVELOPMENT"
+    require(not baselines or model_root is not None, "BASELINE_TOKENIZER_REQUIRED")
+    token_counter = EvidenceTokenizer(model_root) if baselines and model_root is not None else None
     require(
         manifest["schema"] == 1
-        and manifest["run_kind"] == "SYNTHETIC_HARNESS_CONTROLS"
+        and manifest["run_kind"]
+        in {"SYNTHETIC_HARNESS_CONTROLS", "CONVENTIONAL_RETRIEVAL_DEVELOPMENT"}
         and manifest["sealed"] is False,
         "UNSUPPORTED_OR_FALSE_SEAL",
     )
     require(manifest["code_digest"] == code_digest(), "RUN_CODE_MISMATCH")
     authorize_partition(manifest["partition_role"], manifest["partition"])
     require(
-        manifest["model"] == "NONE" and manifest["config"]["max_attempts"] == 1,
+        (baselines or manifest["model"] == "NONE") and manifest["config"]["max_attempts"] == 1,
         "UNSUPPORTED_MODEL_OR_RETRY_POLICY",
     )
     require(
@@ -93,6 +99,20 @@ def validate_run(root: Path) -> dict[str, Any]:
         "PUBLISHED_GENERATOR_LINEAGE_CHANGED",
     )
     artifact_names = {"evaluator/world.json", "evaluator/gold.json", "evaluator/audit.json"}
+    if baselines:
+        require(
+            canonical(manifest["retrieval_methods"]) == canonical(METHODS),
+            "BASELINE_METHOD_CHANGED",
+        )
+        require(
+            canonical(manifest["retrieval_models"]) == canonical(MODELS), "BASELINE_MODEL_CHANGED"
+        )
+        require(
+            manifest["partition"] == "development"
+            and manifest["partition_role"] in {"trainer", "tuner"},
+            "BASELINE_DEVELOPMENT_ONLY",
+        )
+        artifact_names.add("preparations.json")
     artifact_names.update("published/" + qid + ".json" for qid in gold)
     require(set(manifest["artifacts"]) == artifact_names, "UNDECLARED_OR_HIDDEN_ARTIFACT")
     require(
@@ -115,6 +135,21 @@ def validate_run(root: Path) -> dict[str, Any]:
         data["capabilities"] = tuple(data["capabilities"])
         specs[name] = ArmSpec(**data)
         require(specs[name] == arm_spec(name), "ARM_SPEC_OR_FALLBACK_CHANGED")
+    if baselines:
+        require(
+            set(specs) <= {"R0", "R1", "R2", "R3"}
+            and manifest["model"] == {name: spec.model for name, spec in specs.items()},
+            "BASELINE_MODEL_CHANGED",
+        )
+        from importlib.metadata import version
+
+        require(
+            manifest["retrieval_packages"]
+            == {
+                name: version(name) for name in ("numpy", "tokenizers", "onnxruntime", "faiss-cpu")
+            },
+            "BASELINE_PACKAGE_CHANGED",
+        )
     expected_pairs = {tuple(pair) for pair in manifest["planned_pairs"]}
     require(
         len(expected_pairs) == len(manifest["planned_pairs"]) == len(gold) * len(specs),
@@ -148,7 +183,7 @@ def validate_run(root: Path) -> dict[str, Any]:
                 "ARM_INPUT_OR_PROVIDER_CHANGED",
             )
             result = result_from(row["result"])
-            tokens = validate_result(public[qid], result, specs[arm])
+            tokens = validate_result(public[qid], result, specs[arm], token_counter)
             require(
                 type(row["elapsed_ns"]) is int
                 and row["elapsed_ns"] >= 0
@@ -161,7 +196,7 @@ def validate_run(root: Path) -> dict[str, Any]:
                 if result.disposition == "INVALID":
                     error_code = None
                     try:
-                        validate_result(public[qid], response, specs[arm])
+                        validate_result(public[qid], response, specs[arm], token_counter)
                     except NornError as error:
                         error_code = error.code
                     require(
@@ -173,11 +208,17 @@ def validate_run(root: Path) -> dict[str, Any]:
             else:
                 require(result.disposition == "ERROR", "MISSING_RAW_RESPONSE")
             require(tokens == row["evidence_tokens"], "TOKEN_ACCOUNTING_CHANGED")
-            retrieval = retrieval_scores(public[qid], result, specs[arm], gold[qid])
+            if baselines:
+                from benchmark.runs.baselines import validate_diagnostics
+
+                validate_diagnostics(
+                    root, public[qid], result, row.get("baseline_diagnostics"), token_counter
+                )
+            retrieval = retrieval_scores(public[qid], result, specs[arm], gold[qid], token_counter)
             abstention = abstention_score(
                 result, gold[qid], retrieval["complete_set"], retrieval["partial_set"]
             )
-            raw = canonical(row.get("raw_response"))
+            raw = canonical(row)  # Includes actual packet/warm output and trace diagnostics.
             abstention["privacy_incidents"] = sum(
                 marker in raw
                 for marker in (*gold[qid].forbidden_sources, *gold[qid].forbidden_canaries)
@@ -197,6 +238,11 @@ def validate_run(root: Path) -> dict[str, Any]:
                     "confidence": result.confidence,
                     "retrieval": retrieval,
                     "answer": abstention,
+                    **(
+                        {"baseline_diagnostics": row.get("baseline_diagnostics")}
+                        if baselines
+                        else {}
+                    ),
                 }
             )
     require(
@@ -245,7 +291,7 @@ def validate_run(root: Path) -> dict[str, Any]:
     return {
         "schema": 1,
         "run_kind": manifest["run_kind"],
-        "scope": "HARNESS_MECHANICS_ONLY",
+        "scope": "SYNTHETIC_DEVELOPMENT_RETRIEVAL_ONLY" if baselines else "HARNESS_MECHANICS_ONLY",
         "audit": manifest["audit"],
         "partition": manifest["partition"],
         "partition_role": manifest["partition_role"],
@@ -255,6 +301,6 @@ def validate_run(root: Path) -> dict[str, Any]:
         "arms": arms,
         "contrasts": contrasts,
         "observations": scores,
-        "research_efficacy": "NOT_EVALUATED",
-        "unsupported_algorithms": "R0-R10 NOT_RUN",
+        "research_efficacy": "UNSEALED_DEVELOPMENT_ONLY" if baselines else "NOT_EVALUATED",
+        "unsupported_algorithms": "R4-R10 NOT_RUN" if baselines else "R0-R10 NOT_RUN",
     }

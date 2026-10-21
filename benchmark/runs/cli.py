@@ -38,6 +38,21 @@ def parser() -> argparse.ArgumentParser:
     validate = commands.add_parser("validate", help="Reopen every artifact and planned pair")
     validate.add_argument("directory", type=Path)
     validate.add_argument("--report", type=Path)
+    validate.add_argument("--model-root", type=Path)
+    baseline = commands.add_parser(
+        "run-baselines", help="Explicit real R0-R3 development experiment"
+    )
+    baseline.add_argument("directory", type=Path)
+    baseline.add_argument("--model-root", type=Path, required=True)
+    baseline.add_argument("--enable-models", action="store_true")
+    baseline.add_argument("--sample-only", action="store_true")
+    baseline.add_argument("--seed", type=int, default=47)
+    baseline_report = commands.add_parser(
+        "baseline-report", help="Reopen and score real baseline artifacts"
+    )
+    baseline_report.add_argument("directory", type=Path)
+    baseline_report.add_argument("--model-root", type=Path, required=True)
+    baseline_report.add_argument("--output", type=Path, required=True)
     audit = commands.add_parser(
         "audit-pack", help="Render the smoke-tier stratified human review pack"
     )
@@ -66,8 +81,29 @@ def main(argv: list[str] | None = None) -> int:
                 sample_only=args.sample_only,
                 judgments_path=args.judgments,
             )
+        elif args.command == "run-baselines":
+            result = run_controls(
+                args.directory,
+                seed=args.seed,
+                tier="development",
+                role="tuner",
+                names=("R0", "R1", "R2", "R3"),
+                sample_only=args.sample_only,
+                model_root=args.model_root,
+                enable_models=args.enable_models,
+            )
+        elif args.command == "baseline-report":
+            from benchmark.runs.baselines import report as baseline_report
+
+            report = baseline_report(args.directory, args.model_root)
+            result = {
+                "report_digest": write_once(args.output, report),
+                "pairs": report["pairs"],
+                "scope": report["scope"],
+                "arms": report["arms"],
+            }
         elif args.command == "validate":
-            report = validate_run(args.directory)
+            report = validate_run(args.directory, model_root=args.model_root)
             if args.report:
                 write_once(args.report, report)
             result = {key: value for key, value in report.items() if key != "observations"}

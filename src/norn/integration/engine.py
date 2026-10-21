@@ -4,18 +4,23 @@ import json
 import shutil
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import Event
 from typing import Any, Self
 
 from norn.canonical import corrections, outbox
-from norn.canonical.database import Database
+from norn.canonical.database import SCHEMA_VERSION, Database
 from norn.canonical.registry import Registry, WriteRequest
 from norn.canonical.sources import SourceSpan, SourceStore, safe_path
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest, label, stable_id
 from norn.contracts.time import QueryClock, stamp
+from norn.embedding.baseline import LocalModels
 from norn.governance import deletion
 from norn.governance.access import Access, HostIdentity
 from norn.governance.temporal import contains
+from norn.retrieval.contracts import RecallRequest
+from norn.retrieval.rerank import EvidenceTokenizer
+from norn.retrieval.service import RecallView
 
 
 class EvidenceView:
@@ -35,7 +40,15 @@ class EvidenceView:
 
 
 class Engine:
-    def __init__(self, root: Path, host: HostIdentity, *, create: bool = False):
+    def __init__(
+        self,
+        root: Path,
+        host: HostIdentity,
+        *,
+        create: bool = False,
+        model_root: Path | None = None,
+        enable_models: bool = False,
+    ):
         safe_path(root)
         self.root = root.absolute()
         self.db = Database(self.root / "canonical.sqlite3", create=create)
@@ -43,6 +56,13 @@ class Engine:
             self.sources = SourceStore(self.root / "blobs")
             self.access = Access(self.db, host)
             self.registry = Registry(self.db, self.sources, self.access)
+            require(not enable_models or model_root is not None, "MODEL_ROOT_REQUIRED")
+            self.local_models = (
+                LocalModels(model_root, enabled=True) if enable_models and model_root else None
+            )
+            self.evidence_tokenizer = (
+                EvidenceTokenizer(model_root) if model_root is not None else None
+            )
         except BaseException:
             self.db.close()
             raise
@@ -54,7 +74,24 @@ class Engine:
         self.close()
 
     def close(self) -> None:
-        self.db.close()
+        try:
+            self.close_models()
+        finally:
+            self.db.close()
+
+    def close_models(self) -> None:
+        if self.local_models is not None:
+            self.local_models.close()
+
+    def recall(self, request: RecallRequest, *, cancelled: Event | None = None) -> RecallView:
+        from norn.retrieval.service import recall
+
+        return recall(self, request, cancelled=cancelled)
+
+    def project(self) -> dict[str, Any]:
+        from norn.projection.local import build
+
+        return build(self, models=self.local_models)
 
     def write(
         self, request: WriteRequest, *, correction: corrections.CorrectionRequest | None = None
@@ -189,7 +226,7 @@ class Engine:
         outcome = "CONFLICT" if conflicts else ("SUPPORTED" if active_atoms else "NOT_ESTABLISHED")
         data = {
             "namespace": ns,
-            "canonical_schema": 2,
+            "canonical_schema": SCHEMA_VERSION,
             "extraction_revision": "fixture-v1",
             "event_id": event_id,
             "event_time": json.loads(event["event_time"]),
@@ -306,6 +343,15 @@ class Engine:
             if len(path.name) == 64:
                 self.sources.read(path.name)
                 shutil.copyfile(path, blobs / path.name)
+        projection_root = self.root / "projections"
+        if projection_root.exists():
+            projection_store = SourceStore(projection_root)
+            restored_projections = destination / "projections"
+            restored_projections.mkdir()
+            for path in projection_root.iterdir():
+                if len(path.name) == 64:
+                    projection_store.read(path.name)
+                    shutil.copyfile(path, restored_projections / path.name)
         with Engine(destination, self.access.host) as restored:
             live_rows = self.db.connection.execute("SELECT * FROM outbox ORDER BY ns,commit_seq")
             backup_rows = restored.db.connection.execute(
@@ -326,8 +372,15 @@ class Engine:
                     len(restored.sources.read(version["id"])) == version["byte_length"],
                     "BACKUP_READBACK",
                 )
+            from norn.projection.local import readback
+
+            for manifest in restored.db.connection.execute(
+                "SELECT id FROM projection_manifests WHERE ns=?", (self.access.ns,)
+            ):
+                # Preserve legacy immutable artifacts without treating them as serving-ready.
+                readback(restored, manifest[0], current_revision=False)
         return {
             "path": str(destination),
             "verified": True,
-            "scope": "local synthetic SQL/blobs; deletion controls preserved",
+            "scope": "local synthetic SQL/blobs/projections; deletion controls preserved",
         }

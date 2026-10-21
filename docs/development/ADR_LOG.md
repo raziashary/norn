@@ -1,5 +1,75 @@
 # Architecture and research decision log
 
+## ADR-0019 — P03 local reader implementation details
+
+Measured-error correction21 October2026: completed development004 exposed a public adapter
+bug: explicit predicate detection used only present sources and bypassed the declared
+compound cue. A release-and-rollback question with only release evidence lost its rollback
+prerequisite. Main confirmed the public input and sole end reviewer independently confirmed
+the mechanism. Interpreter v3 derives requested fields from the frozen public schema and
+matching question cues, unioned with public-observed predicate extensions; missing evidence
+cannot redefine the question. Regression includes actual public R0 recall of qualified
+partial support. This is an in-scope T08/T11 bug fix, no gold input, label/threshold/model
+tuning, or new semantic framework. Full005 comparison completed with the new source hash in E-P03-003;
+completed004, its valid report/ANN and006 installed wheel remain version-scoped evidence.
+
+Final scope refinement21 October2026: field conflicts require identical canonical subject,
+qualifiers and event time (or explicit canonical contradiction), preserving unresolved
+same-name ambiguity. Projection records/readback retain qualifiers. The public-only query
+interpreter v2 treats chain roots as retrieval cues, removes a global subject filter that
+excluded neighboring steps, and leaves typed-path sufficiency unestablished rather than
+claiming one field proves a chain. No gold, labels, thresholds or new graph mechanism are
+introduced. ANN reports serialized index/vector bytes separately from observed whole-process
+working sets while original/reopened indices and serialized copies coexist; those observations
+are not isolated native allocation or simultaneous machine peaks. These refinements implement
+P03-T04/T07/T08/T11 scope and evidence requirements.
+
+Implementation refinement21 October2026: model compatibility fingerprints bind both
+publisher assets and the approved inference method (prefixes,512-token limit, dimension,
+masked FP64 accumulation/unit normalization and FP32 output, or raw FP32 rerank logits).
+Existing arithmetic/weights are unchanged; method fields now drive prefix/length/dimension
+checks and appear in run manifests. Runtime replies expose used model fingerprints.
+The canonical snapshot reader receives expected revisions from the projection owner,
+selects compatible generations and never imports retrieval/model policy. Backup verifies
+and preserves legacy artifact integrity without advertising legacy geometry as current.
+These are MDP geometry/readback obligations within ADR-0017, not new models or dependencies.
+Final current-source proof and legacy-generation controls are recorded in E-P03-003; E-P03-001 retains implementation history.
+
+- **Status:** ACCEPTED implementation choices within MDP read-flow and ADR-0017/0018.
+- **Question:** How do the approved local baseline and projection readers expose their exact scope?
+- **Why:** Ready metadata alone cannot establish source/model coherence, and a citation is not natural-language entailment.
+- **Options:** MDP's explicit structured prerequisites and immutable local artifacts; unsupported implicit semantic adjudication.
+- **Recommendation / decision:** Runtime requested fields/predicates are explicit host inputs. A benchmark query interpreter may derive them only from public question text/schema; no gold/family labels. Unknown semantic prerequisites remain MISSING_CASE_INPUT. Full local journal replay builds immutable per-record lexical/vector artifacts, exact ordered readbacks and additive schema3 snapshots. Current canonical sequence/security must still match before publication. Actual evidence packet serialization, including status and locators, is token-counted. Model-enabled paired baselines use the same pinned E5 tokenizer for every arm; asset-free R0 uses declared Unicode word counting as a separate profile. Native workers use bounded JSON frames and one resident model at a time; switching releases the previous process. No automatic retries or model fallback.
+- **What affects what:** P03-T01/T03 supporting request/asset files; T08 field sufficiency/assembly; T09 manifest/artifact/backup readers; T10 engine lifecycle and telemetry; T11 public-only adapter interpretation and token manifests. Public source records retain distinct canonical occurrences; published IDs are mapped back only after canonical source readback, without alias-based identity merges. This is a declared common-input source-record ingestion profile, not perfect event extraction.
+- **My answer (editable):** Main implementation detail, grounded in the accepted MDP and owner-approved dependencies/schema/workers. No new external contract or research threshold is selected.
+- **Authority:** MDP Conventional baseline details, Baseline scoring and token-bound assembly contracts, Sufficiency and uncertainty; blueprint I1–I10; ADR-0017/0018.
+- **Verification:** E-P03-003:131 tests, actual R0–R3 public consumers/540 paired results, installed reopen/correction/revoke/native controls and sole end review resolved. All12 cards close locally; scientific outcome INCONCLUSIVE, broader semantics remain unestablished.
+
+## ADR-0018 — Bounded native model workers
+
+- **Status:** ACCEPTED by owner on21 October2026.
+- **Question:** How can query cancellation and deadlines bound native ONNX execution and clean owned resources?
+- **Why:** Cooperative Python cancellation alone cannot reliably interrupt a blocked native call. P03-T10 requires one actual budget owner and no orphan work.
+- **Options:** Isolated reusable local worker processes; in-process ONNX cooperative cancellation.
+- **Recommendation / decision:** Standard-library spawned worker processes, explicit pinned local files, bounded input/output messages, serial inference under the query owner, deadline/cancellation termination of only owned workers, and deterministic close/join. No worker network, credentials, retry/fallback or new dependency. Main owns all code/tests; this does not authorize extra agents.
+- **What affects what:** Embedding/rerank native runtime, query-budget owner, model initialization/calls/failure accounting and engine lifecycle. Pure lexical/exact paths remain usable without loading optional models. Implementation keeps one resident model worker, reusing it until a model switch; operations remain serial and actual memory/cold/warm costs are disclosed (ADR-0019).
+- **My answer (editable):** Owner answered “Approve isolated model workers (Recommended)” through question reply `call_6ad6fbb8a90940b385f77f46c0ec80f0`.
+- **Authority:** P03 mandate, explicit owner answer, P03-T10 and blueprint I8.
+- **Verification:** Actual models, startup/normal inference/deadline/cancel/error/close controls and process cleanup are required; no helper-only or fake response substitutes. Executed actual installed native controls and cleanup PASS in E-P03-003; no general OS hang/capacity guarantee.
+
+## ADR-0017 — P03 mandate, approved retrieval assets and durable projections
+
+- **Status:** ACCEPTED by owner on21 October2026; implementation IN_PROGRESS.
+- **Question:** Which real dense/reranker/ANN assets and persistence changes may P03 use?
+- **Why:** P03 exit requires actual R0–R3 and reopened local ready snapshots. ADR-0007 previously left model/backend choices unresolved; the start adversary also identified missing schema ownership in P03-T09.
+- **Options:** Pinned local FP32 ONNX models; explicitly different quantized condition; different compute/models. Additive canonical schema3 versus external projection persistence.
+- **Recommendation / decision:** Owner approved FP32 `intfloat/multilingual-e5-small` (MIT; revision `614241f622f53c4eeff9890bdc4f31cfecc418b3`) and `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` (Apache-2.0; revision `1427fd652930e4ba29e8149678df786c240d8825`). Use optional retrieval dependencies NumPy2.5.4/tokenizers0.23.3/ONNX Runtime1.31.0/faiss-cpu1.15.1; no generative inference or Groq call. Query/passage prefixing, mean pooling, normalized384-dimensional geometry, published tokenizers and FP32 artifacts are pinned. Exact exhaustive same-vector search remains the ANN diagnostic; FAISS approximation is separately measured. Models load only by explicit enabled local configuration; missing assets cannot yield fake vectors or hidden fallback.
+- **What affects what:** P03-T01–T12, optional package extra, model acquisition/manifest, dense/rerank/ANN adapters, tokenizer budgets and fair development reports. Owner approved additive schema3 projection manifests/readback entries/ready snapshots and extending P03-T09 to the migration/database owner. Existing canonical records remain immutable; populated upgrade must verify a restorable backup first. No meaningful existing store is used for tests.
+- **My answer (editable):** Owner answered “Approve FP32 models and optional dependencies (Recommended)” and “Approve additive schema3 (Recommended)” through question reply `call_3f0742fe8fa24d21a00abe2b3a5c3685`. Original P02 commit publication was explicitly authorized and completed; P03 GO authorizes implementation, not another later main push.
+- **Authority:** Current P03 goal, explicit owner answers, MDP P03/read-flow/projection contracts and blueprint I1–I10/Stage0.
+- **Verification:** Metadata preflight confirms published revisions/artifacts/licenses and cp314 Windows wheels. Laptop: Ryzen3 4300U/4threads/7.4GB RAM, integrated Radeon,109GB free disk, observed0.7GB free RAM. CPU-only/one model operation at a time, bounded batches/deadlines; actual memory, latency and failures must be recorded, no performance claim inferred. Main implements/tests; sole start adversary and end reviewer GPT6 Luna Medium. Final executed proof E-P03-003; local engineering completion, scientific superiority INCONCLUSIVE.
+- **Sources:** [E5 model](https://huggingface.co/intfloat/multilingual-e5-small), [reranker](https://huggingface.co/cross-encoder/mmarco-mMiniLMv2-L12-H384-v1), publisher model APIs/file hashes, [ONNX Runtime package](https://pypi.org/project/onnxruntime/1.31.0/), [FAISS package](https://pypi.org/project/faiss-cpu/1.15.1/). Revisions/licenses were read before acquisition; acquisition and initial actual native inference now verified in E-P03-001. Final local retrieval proof and owning gates pass in E-P03-003; cross-phase obligations remain partial.
+
 ## ADR-0016 — P02 end-review corrections before publication
 
 - **Status:** RESOLVED before publication; sole end reviewer verified owner fixes and actual consumer assertions.

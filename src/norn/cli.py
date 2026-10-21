@@ -9,6 +9,7 @@ from typing import Any
 
 from norn import __version__
 from norn.canonical.corrections import CorrectionRequest, retract
+from norn.canonical.database import SCHEMA_VERSION
 from norn.canonical.registry import WriteRequest
 from norn.contracts.errors import NornError, require
 from norn.contracts.evidence import Epistemic, EpistemicState, TaggedValue
@@ -19,6 +20,7 @@ from norn.governance.access import HostIdentity
 from norn.governance.deletion import purge_status
 from norn.governance.temporal import yesterday
 from norn.integration.engine import Engine
+from norn.retrieval.contracts import RecallRequest
 
 
 def fields(data: object, required: set[str], optional: set[str] | None = None) -> dict[str, Any]:
@@ -132,6 +134,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--workspace", default="pilot")
     result.add_argument("--partition", default="local")
     result.add_argument("--principal", default="operator")
+    result.add_argument("--model-root", type=Path)
+    result.add_argument("--enable-models", action="store_true")
     commands = result.add_subparsers(dest="command", required=True)
     commands.add_parser("capabilities")
     relative = commands.add_parser("resolve-time")
@@ -139,6 +143,9 @@ def parser() -> argparse.ArgumentParser:
     relative.add_argument("--evaluation-time", required=True)
     relative.add_argument("--timezone", required=True)
     commands.add_parser("init")
+    commands.add_parser("project", help="Explicitly build and read back local projections")
+    recall = commands.add_parser("recall", help="Recall against a ready, source-verified snapshot")
+    recall.add_argument("--input", type=Path, required=True)
     write = commands.add_parser("write")
     write.add_argument("--input", type=Path, required=True)
     read = commands.add_parser("read")
@@ -191,14 +198,21 @@ def execute(args: argparse.Namespace) -> object:
             "generative_llm": "DISABLED",
             "providers_loaded": [],
             "models_loaded": [],
-            "search": "FEATURE_NOT_SUPPORTED",
+            "search": ["R0", "R1", "R2", "R3"],
+            "local_models": "EXPLICIT_ENABLE_AND_PINNED_ASSETS_REQUIRED",
             "external_workers": "FEATURE_NOT_SUPPORTED",
             "physical_purge": "PENDING_ONLY",
-            "runtime_schema": 2,
+            "runtime_schema": SCHEMA_VERSION,
         }
     require(args.store is not None, "STORE_REQUIRED")
     host = HostIdentity(Namespace(args.tenant, args.workspace, args.partition), args.principal)
-    with Engine(args.store, host, create=args.command == "init") as engine:
+    with Engine(
+        args.store,
+        host,
+        create=args.command == "init",
+        model_root=args.model_root,
+        enable_models=args.enable_models,
+    ) as engine:
         match args.command:
             case "init":
                 engine.access.bootstrap()
@@ -209,6 +223,38 @@ def execute(args: argparse.Namespace) -> object:
                 require(len(raw) <= 2_097_152, "REQUEST_BUDGET")
                 request, correction = parse_write(json.loads(raw), host)
                 return engine.write(request, correction=correction)
+            case "project":
+                return engine.project()
+            case "recall":
+                with args.input.open("rb") as stream:
+                    raw = stream.read(131_073)
+                require(len(raw) <= 131_072, "REQUEST_BUDGET")
+                data = fields(
+                    json.loads(raw),
+                    {"text", "clock"},
+                    set(RecallRequest.__dataclass_fields__) - {"text", "clock"},
+                )
+                clock_data = fields(
+                    data.pop("clock"),
+                    {"evaluation_time", "timezone", "basis", "valid_at", "knowledge_at"},
+                    {"snapshot"},
+                )
+                query_clock = QueryClock(
+                    parse_instant(clock_data["evaluation_time"]),
+                    clock_data["timezone"],
+                    clock_data["basis"],
+                    parse_instant(clock_data["valid_at"]),
+                    parse_instant(clock_data["knowledge_at"]),
+                    clock_data.get("snapshot"),
+                )
+                for field in ("predicates", "requested_fields"):
+                    if field in data:
+                        require(type(data[field]) is list, "INVALID_FIELDS")
+                        data[field] = tuple(data[field])
+                for field in ("event_start", "event_end"):
+                    if data.get(field) is not None:
+                        data[field] = parse_instant(data[field])
+                return engine.recall(RecallRequest(clock=query_clock, **data)).serialize()
             case "read":
                 clock = QueryClock(
                     parse_instant(args.evaluation_time),

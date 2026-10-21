@@ -1,6 +1,6 @@
 # Norn development suite
 
-Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime is implemented and verified (E-P01-003). P02 synthetic harness is implemented and verified (E-P02-003):97 tests, actual main/installed CLI readback and sole end review resolved. P03+ remain planned; no efficacy study has run. Current mandate is P02 GO (ADR-0014/0015).
+Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime and P02 synthetic harness are verified (E-P01-003/E-P02-003). P03 is complete under ADR-0017/0018, with actual local R0–R3,540 development observations, installed source/native controls and sole end review resolved (E-P03-003; [baseline report](evidence/baselines.md)). Scientific superiority remains INCONCLUSIVE. P04+ remain planned; no sealed efficacy study has run.
 
 Read the root [project instructions](../../AGENTS.md), then start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
 
@@ -29,7 +29,7 @@ All durable agent-created project work records belong in this folder. Do not add
 
 ## Validation now
 
-Owner setup: existing uv `.venv/`, ignored root `.env` and `.gitignore`. Future authorized generative inference uses Groq with explicit Qwen 3.8 27B, GPT OSS 120B or GPT OSS 20B selection (ADR-0010); key/API availability are not tested now. P01 layout/tooling/timezone data are approved and locked; later models/backends remain separate decisions.
+Owner setup: existing uv `.venv/`, ignored root `.env` and `.gitignore`. Future authorized generative inference uses Groq with explicit Qwen 3.8 27B, GPT OSS 120B or GPT OSS 20B selection (ADR-0010); key/API availability are not tested now. P01 layout/tooling/timezone data are approved and locked; P03 local models are separately approved in ADR-0017/0018; later training/backends remain separate decisions.
 
 From the repository root, using the existing environment:
 
@@ -51,10 +51,10 @@ Palladion supplied a useful anchor/atomic-card format. Arcana's historical devel
 P01 implements a **synthetic-only canonical store**. Reuse the existing environment:
 
 ```powershell
-uv sync --locked
+uv sync --locked --extra retrieval
 uv run --no-env-file norn capabilities
 uv run --no-env-file norn --store .norn init
-uv run --no-env-file pytest -q
+uv run --no-env-file --extra retrieval pytest -q
 uv run --no-env-file ruff check src benchmark tests
 uv run --no-env-file ruff format --check src benchmark tests
 uv run --no-env-file mypy
@@ -62,7 +62,7 @@ uv build
 uv run --no-env-file python tests/test_foundation_cli.py
 ```
 
-`uv sync` installs approved locked tooling and tzdata; it does not load `.env`. The smoke script creates/cleans an isolated synthetic store and invokes separate CLI processes for write, restart/read, duplicate delivery, correction, historical snapshot, revoke and deny. It also runs against a fresh installed wheel in the P01 closeout evidence. No Groq use or service is needed. `norn --help` lists operations; `capabilities` reports disabled optional features explicitly.
+`uv sync` installs approved locked tooling and tzdata; it does not load `.env`. The retrieval extra adds the owner-approved pinned local runtime and is needed for the full current test suite. Asset-free R0 itself uses the base package. The foundation smoke creates/cleans an isolated synthetic store and invokes separate CLI processes for write, restart/read, duplicate delivery, correction, historical snapshot, revoke and deny. It also runs against a fresh installed wheel in the P01 closeout evidence. No Groq use or service is needed. `norn --help` lists operations; `capabilities` distinguishes available paths from explicitly enabled local models.
 
 For a manual write, save this synthetic request as a local JSON file, then run `norn --store .norn write --input <file>` using the uv prefix above:
 
@@ -76,7 +76,66 @@ The CLI trusts its local OS operator and store-directory permissions. `--princip
 
 Fixture annotations are explicit span checks, not general semantic extraction. SUPPORTED means eligible anchored fixture evidence; it does not establish normative authority or real-world truth. Inference/hypothesis/aggregate alone do not support that outcome. Corrections require matching subject, predicate and qualifiers, an explicit validity window and ADMIN for supersession. Reads never rewrite facts. Exact canonical reads report CANONICAL_FALLBACK/INDEX_PENDING and do not promise lexical/dense/graph coverage.
 
-`deny` applies immediate serving denial and returns a metadata-only pending purge manifest, including actual blob digest selectors. Shared blob selectors remain pending until reference/retention reconciliation; they do not authorize erasing unrelated occurrences. SQL/blobs/derived representations/traces/backups remain explicit PENDING obligations; no full erasure or parameter unlearning is implemented. `backup <new-directory>` verifies a single-namespace local SQL/blob copy, including existing tombstones. Reconciliation of older backups against later deletions, distributed workers, purpose-specific normative approval, arbitrary NLP and research efficacy belong to later phases. No power-cut or production-readiness claim follows from local process-crash tests.
+`deny` applies immediate serving denial and returns a metadata-only pending purge manifest, including actual blob and projection artifact digest selectors. Shared selectors remain pending until reference/retention reconciliation; they do not authorize erasing unrelated occurrences. SQL/blobs/derived representations/traces/backups remain explicit PENDING obligations; no full erasure or parameter unlearning is implemented. `backup <new-directory>` verifies a single-namespace local SQL/blob/projection copy, including existing tombstones and exact projection readback. Reconciliation of older backups against later deletions, distributed workers, purpose-specific normative approval, arbitrary NLP and research efficacy belong to later phases. No power-cut or production-readiness claim follows from local process-crash tests.
+
+## Conventional retrieval — P03 verified local pilot
+
+`norn --store <store> project` explicitly consumes the local journal, builds the lexical
+projection, verifies exact artifacts and publishes a ready snapshot. A subsequent
+write/control change requires a new projection; missing or corrupt readiness yields
+VERIFICATION_UNAVAILABLE. Original canonical `read` remains an exact fallback.
+For `recall --input <JSON>`, the question's requested fields are explicit host inputs:
+
+```json
+{"text":"Alex parking","subject":"Alex","requested_fields":["parked_in"],"arm":"R0","clock":{"evaluation_time":"2030-01-01T00:00:00+00:00","timezone":"UTC","basis":"VALID_TIME","valid_at":"2026-10-20T09:00:00+00:00","knowledge_at":"2030-01-01T00:00:00+00:00"},"event_start":"2026-10-20T00:00:00+00:00","event_end":"2026-10-21T00:00:00+00:00"}
+```
+
+Fields are a prerequisite schema, never hidden evaluator slots. Unsupported natural-language
+adjudication stays unknown. Cited facts retain original origin, applicability and UNVERIFIED
+authority; a supported source assertion never authorizes an action. All five answer statuses,
+coverage, content snapshot, current security epoch, tokenizer and bounded usage are explicit.
+Asset-free R0 counts Unicode words in the full evidence packet; model-enabled comparisons
+count the same pinned E5 tokenizer for every arm, including status and locators.
+
+ADR-0017 pins multilingual E5-small, the mMARCO MiniLM reranker and the optional packages.
+Model acquisition is separately enabled and verifies publisher byte lengths/SHA256s:
+
+```powershell
+uv run --locked --no-env-file --extra retrieval python -m norn.embedding.assets .norn/models --enable-download
+uv run --locked --no-env-file --extra retrieval python -m norn.embedding.baseline .norn/models --enable-models --check-controls
+uv run --locked --no-env-file --extra retrieval norn --store <store> --model-root .norn/models --enable-models project
+uv run --locked --no-env-file --extra retrieval norn --store <store> --model-root .norn/models --enable-models recall --input <JSON>
+```
+
+R1 uses compatible normalized384-dimensional vectors with exhaustive dot products; R2
+adds exact/BM25/dense RRF; R3 reranks the same bounded pool. One CPU model worker is resident
+at a time, with serial inference,512-token input truncation disclosed, bounded JSON IPC and
+owned-process shutdown on deadline/cancellation. No automatic model/provider fallback or
+Groq call occurs. Missing assets or explicit enablement cannot produce fake vectors.
+Optional FAISS HNSW is an offline same-vector approximation diagnostic, not graph memory.
+
+The actual development runner and reopened report are:
+
+```powershell
+uv run --locked --no-env-file --extra retrieval norn-benchmark run-baselines <new-run> --model-root .norn/models --enable-models
+uv run --locked --no-env-file --extra retrieval norn-benchmark baseline-report <run> --model-root .norn/models --output <new-report.json>
+uv run --locked --no-env-file --extra retrieval python -m benchmark.runs.ann_recall <run> <new-ann.json> --model-root .norn/models --enable-models
+uv run --locked --no-env-file --extra retrieval python tests/test_recall_cli.py --model-root .norn/models
+```
+
+The four-arm run uses all135 development cases and distinct canonical occurrences for
+published source records. It preserves public-ID mappings only after original source
+readback; source aliases do not merge identity. Artifacts retain full failures, exact
+pins, offline build/online cold/repeated costs and observed stage counts. Only final
+evidence is scored; counts do not establish upstream retrieval@K. The public question
+interpreter is a frozen pilot schema vocabulary, not general semantic extraction. Its v3
+prerequisites combine the declared public schema and question cues independently of
+available evidence. Chain handling preserves neighboring source eligibility and explicitly
+leaves typed-path sufficiency unestablished; field support alone does not prove a chain.
+These disjoint synthetic instances do not establish template/category transfer, real-world
+entailment, production capacity or locked superiority. Preserve original stores for replay:
+their actual canonical ingestion clocks are part of the evidence. Recreating a store after
+the fixed synthetic knowledge cutoff is a different profile, not an invitation to backdate.
 ## Synthetic benchmark harness
 
 P02 uses deterministic fictional structured capture records, not arbitrary-language extraction

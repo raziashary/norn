@@ -8,6 +8,7 @@ from benchmark.fixtures.observations import Observation
 from norn.contracts.errors import require
 from norn.contracts.identity import Namespace, canonical, digest
 from norn.contracts.time import parse_instant, zone
+from norn.embedding.assets import fingerprint
 
 
 @dataclass(frozen=True)
@@ -128,8 +129,19 @@ class ArmSpec:
 
     def __post_init__(self) -> None:
         require(self.track in {"COMMON_INPUT", "NATIVE", "ORACLE_DIAGNOSTIC"})
-        require(self.model == "NONE", "MODEL_NOT_ENABLED")
-        require(self.tokenizer == "whitespace-v1", "UNSUPPORTED_TOKENIZER")
+        require(
+            self.model
+            in {
+                "NONE",
+                fingerprint("encoder"),
+                fingerprint("encoder") + ":" + fingerprint("reranker"),
+            },
+            "MODEL_NOT_ENABLED",
+        )
+        require(
+            self.tokenizer in {"whitespace-v1", "e5-small-pinned-tokenizer-v1"},
+            "UNSUPPORTED_TOKENIZER",
+        )
 
 
 class Adapter(Protocol):

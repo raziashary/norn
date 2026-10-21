@@ -8,6 +8,7 @@ from benchmark.adapters.contracts import ArmSpec, Candidate, PublicInput, Publis
 from benchmark.fixtures.observations import Observation
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import digest
+from norn.retrieval.assembly import TokenCounter
 
 
 def parse_source(source: PublishedSource) -> Observation:
@@ -28,7 +29,9 @@ def candidate(source: PublishedSource, *, unit_kind: str = "source") -> Candidat
     )
 
 
-def validate_result(published: PublicInput, result: Result, spec: ArmSpec) -> int:
+def validate_result(
+    published: PublicInput, result: Result, spec: ArmSpec, token_counter: TokenCounter | None = None
+) -> int:
     require(
         result.disposition in {"OK", "ERROR", "TIMEOUT", "UNSUPPORTED", "INVALID", "NOT_RUN"},
         "INVALID_DISPOSITION",
@@ -99,7 +102,15 @@ def validate_result(published: PublicInput, result: Result, spec: ArmSpec) -> in
         # P02 publishes complete structured captures as its canonical evidence unit.
         # An unrelated substring of a correctly named source cannot earn support.
         require(item.start_byte == 0 and item.end_byte == len(raw), "INCOMPLETE_CAPTURE_LOCATOR")
-        tokens += len(text.split())
+        if spec.tokenizer == "whitespace-v1":
+            tokens += len(text.split())
+        else:
+            require(
+                token_counter is not None and token_counter.version == spec.tokenizer,
+                "TOKENIZER_UNAVAILABLE",
+            )
+            if token_counter is not None:
+                tokens += token_counter.count(text)
     require(tokens <= published.query.max_evidence_tokens, "EVIDENCE_TOKEN_BUDGET")
     return tokens
 

@@ -7,12 +7,17 @@ from benchmark.adapters.contracts import ArmSpec, PublicInput, Result
 from benchmark.fixtures.scenarios import Gold
 from benchmark.metrics.evidence_sets import evidence_scores
 from benchmark.metrics.normalize import normalized_sources
+from norn.retrieval.assembly import TokenCounter
 
 
 def retrieval_scores(
-    published: PublicInput, result: Result, spec: ArmSpec, gold: Gold
+    published: PublicInput,
+    result: Result,
+    spec: ArmSpec,
+    gold: Gold,
+    token_counter: TokenCounter | None = None,
 ) -> dict[str, Any]:
-    ids = normalized_sources(published, result, spec)
+    ids = normalized_sources(published, result, spec, token_counter)
     if result.disposition != "OK":
         return {
             "observed": False,

@@ -121,6 +121,18 @@ def deny(registry: Registry, selector: str, request_id: str, reason: str) -> dic
                         "VALUES(?,?,'source_blobs',?,'PENDING')",
                         (ns, request_id, version[0]),
                     )
+                artifacts = connection.execute(
+                    "SELECT DISTINCT artifact_digest FROM projection_entries WHERE ns=? "
+                    "AND (atom_id=? OR event_id=?) LIMIT 10001",
+                    (ns, object_id, object_id),
+                ).fetchall()
+                require(len(artifacts) <= 10_000, "LINEAGE_BUDGET")
+                for artifact in artifacts:
+                    connection.execute(
+                        "INSERT OR IGNORE INTO purge_obligations "
+                        "VALUES(?,?,'projection_artifacts',?,'PENDING')",
+                        (ns, request_id, artifact[0]),
+                    )
             publish(connection, ns, seq, "SERVING_DENIED", objects)
     return purge_status(registry, request_id)
 
