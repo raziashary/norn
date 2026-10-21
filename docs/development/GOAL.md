@@ -1,6 +1,6 @@
 # Norn goal and acceptance
 
-Updated 20 October 2026 (Asia/Bangkok). The immediate objective is completing the twelve P01 foundation tasks under ADR-0012; the earlier documentation mandate is complete. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 21 October 2026 (Asia/Bangkok). The immediate objective is completing the twelve P01 foundation tasks under ADR-0012; the earlier documentation mandate is complete. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Current documentation mandate
 
@@ -44,7 +44,7 @@ The phase sequence preserves Stage0-6 and hierarchical ablations. Do not run a g
 
 ## Completion discipline
 
-For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate covers the suite, setup/instructions amendment and its scoped publication. The explicit Phase 1 GO is recorded in ADR-0012; later publication needs its applicable authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
+For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate is the explicit P02 GO following completed P01 (ADR-0012). ADR-0014/0015 record benchmark and partition authority; another main publication still needs applicable push authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
 
 ## P01 acceptance — verified
 
@@ -54,4 +54,8 @@ For each claimed outcome, inspect authoritative source, actual consumer, execute
 - Corrections/retractions retain origin and history; current ACL and serving denial override old snapshots; lineage enumerates pending purge without an erasure claim.
 - Populated upgrade, verified backup/restore, installed restarted reader, main checks, sole end review, current records and resource cleanup complete.
 
-All five P01 outcomes are DONE, E-P01-003. No task processes/listeners remain; deleting the static wheel-test environment was blocked by automatic approval policy and is explicitly recorded. Later phases are outside this mandate.
+All five P01 outcomes are DONE, E-P01-003. No task processes/listeners remain; deleting the static wheel-test environment was blocked by automatic approval policy and is explicitly recorded. Later phases were outside the P01 mandate; P02 is now separately authorized below.
+
+## Active P02 acceptance
+
+Owner GO21 October2026 authorizes all eleven P02 tasks; P01 baseline4618156. Required outcomes: deterministic typed world and all E1–E14 counterfactuals; split-before-paraphrase publication with verified information barrier; version-bound stratified human audit and dispute workflow; scoped common/native adapter contracts; immutable manifests and complete paired failure ledger; hand-checked identity/evidence/abstention metrics and calibrated/cluster statistics; installed CLI perfect/empty/shuffled/adversarial controls plus corrupted artifact rejection and reproducible readback. No retrieval efficacy or later-stage implementation claim. All P02 outcomes DONE with E-P02-003:97 tests/no skips, actual control/calibration/installed consumers, source byte parity and sole end-review resolution. Owner personally reviewed all42 sampled cases against the unchanged pack digest; recorded judgments are source/gold bound. Remaining cases are unaudited. Partition interpretation is explicitly accepted in ADR-0015.

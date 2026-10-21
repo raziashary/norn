@@ -1,6 +1,6 @@
 # Norn project map
 
-Updated 20 October 2026 (Asia/Bangkok). Coverage: actual planning repository and proposed memory/research module boundaries. P01 paths below exist; later research paths remain proposals.
+Updated 21 October 2026 (Asia/Bangkok). Coverage: actual planning repository and proposed memory/research module boundaries. P01 and P02 paths below exist; P03+ research paths remain proposals.
 
 ## Actual repository
 
@@ -23,9 +23,9 @@ docs/
     check_docs.py                        # actual documentation checker
 ```
 
-Actual runtime now also includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,governance,extraction,integration}, src/norn/cli.py and tests/test_*.py. canonical/schema.sql is schema1; 002_governance.sql is additive schema2 lineage. Tests and installed CLI consume the same owners; no foreign checkout import, model, dataset, network service or benchmark exists. See E-P01-003 for proof scope.
+Actual runtime now also includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,governance,extraction,integration}, src/norn/cli.py and tests/test_*.py. canonical/schema.sql is schema1; 002_governance.sql is additive schema2 lineage. Tests and installed CLI consume the same owners; no foreign checkout import, model or network service exists. P02 adds benchmark/{fixtures,adapters,metrics,statistics,runs}, with hidden world/gold, strict publication, control adapters, immutable ledger, scorer and CLI. Audit pack/judgments live in development/evidence; ignored run artifacts live in .norn/. See E-P01-003/E-P02-003 for proof scope.
 
-## Module ownership map (P01 actual; later phases proposed)
+## Module ownership map (P01/P02 actual; later phases proposed)
 
 | Module | Responsibility and owner boundary | Producer / consumer | Phase |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Actual runtime now also includes pyproject.toml, uv.lock, src/norn/{contracts,ca
 | integration | memory facade and bounded agent context | authenticated host → next-turn cited context | P01/P09 |
 | projection | local readiness then external workers/manifests/rebuild/purge/restore | canonical log/outbox → coherent derived indexes | P03/P11 |
 | telemetry | redacted stage/resource/failure traces | actual owners → operator/evaluator | P03 onward |
-| benchmark (separate) | hidden world, publication, adapters, metrics, statistics, sealed runner/faults | published corpus + evaluator-only gold → reproducible reports | P02–P13 |
+| benchmark (separate) | P02 actual typed synthetic fixtures/publication/common control contracts/immutable ledger/scorers/statistics/CLI; later scientific and sealed runners planned | public capture boundary → trusted controls → immutable ledger → reopened evaluator; hidden gold only scorer/oracle diagnostic | P02 actual; P03–P13 studies planned |
 
 ## Proposed dependencies and flows
 
@@ -68,4 +68,4 @@ No runtime edge points to hidden labels. Data flows preserve event→atom→sour
 
 ## Verification map
 
-Documentation entry point: `.venv/Scripts/python.exe docs/development/check_docs.py`, plus its self-tests. P01 tests and CLI are real and bound in README Local foundation; later runtime paths remain planned. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.
+Documentation entry point: `.venv/Scripts/python.exe docs/development/check_docs.py`, plus its self-tests. P01/P02 tests and CLIs are real and bound in README Local foundation/Synthetic benchmark harness; P03+ runtime paths remain planned. [TESTING_GATES](TESTING_GATES.md) distinguishes early phase-local checks from later multi-store and research proof. No code map or planned diagram establishes runtime readiness.

@@ -1,6 +1,6 @@
 # Project learning register
 
-Updated 20 October 2026 (Asia/Bangkok). Record what happened, why, evidence, and future method. Suggestions/untested hypotheses remain labeled. Preserve retractions rather than deleting prior claims.
+Updated 21 October 2026 (Asia/Bangkok). Record what happened, why, evidence, and future method. Suggestions/untested hypotheses remain labeled. Preserve retractions rather than deleting prior claims.
 
 ## L001 — Reference depth does not transfer authority
 
@@ -20,7 +20,7 @@ The end reviewer identified ambiguous P04-T09/P05 entry wording. The earlier bro
 
 ## Experimental evidence remains pending
 
-P01 local integrity/security/process recovery has narrow synthetic evidence. Training, retrieval efficacy, latency/capacity and benchmark results remain absent. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. Training, retrieval efficacy, latency/capacity and scientific benchmark outcomes remain absent. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
 
 ## L005 — Provenance history needs its own recording sequence
 
@@ -33,3 +33,30 @@ The first lineage negative control caught an inverted reachability check; fixing
 ## L007 — Verify guard definitions and every selector direction
 
 The end reviewer found that matching trigger names alone did not prove immutable behavior, and that entity/derivation selectors omitted canonical purge dependencies. Full normalized trigger definitions are now checked. Deletion traverses subject/object entity references, contained events, derivation records and outputs; real blob digest selectors remain PENDING, especially when shared by other occurrences. Dedicated tampering/entity/derivation/ref controls pass. Main then rebuilt the wheel and proved installed bytes match all24 source/SQL files before rerunning the process scenario. See E-P01-003.
+
+## L008 — Labels and calibration need actual lineage
+
+P02's first numeric calibration CLI trusted a caller's partition string. The end reviewer
+identified the bypass; the owner fix consumes validated calibration-run observations,
+regenerates world/partition/source/gold lineage and binds completion/manifest/arm hashes.
+Rehashed smoke relabeling now fails. Human review is separately attested by the owner
+for42 exact hash-bound sample cases; constructed labels or model review never substitute
+for that provenance. Evidence: E-P02-001–003 and ADR-0015/0016.
+
+## L009 — A qualified partial answer needs its own proof
+
+Full completeness alone could not validate a useful partial answer. P02 now records
+supported subsets plus explicit unknown fields, scores partial usefulness separately and
+rejects overclaims. The end reviewer required assertions against the reopened CLI report
+and ledger, not only helper tests. Final97-test/source/build/installed proofs include that
+consumer and preserve unavailable full completeness. Do not turn citation identity into
+general semantic entailment.
+
+## L010 — Test the guard's aliases and the test fixture's baseline
+
+AST checks initially missed `from package import world`, relative imports and renamed
+dynamic functions. Explicit module resolution/capability-alias controls cover those forms;
+this is still no arbitrary-code sandbox. The docs self-test also depended on P02 remaining
+PLANNED and did not copy the new benchmark owner. It now damages a real completed card's
+evidence and verifies each complete copied baseline before applying its intended fault.
+Negative checks need a valid starting point and an observable intended rejection.

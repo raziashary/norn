@@ -1,10 +1,10 @@
 # Norn project working memory
 
-Updated 20 October 2026 (Asia/Bangkok). One navigation memory; source/vision/MDP/ADRs remain authoritative.
+Updated 21 October 2026 (Asia/Bangkok). One navigation memory; source/vision/MDP/ADRs remain authoritative.
 
 ## Current mandate and state
 
-Complete P01 under explicit owner GO and question-tool approvals (ADR-0012). P00 is complete. P01 source/schema/tests/CLI and all12 cards are DONE, final proof E-P01-003; 18/139 tasks complete overall. Later research phases remain planned. No authority for another main push; earlier scoped docs publication is fulfilled. Baseline for this phase: clean main at 5c06dd9, one checkout.
+Current mandate is P02 GO21 October2026; P01 implementation and scoped push are complete at4618156. P00 is complete. P01 source/schema/tests/CLI and all12 cards are DONE, final proof E-P01-003; 29/139 tasks complete overall, including P02 DONE11/11. P03+ remain planned. No authority for another main push; earlier scoped docs publication is fulfilled. Baseline for P02: main at4618156, one checkout, with owner-added editor diagnostics preserved; no other initial dirty work.
 
 ## Actual foundation
 
@@ -26,3 +26,7 @@ Read PROGRESS, GOAL, MDP exact card/dependencies, ADR owner answers, TESTING_GAT
 E-P01-001/002 retain approvals, environment failure, earlier artifacts and meaningful failures/fixes; E-P01-003 owns final closure. Final main suite63 passed/no skips, format/lint/type/build/docs controls pass. Final wheel installed scenario and24-file byte parity pass; sole independent full-blueprint end review and resolutions pass. All tests use disposable synthetic temporary stores, no existing meaningful state or listeners. No task processes remain; policy blocked deletion of the static wheel-test environment in Windows Temp (E-P01-003). Schema upgrade makes a verified backup first. Source bytes may remain unreferenced after rollback; automatic garbage collection/physical purge is outside this foundation.
 
 Palladion/Arcana were read-only design/format references. Owner approved original Norn code without copying either checkout. No foreign runtime dependency. Pending decisions concern later embedding/training/compute/backends, production retention and experimental thresholds, not the accepted P01 pilot.
+
+## P02 active recovery
+
+P02 complete: deterministic135-case fixtures, publication/import guards, public common/native contracts, complete immutable runner/ledger, identity/evidence/qualified-partial/abstention metrics, clustered statistics and run-bound calibration, actual CLI plus installed-wheel readback. E-P02-003 owns final proof:97 tests/no skips,1,620 paired main observations,405 installed observations and50-file byte parity. Sole Luna Medium end review findings resolved. Owner42-case human audit binds unchanged pack; other cases unaudited. ADR-0015 approves disjoint instances within every category; category/template transfer unmeasured. BasedPyright diagnostics preserved in own table; strict mypy remains. No new dependency/provider/credential use or P01 source/schema change. No P03 GO or new main-push approval. Historical001/002 failures and earlier artifacts remain for provenance.

@@ -1,13 +1,13 @@
 # Requirements traceability
 
-Updated 20 October 2026 (Asia/Bangkok). Each row maps intended source scope to detailed MDP design, real plan IDs and proof contracts. Coverage is not implementation evidence. SEC01-SEC27 cover every blueprint section; REV01-REV14 preserve its revision register. I/H/E and arm identifiers retain the blueprint meaning; they are not development phase numbers.
+Updated 21 October 2026 (Asia/Bangkok). Each row maps intended source scope to detailed MDP design, real plan IDs and proof contracts. Coverage is not implementation evidence. SEC01-SEC27 cover every blueprint section; REV01-REV14 preserve its revision register. I/H/E and arm identifiers retain the blueprint meaning; they are not development phase numbers.
 
-Rows with P01 ownership have phase-local main evidence; remaining runtime ownership is PLANNED/NOT_RUN. Documentation review checks that mappings are meaningful; the checker proves only structural references/coverage. Native/optional/unavailable arms remain explicit study dispositions, not fabricated implementations. Source headings below use names rather than fragile line numbers.
+Rows with P01/P02 ownership have phase-local evidence; P03+ runtime ownership remains PLANNED/NOT_RUN. P02 mechanics do not establish efficacy. Documentation review checks that mappings are meaningful; the checker proves only structural references/coverage. Native/optional/unavailable arms remain explicit study dispositions, not fabricated implementations. Source headings below use names rather than fragile line numbers.
 
 | Requirement | Source / obligation | MDP design | Tasks | Gates | Evidence state |
 |---|---|---|---|---|---|
 | SEC01 | Purpose, lineage, and falsifiable claims | [design](MASTER_DEV_PLAN.md#scope) | P00-T02,P13-T07 | G-DOC,G-CONFIRMATORY | PLANNED / NOT_RUN |
-| SEC02 | Research context: the problem being solved | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P00-T02,P02-T03 | G-DOC,G-RESEARCH | PLANNED / NOT_RUN |
+| SEC02 | Research context: the problem being solved | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P00-T02,P02-T03 | G-DOC,G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | SEC03 | Neuroscience: findings caveats and computational translations | [design](MASTER_DEV_PLAN.md#scope) | P00-T02,P04-T08,P13-T07 | G-DOC,G-BINDING | PLANNED / NOT_RUN |
 | SEC04 | Memory ontology: event atom relationship and evidence | [design](MASTER_DEV_PLAN.md#contracts) | P01-T02,P01-T07 | G-CONTRACT | P01 PASS E-P01-003; later ownership NOT_RUN |
 | SEC05 | Principles and non-negotiable invariants | [design](MASTER_DEV_PLAN.md#scope) | P00-T03,P13-T01 | G-DOC,G-CONFIRMATORY | PLANNED / NOT_RUN |
@@ -26,12 +26,12 @@ Rows with P01 ownership have phase-local main evidence; remaining runtime owners
 | SEC18 | Storage design polyglot stores replication sharding coherence | [design](MASTER_DEV_PLAN.md#operations) | P03-T09,P11-T05,P11-T06,P11-T11 | G-SNAPSHOT,G-OPS | PLANNED / NOT_RUN |
 | SEC19 | Failure containment security privacy and operations | [design](MASTER_DEV_PLAN.md#security) | P11-T10,P12-T02,P12-T03,P12-T06,P12-T08 | G-SECURITY,G-OPS | PLANNED / NOT_RUN |
 | SEC20 | Data contracts and reference pseudocode | [design](MASTER_DEV_PLAN.md#contracts) | P01-T02,P01-T07,P06-T05,P03-T10 | G-CONTRACT,G-DIFFUSION,G-BUDGET | P01 PASS E-P01-003; later ownership NOT_RUN |
-| SEC21 | Research hypotheses baselines and ablation matrix | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T07,P04-T08,P06-T10,P13-T01 | G-RESEARCH,G-CONFIRMATORY | PLANNED / NOT_RUN |
-| SEC22 | Datasets and benchmark alignment | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T01,P02-T04,P02-T06,P09-T05,P09-T06 | G-CUSTODY,G-TRANSFER | PLANNED / NOT_RUN |
-| SEC23 | Metrics statistics costs and decision criteria | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T09,P02-T10,P13-T02,P13-T05,P13-T06 | G-RESEARCH,G-CONFIRMATORY | PLANNED / NOT_RUN |
+| SEC21 | Research hypotheses baselines and ablation matrix | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T07,P04-T08,P06-T10,P13-T01 | G-RESEARCH,G-CONFIRMATORY | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| SEC22 | Datasets and benchmark alignment | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T01,P02-T04,P02-T06,P09-T05,P09-T06 | G-CUSTODY,G-TRANSFER | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| SEC23 | Metrics statistics costs and decision criteria | [design](MASTER_DEV_PLAN.md#evaluation) | P02-T09,P02-T10,P13-T02,P13-T05,P13-T06 | G-RESEARCH,G-CONFIRMATORY | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | SEC24 | Experiment execution sequence | [design](MASTER_DEV_PLAN.md#phase-plan) | P00-T03,P13-T09 | G-DOC,G-REPRODUCIBLE | PLANNED / NOT_RUN |
 | SEC25 | Open questions and threats to validity | [design](MASTER_DEV_PLAN.md#evaluation) | P00-T02,P12-T01,P13-T07 | G-DOC,G-SECURITY,G-CONFIRMATORY | PLANNED / NOT_RUN |
-| SEC26 | Sources and annotated reference register | [design](MASTER_DEV_PLAN.md#reference-reuse) | P00-T01,P02-T07,P09-T05,P13-T07 | G-REUSE,G-CONFIRMATORY | PLANNED / NOT_RUN |
+| SEC26 | Sources and annotated reference register | [design](MASTER_DEV_PLAN.md#reference-reuse) | P00-T01,P02-T07,P09-T05,P13-T07 | G-REUSE,G-CONFIRMATORY | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | SEC27 | Design decision log all requested revisions | [design](MASTER_DEV_PLAN.md#execution-contract) | P00-T02,P00-T03,P13-T01 | G-DOC,G-CONFIRMATORY | PLANNED / NOT_RUN |
 | I1 | Immutable evidence | [design](MASTER_DEV_PLAN.md#scope) | P01-T08,P01-T10 | G-INGEST | P01 PASS E-P01-003; later ownership NOT_RUN |
 | I2 | Authority external to similarity | [design](MASTER_DEV_PLAN.md#scope) | P01-T02,P03-T08 | G-SOURCE | P01 PASS E-P01-003; later ownership NOT_RUN |
@@ -41,7 +41,7 @@ Rows with P01 ownership have phase-local main evidence; remaining runtime owners
 | I6 | ACL before ranking and traversal | [design](MASTER_DEV_PLAN.md#scope) | P01-T06,P06-T03,P12-T03 | G-ACL | P01 PASS E-P01-003; later ownership NOT_RUN |
 | I7 | Explicit snapshot correctness | [design](MASTER_DEV_PLAN.md#scope) | P03-T09,P11-T06 | G-SNAPSHOT | PLANNED / NOT_RUN |
 | I8 | Bounded work and compute | [design](MASTER_DEV_PLAN.md#scope) | P03-T10,P06-T09,P12-T07 | G-BUDGET | PLANNED / NOT_RUN |
-| I9 | Two-sided abstention | [design](MASTER_DEV_PLAN.md#scope) | P02-T09,P03-T08,P09-T08 | G-ABSTENTION | PLANNED / NOT_RUN |
+| I9 | Two-sided abstention | [design](MASTER_DEV_PLAN.md#scope) | P02-T09,P03-T08,P09-T08 | G-ABSTENTION | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | I10 | Empirical minimalism | [design](MASTER_DEV_PLAN.md#scope) | P04-T09,P06-T12,P13-T07 | G-RESEARCH | PLANNED / NOT_RUN |
 | H1 | Multi-view partial-cue recall | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T08 | G-BINDING | PLANNED / NOT_RUN |
 | H2 | Shared binding versus simple fusion | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T05,P04-T08 | G-BINDING | PLANNED / NOT_RUN |
@@ -61,7 +61,7 @@ Rows with P01 ownership have phase-local main evidence; remaining runtime owners
 | E6 | Conflicting authorities | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P03-T08 | G-ABSTENTION | PLANNED / NOT_RUN |
 | E7 | Temporal late arrivals | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P01-T03,P09-T03 | G-TEMPORAL | P01 PASS E-P01-003; later ownership NOT_RUN |
 | E8 | Salience dramatic distractors | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P07-T07 | G-SALIENCE | PLANNED / NOT_RUN |
-| E9 | Unanswerable twins | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P02-T03,P03-T08 | G-ABSTENTION | PLANNED / NOT_RUN |
+| E9 | Unanswerable twins | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P02-T03,P03-T08 | G-ABSTENTION | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | E10 | ACL neighbor privacy | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T09,P12-T03 | G-ACL | PLANNED / NOT_RUN |
 | E11 | Memory poisoning | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P12-T02 | G-SECURITY | PLANNED / NOT_RUN |
 | E12 | Storage failure | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P11-T06,P12-T06 | G-OPS | PLANNED / NOT_RUN |
@@ -113,17 +113,17 @@ Rows with P01 ownership have phase-local main evidence; remaining runtime owners
 | C1 | Consolidation variants | [design](MASTER_DEV_PLAN.md#optional-mechanisms) | P08-T02,P08-T08 | G-CONSOLIDATION | PLANNED / NOT_RUN |
 | C2 | Consolidation variants | [design](MASTER_DEV_PLAN.md#optional-mechanisms) | P08-T03,P08-T08 | G-CONSOLIDATION | PLANNED / NOT_RUN |
 | C3 | Consolidation variants | [design](MASTER_DEV_PLAN.md#optional-mechanisms) | P08-T05,P08-T08 | G-CONSOLIDATION | PLANNED / NOT_RUN |
-| R0 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T02,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R1 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T03,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R2 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T05,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R3 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T06,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R4 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T10,P09-T13,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R5 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T11,P09-T13,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R6 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T12,P09-T13,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R7 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T03,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R8 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T05,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R9 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P06-T05,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
-| R10 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P06-T11,P02-T07 | G-RESEARCH | PLANNED / NOT_RUN |
+| R0 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T02,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R1 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T03,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R2 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T05,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R3 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P03-T06,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R4 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T10,P09-T13,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R5 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T11,P09-T13,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R6 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P09-T12,P09-T13,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R7 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T03,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R8 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P04-T05,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R9 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P06-T05,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
+| R10 | Required comparator families; R4-R6 version/native deployment verified before study | [design](MASTER_DEV_PLAN.md#evaluation) | P06-T11,P02-T07 | G-RESEARCH | P02 mechanics PASS E-P02-003; later ownership NOT_RUN |
 | ST0 | Blueprint experimental Stage0 | [design](MASTER_DEV_PLAN.md#phase-plan) | P03-T12 | G-RESEARCH | PLANNED / NOT_RUN |
 | ST1 | Blueprint experimental Stage1 | [design](MASTER_DEV_PLAN.md#phase-plan) | P05-T09 | G-RESEARCH | PLANNED / NOT_RUN |
 | ST2 | Blueprint experimental Stage2 | [design](MASTER_DEV_PLAN.md#phase-plan) | P06-T12 | G-RESEARCH | PLANNED / NOT_RUN |

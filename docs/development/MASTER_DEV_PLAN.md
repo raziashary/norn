@@ -1,6 +1,6 @@
 # Norn master development plan
 
-Version 1.2, 20 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **P01 canonical runtime/schema/tests are implemented and verified (E-P01-003).** Later retrieval, models, datasets and benchmark results remain absent. The pre-runtime baseline is historical, not the current source state.
+Version 1.3, 21 October 2026 (Asia/Bangkok). Scope anchor: [Subcortical Memory Blueprint v1.0](../vision/subcortical_memory_blueprint.md). Baseline: clean `main` at `81badbd`, one checkout, only the vision tracked before this suite. **P01 canonical runtime/schema/tests are implemented and verified (E-P01-003).** P02 synthetic evaluator/harness is implemented and verified (E-P02-003). Later retrieval/models/external datasets and efficacy results remain absent. The pre-runtime baseline is historical, not the current source state.
 
 The user requested an extensive engineering MDP, not merely a phase list. This document therefore owns the proposed algorithms, data contracts, logical schema, read/write/recovery flows, module responsibilities, experimental decomposition, and atomic implementation cards. Supporting records own goals, decisions, proof, traceability, and current state. Do not split these technical contracts into competing subsystem specifications.
 
@@ -36,7 +36,7 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01 Python paths and executables are accepted under ADR-0002/0012; later paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. Implement its bounded synthetic pilot; later phases and publication retain their own authority.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03+ and another main push retain their own authority.
 
 ### Owner setup and generative LLM policy
 
@@ -671,6 +671,16 @@ Retrieval: Recall/Precision/MRR/nDCG/Success@K on normalized eligible source/ato
 
 Answer/reliability: five-status accuracy, false answer, false abstention, selective risk/coverage/AURC, missing-reason accuracy, partial-answer usefulness, citation/span validity, wrong vintage, unauthorized exposure and degradation honesty. Confidence adds separate calibrated proper scoring only when valid labels/split exist. Never infer semantic entailment from source-ID existence. Severe privacy/fabrication/unsupported-action events are reported individually as well as aggregates.
 
+P02's implemented structured-capture scorer separates full acceptable sets from qualified
+partial claim subsets. PARTIALLY_SUPPORTED requires cited subset evidence and explicit
+missing fields matching gold; it cannot earn full CompleteSet for unavailable support.
+Partial usefulness measures supported requested slots, with its own denominator; full
+CompleteSet ITT uses fully supported cases. Calibration reads validated calibration-role
+run observations and binds completion/manifest/arm lineage, not caller-labeled JSON.
+The constant-probability control is a math diagnostic, never a learned model or held-out
+quality result. P02 publication/import checks are structural controls around trusted
+in-process arms, not an OS sandbox for arbitrary hostile plugin code.
+
 Costs: offline parsing/extraction/training/index/graph/storage/rebuild plus online embedding/retrieval/transitions/rerank/verification/generation. Warm/cold conditions, hardware/concurrency, queue/backlog, RAM/disk/VRAM, raw attempts/tokens and unknown failed billing are recorded. Quantiles need adequate samples and confidence context; do not call a tiny sample production p99. Failure records remain in the paired analysis with declared estimand; unsupported arms and harness faults are distinguished from candidate errors.
 
 ### Selection, freezing, and statistical proof
@@ -1092,14 +1102,14 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Source headings:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses.
 - **Entry:** P01-T12.
 - **Exit:** Paired runner/scorers pass perfect empty shuffled and corrupt-manifest controls; published input never exposes hidden truth.
-- **State:** PLANNED.
+- **State:** DONE.
 
 <a id="p02-t01"></a>
 
 ### P02-T01 — Construct deterministic typed hidden world
 
-- [ ] **P02-T01**
-- **State:** PLANNED.
+- [x] **P02-T01**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/world.py`, `benchmark/fixtures/entities.py`, `tests/test_world.py`.
 - **Depends:** P01-T12.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1108,16 +1118,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Same seed/config yields same digest and tier-specific seeds separate entity families.
 - **Negative proof:** World/gold import into runtime or publishing generator metadata as evidence fails custody.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_world.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_world.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t02"></a>
 
 ### P02-T02 — Render published sources and observations
 
-- [ ] **P02-T02**
-- **State:** PLANNED.
+- [x] **P02-T02**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/render.py`, `benchmark/fixtures/observations.py`, `tests/test_render.py`.
 - **Depends:** P02-T01.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1126,16 +1136,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Parser roundtrip preserves time, identity and quantities under source digests.
 - **Negative proof:** No hidden answer, slot, stratum or oracle edge can enter published names/text/metadata.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_render.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_render.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t03"></a>
 
 ### P02-T03 — Build E1 to E14 counterfactual families
 
-- [ ] **P02-T03**
-- **State:** PLANNED.
+- [x] **P02-T03**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/scenarios.py`, `tests/test_scenarios.py`.
 - **Depends:** P02-T02.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1144,16 +1154,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Each family has hand-checkable positive and near-twin negative including rare exceptions and EN/ID cues.
 - **Negative proof:** No forced sole positive for underspecified cue; hypothesis twin cannot be gold verified cause.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_scenarios.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_scenarios.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t04"></a>
 
 ### P02-T04 — Partition families and entity clusters before paraphrases
 
-- [ ] **P02-T04**
-- **State:** PLANNED.
+- [x] **P02-T04**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/partitions.py`, `tests/test_partitions.py`.
 - **Depends:** P02-T03.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1162,16 +1172,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** No prohibited entity/scenario overlap; strata/cluster adequacy or limitations reported.
 - **Negative proof:** Random paraphrase split or threshold tuning on locked labels invalidates study.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_partitions.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_partitions.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t05"></a>
 
 ### P02-T05 — Create annotation and disputed-label audit
 
-- [ ] **P02-T05**
-- **State:** PLANNED.
+- [x] **P02-T05**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/audit.py`, `tests/test_label_audit.py`, `docs/development/evidence/label_audit.md`.
 - **Depends:** P02-T04.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1180,16 +1190,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-check challenge cases and independent reviewers resolve disputed evidence sets.
 - **Negative proof:** Coordinator/model agreement cannot be called independent human truth; changed source invalidates audit binding.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_label_audit.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_label_audit.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t06"></a>
 
 ### P02-T06 — Enforce arm-visible information barriers
 
-- [ ] **P02-T06**
-- **State:** PLANNED.
+- [x] **P02-T06**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/publication.py`, `tests/test_leakage.py`.
 - **Depends:** P02-T05.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1198,16 +1208,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Evaluator-only canary labels are absent from exported corpus and candidate model input.
 - **Negative proof:** Deliberately leaked required slot in metadata/file/graph/prompt must fail actual validation.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_leakage.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_leakage.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t07"></a>
 
 ### P02-T07 — Define common-input and native adapters
 
-- [ ] **P02-T07**
-- **State:** PLANNED.
+- [x] **P02-T07**
+- **State:** DONE.
 - **Files:** `benchmark/adapters/contracts.py`, `benchmark/adapters/common.py`, `tests/test_adapter_contracts.py`.
 - **Depends:** P02-T06.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1216,16 +1226,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Perfect/extractive controls obey same scope and evidence budget; native input differences disclosed.
 - **Negative proof:** Unsupported feature not replaced silently; no hidden-world or foreign checkout imports.
 - **Gate:** G-REUSE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_adapter_contracts.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_adapter_contracts.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t08"></a>
 
 ### P02-T08 — Persist immutable run manifests and paired ledger
 
-- [ ] **P02-T08**
-- **State:** PLANNED.
+- [x] **P02-T08**
+- **State:** DONE.
 - **Files:** `benchmark/runs/manifest.py`, `benchmark/runs/runner.py`, `tests/test_runner.py`.
 - **Depends:** P02-T07.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1234,16 +1244,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Paired replay includes failed/timeout/unsupported observations and complete planned pair accounting.
 - **Negative proof:** Dropped row, changed hash, hidden model fallback and best-of-N selection invalidate run.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_runner.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_runner.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t09"></a>
 
 ### P02-T09 — Implement identity evidence-set and abstention metrics
 
-- [ ] **P02-T09**
-- **State:** PLANNED.
+- [x] **P02-T09**
+- **State:** DONE.
 - **Files:** `benchmark/metrics/normalize.py`, `benchmark/metrics/retrieval.py`, `benchmark/metrics/evidence_sets.py`, `benchmark/metrics/abstention.py`, `tests/test_metrics.py`.
 - **Depends:** P02-T08.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1252,16 +1262,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-calculated complete/partial/redundant evidence and answerable/unanswerable twins match expected.
 - **Negative proof:** Text similarity alone cannot earn identity credit; no citable denominator yields unavailable not fake perfect/zero.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_metrics.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_metrics.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t10"></a>
 
 ### P02-T10 — Implement paired statistics and calibration
 
-- [ ] **P02-T10**
-- **State:** PLANNED.
+- [x] **P02-T10**
+- **State:** DONE.
 - **Files:** `benchmark/statistics/paired.py`, `benchmark/statistics/calibration.py`, `tests/test_statistics.py`.
 - **Depends:** P02-T09.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1270,16 +1280,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Seeded clustered examples reproduce estimates/denominators and known calibration controls.
 - **Negative proof:** Unpaired cases, insufficient clusters and zero observed leaks cannot produce universal guarantee or fabricated CI.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_statistics.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_statistics.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p02-t11"></a>
 
 ### P02-T11 — Prove actual harness CLI and control scorecards
 
-- [ ] **P02-T11**
-- **State:** PLANNED.
+- [x] **P02-T11**
+- **State:** DONE.
 - **Files:** `benchmark/runs/cli.py`, `benchmark/runs/validate.py`, `tests/test_benchmark_cli.py`.
 - **Depends:** P02-T10.
 - **Source:** Datasets and benchmark alignment; Metrics statistical protocol and cost; Research hypotheses; [design](#evaluation).
@@ -1288,8 +1298,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Perfect covers support, empty abstains as applicable, shuffled loses identity score.
 - **Negative proof:** Corrupt manifest, missing ledger and stage-mislabeled score fail CLI; failures remain visible.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_benchmark_cli.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_benchmark_cli.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p03"></a>

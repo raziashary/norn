@@ -272,6 +272,19 @@ def validate(root: Path) -> CheckResult:
                        len(gate_ids), len(trace_ids), len(texts))
 
 
+def completion_without_evidence(text: str) -> str:
+    """Damage an actual completed card, independent of the currently active phase."""
+    cards = list(re.finditer(r"^### P\d{2}-T\d{2} — .+$", text, re.M))
+    for index, card in enumerate(cards):
+        end = cards[index + 1].start() if index + 1 < len(cards) else len(text)
+        body = text[card.end():end]
+        if field(body, "State").rstrip(".") == "DONE":
+            changed = re.sub(r"^- \*\*Evidence:\*\*.*$", "- **Evidence:** NOT_RUN.",
+                             body, count=1, flags=re.M)
+            return text[:card.end()] + changed + text[end:]
+    raise ValueError("self-test needs a completed baseline card")
+
+
 def self_test(root: Path) -> int:
     baseline = validate(root)
     if baseline.errors:
@@ -285,7 +298,7 @@ def self_test(root: Path) -> int:
         ("duplicate task", "duplicate-task", "MASTER_DEV_PLAN.md", lambda s: s + "\n### P00-T01 — Duplicate\n"),
         ("missing consumer", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Consumer:\*\*.*\n", "", s, count=1, flags=re.M)),
         ("missing negative proof", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Negative proof:\*\*.*\n", "", s, count=1, flags=re.M)),
-        ("false completed task", "false-done", "MASTER_DEV_PLAN.md", lambda s: s.replace("- [ ] **P02-T01**\n- **State:** PLANNED.", "- [x] **P02-T01**\n- **State:** DONE.", 1)),
+        ("false completed task", "false-done", "MASTER_DEV_PLAN.md", completion_without_evidence),
         ("undefined dependency", "undefined-dependency", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P99-T99.", 1)),
         ("cyclic dependency", "dependency-cycle", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P00-T02.", 1)),
         ("undefined gate", "undefined-gate", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Gate:** G-DOC.", "- **Gate:** G-NOSUCH.", 1)),
@@ -305,7 +318,7 @@ def self_test(root: Path) -> int:
                 shutil.copy2(root.parent / "README.md", copied.parent / "README.md")
             if (root.parent.parent / "AGENTS.md").is_file():
                 shutil.copy2(root.parent.parent / "AGENTS.md", copied.parent.parent / "AGENTS.md")
-            for directory in ("src", "tests"):
+            for directory in ("src", "benchmark", "tests"):
                 source = root.parent.parent / directory
                 if source.is_dir():
                     shutil.copytree(source, copied.parent.parent / directory,
@@ -314,6 +327,11 @@ def self_test(root: Path) -> int:
                 source = root.parent.parent / filename_root
                 if source.is_file():
                     shutil.copy2(source, copied.parent.parent / filename_root)
+            copied_baseline = validate(copied)
+            if copied_baseline.errors:
+                print(f"FAIL copied baseline before {name}: {copied_baseline.errors}")
+                failed += 1
+                continue
             target = copied / filename
             if mutate is None:
                 target.unlink()

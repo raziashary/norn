@@ -1,12 +1,12 @@
 # Readiness matrix
 
-Updated 20 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior, not card count or percentage. The actual repository contains vision, documentation and the P01 local canonical implementation verified in E-P01-003. Source present, tested, installed-consumer proven, measured, and externally transferred are different evidence levels. Algorithm outcome is also separate from engineering completion.
+Updated 21 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior, not card count or percentage. The actual repository contains vision, documentation, P01 local canonical implementation (E-P01-003) and P02 synthetic harness (E-P02-003). Source present, tested, installed-consumer proven, measured, and externally transferred are different evidence levels. Algorithm outcome is also separate from engineering completion.
 
 | Capability | Implementation | Behavioral proof | Efficacy outcome | Evidence / blocker |
 |---|---|---|---|---|
 | Development suite | VERIFIED_DOCUMENTATION | DOC_CLI_AND_REVIEW_PASS | NOT_APPLICABLE | P00 complete; E-DOC-001 through E-DOC-004; no runtime capability implied |
 | Canonical contracts and durable source memory | IMPLEMENTED | INSTALLED_SYNTHETIC_CONSUMER_PASS | NOT_EVALUATED | P01 DONE; E-P01-003;63 tests/installed source+CLI/full review; source/graph/worker consumers remain later tasks |
-| Hidden world and evaluation harness | PLANNED | NOT_RUN | NOT_EVALUATED | P02; custody/scorer controls absent |
+| Hidden world and evaluation harness | IMPLEMENTED | INSTALLED_SYNTHETIC_CONTROLS_PASS | NOT_EVALUATED | P02 DONE; E-P02-003;135 cases/1,620 main pairs/405 installed pairs,42 reviewed sample,97 tests/end review resolved; no actual retrieval/study efficacy |
 | Strong R0-R3 and qualified recall | PLANNED | NOT_RUN | NOT_EVALUATED | P03; no retrieval model/index/channel readers; P01 canonical exact reader is proven |
 | Functional views/shared binding | PLANNED | NOT_RUN | NOT_EVALUATED | P04; B0-B5 studies absent |
 | Loss/separation frontier | PLANNED | NOT_RUN | NOT_EVALUATED | P05; T0-T7/toys/real embedding studies absent |

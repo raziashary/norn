@@ -1,5 +1,41 @@
 # Architecture and research decision log
 
+## ADR-0016 — P02 end-review corrections before publication
+
+- **Status:** RESOLVED before publication; sole end reviewer verified owner fixes and actual consumer assertions.
+- **Question:** How must calibration prove partition custody and qualified partial answers prove support?
+- **Why:** Sole Luna Medium end reviewer found that a caller-supplied calibration string could relabel test data, and that the initial scorer lacked a tested qualified-partial path. Main confirmed both by tracing the actual CLI/scorer bodies.
+- **Options:** Leave untrusted numeric demos outside promoted artifacts; bind fitting to actual authorized run artifacts. Treat every incomplete answer as error; separately score supported subsets and explicit unknowns.
+- **Recommendation / decision:** Calibration CLI reopens validator-checked calibration/calibrator runs, binds fitted values to manifest/completion/arm lineage and consumes actual emitted confidence/target rows. A named constant0.5 diagnostic control supplies math-only forecasts; no model or provider. Validator regenerates deterministic world/partition/source/gold lineage, so relabeling and rehashing smoke data still fails. Qualified partial gold has supported subsets and explicit missing fields; result/scorer enforce them and distinguish full completeness, partial usefulness and status accuracy. The existing42 reviewed cases keep identical canonical gold/source bindings; optional inapplicable gold annotations are omitted from serialization. One additional unaudited E9 partial case exercises the fifth status.
+- **What affects what:** P02-T04/T08/T09/T10/T11, adapter result/Gold/metrics/calibration CLI/tests/docs. P01 contracts/schema are unchanged. Earlier P02 runs are invalidated by changed code digest and must be regenerated; their receipts remain historical evidence.
+- **My answer (editable):** Main resolves confirmed in-scope defects against blueprint17.3/23.2 and MDP evaluation; this does not invent an owner response or authorize a new dependency, study or push.
+- **Authority:** Existing P02 mandate, end-review findings, blueprint qualified partial answers/calibration custody and accepted ADR-0015.
+- **Verification:** Focused partial-support/unknown/overclaim controls, actual calibration CLI and rehashed partition-relabel rejection, retained42-case pack hash, full regression/build/installed smoke and same-reviewer resolution PASS in E-P02-003; direct/relative/imported-dynamic-capability aliases have dedicated rejection controls.
+
+## ADR-0015 — P02 partition unit and transfer boundary
+
+- **Status:** ACCEPTED by owner on21 October2026.
+- **Question:** Does scenario-family/entity partitioning require holding out whole E1–E14 task categories, or independent scenario/entity instances within each category?
+- **Why:** Every failure stratum needs custody coverage; the blueprint's wording leaves the grouping level ambiguous.
+- **Options:** Disjoint scenario/entity instances in every category; hold out entire task categories and study category transfer separately.
+- **Recommendation / decision:** Group whole scenario/entity instances before wording variation, with all14 categories in each tier. The generator fixes disjoint cluster/entity IDs before paraphrases. No template-level or task-category generalization claim follows.
+- **What affects what:** P02-T04 partitions, generator/source/gold manifests and later study interpretation. Smoke/development/calibration/locked roles remain distinct; no locked execution or threshold approval is granted.
+- **My answer (editable):** Owner answered “Approve disjoint instances in every category (Recommended)” to question reply `call_9b7522e72d1b4d489d220db051b9ddf3`.
+- **Authority:** Explicit owner clarification of blueprint22.3 and RESEARCH_PROTOCOL dataset construction step5.
+- **Verification:** Disjoint instance/entity/cluster tests across all four tiers, with every E1–E14 category represented; final phase receipt records commands. This approval does not change the reviewed42-case pack.
+
+## ADR-0014 — P02 mandate, benchmark ownership and editor configuration
+
+- **Status:** ACCEPTED_SCOPE; grounded implementation details; owner human sample reviewed.
+- **Question:** What does the P02 GO authorize and how is its independent benchmark kept separate?
+- **Why:** Owner explicitly requested P02-T01 through T11. P01 is published at4618156. Owner also added BasedPyright settings inside the mypy table, then confirmed their intended analyzer through the question tool.
+- **Options:** Reuse the accepted Python/std-library environment and planned benchmark paths; introduce foreign tooling or conflate controls with real retrieval arms.
+- **Recommendation / decision:** Original `benchmark/` evaluator package, standard-library typed fixtures/rendering/JSON artifacts/adapters/metrics/statistics/CLI; no foreign source copying, runtime-to-evaluator import, provider call or new dependency. Published inputs and evaluator-only gold/labels remain distinct. Installed packaging includes the planned benchmark CLI; P01 runtime/schema stay unchanged. Move the owner's diagnostics into `[tool.basedpyright]`, preserving each value, without installing that analyzer or weakening strict mypy. Official configuration reference: https://docs.basedpyright.com/latest/configuration/config-files/.
+- **What affects what:** All eleven P02 cards, packaging and editor table. P02 controls establish harness mechanics; R0-R10 algorithms, P03 retrieval and scientific efficacy remain later work. Code-first truth is constructed truth, not independent human annotation. Prepare concrete stratified audit material and require real human provenance; disputed cases need independent double annotation/adjudication before an audited claim.
+- **My answer (editable):** Owner gave P02 GO and selected BasedPyright editor settings. On21 October2026 the owner personally reviewed and agreed with all42 cases in pack `ae3dd3091f60b15124ab3a6cae517c9ecb8a696575f2503de2c93372a6afbb9b` through question reply `call_2127135824264567b9273ce521f44fa9`. The pack was recomputed unchanged before42 digest-bound HUMAN judgments were recorded. No disputes were reported; no model reviewer is called a human. Other details implement the existing MDP rather than inventing owner answers.
+- **Authority:** Current P02 goal, question-tool response, MDP P02/evaluation, RESEARCH_PROTOCOL dataset custody and blueprint22–23.
+- **Verification:** Start adversary GPT6 Luna Medium read-only audit complete; no ambient credential-like variables, no .env read. Current worktree has only the owner's diagnostic additions at entry. Exact tests and evidence will be recorded as executed.
+
 Date: 20 October 2026 (Asia/Bangkok). Status, authority, owner answer, and verification are separate fields. A proposed recommendation is not a decision. Read the latest user instruction and editable owner answer before dependent implementation. Preserve prior answers when superseding; retract an incorrect claim visibly rather than deleting its history.
 
 ## ADR-0001 — Scope and document ownership

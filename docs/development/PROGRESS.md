@@ -1,6 +1,6 @@
 # Current progress
 
-Updated 20 October 2026 (Asia/Bangkok). Current mandate: complete P01 under the owner's explicit GO and approved question-tool decisions (ADR-0012). P00 documentation suite is verified. P01 is complete with scoped evidence E-P01-003; P02 remains unauthorized/planned.
+Updated 21 October 2026 (Asia/Bangkok). Current mandate: complete P02 under explicit owner GO. P01 is published at4618156; P02 starts with existing owner editor-setting additions preserved (ADR-0014).
 
 ## Derived phase register
 
@@ -10,7 +10,7 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 |---|---|---|---|---|---|
 | P00 | 6 | 6 | 0 | DONE | E-DOC-001 through E-DOC-004 |
 | P01 | 12 | 12 | 0 | DONE | E-P01-001 through E-P01-003 |
-| P02 | 11 | 0 | 0 | PLANNED | NOT_RUN |
+| P02 | 11 | 11 | 0 | DONE | E-P02-003; final main/installed proof and review resolved |
 | P03 | 12 | 0 | 0 | PLANNED | NOT_RUN |
 | P04 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 | P05 | 9 | 0 | 0 | PLANNED | NOT_RUN |
@@ -23,14 +23,12 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P12 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 | P13 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 
-Total atomic tasks: 139. Total completed: 18. Runtime tasks completed: 12. No efficacy outcomes evaluated.
+Total atomic tasks: 139. Total completed: 29. Runtime tasks completed: 23. No efficacy outcomes evaluated.
 
 ## Current work
 
-P01 complete: 63 tests pass without skips; formatting/lint/strict mypy pass; wheel/sdist build; documentation15/15 damaged-suite controls; final isolated installed CLI scenario passes with24 source/SQL files byte-identical to checked source. Full-blueprint Luna Medium end reviewer found three material defects; owning fixes and follow-up controls/resolution pass. See E-P01-003 and earlier failure history in E-P01-001/002.
+P02 DONE11/11 and parent exit proven. Final suite97PASS/no skips, Ruff/type/build/docs checks,1,620 paired control observations,405 fresh installed-wheel observations and123 run-bound calibration forecasts are verified. Owner reviewed42 exact sample cases; other cases remain unaudited. Sole GPT6 Luna Medium end reviewer confirmed calibration, qualified-partial, CLI integration and import-alias findings resolved. Final source/artifact receipts and limits: E-P02-003; earlier failures/checkpoints retained in001/002. No efficacy outcome evaluated.
 
 ## Next authorized work
 
-Current P01 mandate is fulfilled. P02 and later phases remain PLANNED; wait for the owner's next direction. No new main push is authorized. Prepare/review the scoped Conventional Commit locally; any later main publication needs applicable owner approval.
-
-No Groq key loaded, model/provider call, service or listener started. No task Python/CLI processes remain. Automatic approval review blocked deletion of the disposable installed-wheel environment in Windows Temp; that static artifact remains, as recorded in E-P01-003. Existing owner .venv/.env remain intact and ignored.
+P02 mandate is complete. P03+ remain PLANNED pending their own GO; another main push requires explicit authority. Preserve E-P02-003 controls/lineage while adding future real retrieval through public adapters. No task-owned processes/listeners or credentials/provider calls remain. Two VS Code isort processes use the environment and are not task-owned; leave them running.

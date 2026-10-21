@@ -1,6 +1,6 @@
 # Norn development suite
 
-Updated 20 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime is implemented and verified (E-P01-003); later research components remain planned. Current mandate includes the owner setup/instructions amendment and scoped publication; Phase 1 is **DONE** under ADR-0012, with proof E-P01-003.
+Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime is implemented and verified (E-P01-003). P02 synthetic harness is implemented and verified (E-P02-003):97 tests, actual main/installed CLI readback and sole end review resolved. P03+ remain planned; no efficacy study has run. Current mandate is P02 GO (ADR-0014/0015).
 
 Read the root [project instructions](../../AGENTS.md), then start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
 
@@ -55,8 +55,8 @@ uv sync --locked
 uv run --no-env-file norn capabilities
 uv run --no-env-file norn --store .norn init
 uv run --no-env-file pytest -q
-uv run --no-env-file ruff check src tests
-uv run --no-env-file ruff format --check src tests
+uv run --no-env-file ruff check src benchmark tests
+uv run --no-env-file ruff format --check src benchmark tests
 uv run --no-env-file mypy
 uv build
 uv run --no-env-file python tests/test_foundation_cli.py
@@ -77,3 +77,50 @@ The CLI trusts its local OS operator and store-directory permissions. `--princip
 Fixture annotations are explicit span checks, not general semantic extraction. SUPPORTED means eligible anchored fixture evidence; it does not establish normative authority or real-world truth. Inference/hypothesis/aggregate alone do not support that outcome. Corrections require matching subject, predicate and qualifiers, an explicit validity window and ADMIN for supersession. Reads never rewrite facts. Exact canonical reads report CANONICAL_FALLBACK/INDEX_PENDING and do not promise lexical/dense/graph coverage.
 
 `deny` applies immediate serving denial and returns a metadata-only pending purge manifest, including actual blob digest selectors. Shared blob selectors remain pending until reference/retention reconciliation; they do not authorize erasing unrelated occurrences. SQL/blobs/derived representations/traces/backups remain explicit PENDING obligations; no full erasure or parameter unlearning is implemented. `backup <new-directory>` verifies a single-namespace local SQL/blob copy, including existing tombstones. Reconciliation of older backups against later deletions, distributed workers, purpose-specific normative approval, arbitrary NLP and research efficacy belong to later phases. No power-cut or production-readiness claim follows from local process-crash tests.
+## Synthetic benchmark harness
+
+P02 uses deterministic fictional structured capture records, not arbitrary-language extraction
+or a production retrieval system. From the repository root:
+
+```powershell
+uv run --no-env-file norn-benchmark run-controls .norn/my-controls --judgments docs/development/evidence/label_judgments.json --arms perfect empty shuffled extractive error timeout unsupported invalid not_run native:R4 native:R5 native:R6
+uv run --no-env-file norn-benchmark validate .norn/my-controls --report .norn/my-scorecard.json
+uv run --no-env-file norn-benchmark --help
+```
+
+Choose a new run/report path; artifacts are created exclusively and cannot be overwritten.
+Reopening verifies code/source/gold/audit/input digests, declared pairs, every ledger row,
+attempts, raw/normalized results, exact source locators, stages and budgets. Code changes
+invalidate old runs. Artifacts stay ignored under `.norn/`; preserve the manifest and
+completion digests in an evidence receipt before using a report.
+
+The `perfect` arm is an evaluator-gold oracle diagnostic. Common controls receive only
+strict published captures; `extractive` is a lexical-overlap mechanics control, not BM25/R0.
+Native R4/R5/R6 entries report UNSUPPORTED and ingestion/model differences explicitly.
+Fault controls inject envelopes rather than exercising real backend failures. Results
+measure harness mechanics, not memory quality, security against hostile plugins or
+research efficacy. P03 owns actual retrieval; later phases own real graph/fault/transfer studies.
+
+The owner personally reviewed the exact42-case [audit pack](evidence/label_audit.md);
+[judgments](evidence/label_judgments.json) bind each reviewed source/gold pair. No disputes
+were reported. The remaining cases are constructed and unaudited. Changing reviewed
+sources/gold invalidates bindings. Omit `--judgments` only for an explicitly unaudited
+mechanics run; its report remains PENDING_OR_DISPUTED. Role/partition options separate
+smoke, development and calibration; locked confirmation is deliberately unavailable here.
+
+`calibrate <run-directory> <new-output.json> --arm confidence` reopens a verified
+calibration/calibrator run and fits actual probability/correctness rows. Generate its
+math-only forecasts with `run-controls <new-directory> --partition calibration --role
+calibrator --arms confidence`; this explicitly named control emits constant0.5 forecasts.
+The artifact binds manifest/completion/arm lineage, bins/counts and raw/calibrated
+fit-sample scores. Self-labeled JSON or relabeled smoke runs cannot supply calibration.
+These scores are not held-out performance. Confidence-free controls cannot be fitted.
+Cluster/bootstrap controls are exploratory, training seeds remain null when no learning
+occurs, and small samples produce no interval. No practical margins/power or locked
+protocol has been selected. No Groq call, model download, database or listener is needed.
+
+Qualified partial cases carry source-supported claim subsets and explicit unknown fields.
+Their full CompleteSet remains unavailable when a required source is missing, while
+partial correctness/usefulness are reported separately. A full answer on that incomplete
+snapshot counts as an overclaim. Five-status classification, ambiguity/missing-reason
+accuracy and both answer/refusal failures retain their applicability denominators.

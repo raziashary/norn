@@ -11,12 +11,13 @@ dependencies = ["tzdata>=2025.2"]
 
 [project.scripts]
 norn = "norn.cli:main"
+norn-benchmark = "benchmark.runs.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.14,<1", "mypy>=1.18,<2", "build>=1.3,<2"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/norn"]
+packages = ["src/norn", "benchmark"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -32,4 +33,48 @@ select = ["E", "F", "I", "B", "UP"]
 [tool.mypy]
 python_version = "3.14"
 strict = true
-files = ["src/norn"]
+files = ["src/norn", "benchmark"]
+
+[tool.basedpyright]
+# Owner-selected editor diagnostics; strict mypy remains a separate build check.
+# REAL ERRORS ONLY - Suppress all false positive noise
+reportMissingImports = "error"  # Only real missing imports
+reportUndefinedVariable = "error"  # Only real undefined variables
+reportGeneralTypeIssues = "none"  # Too many false positives
+reportOptionalSubscript = "none"  # Pydantic false positives
+reportOptionalMemberAccess = "none"  # Pydantic false positives
+reportOptionalCall = "none"  # Pydantic false positives
+reportOptionalIterable = "none"  # Async false positives
+reportOptionalContextManager = "none"  # Async false positives
+reportOptionalOperand = "none"  # Pydantic false positives
+reportTypedDictNotRequiredAccess = "none"  # Dict access false positives
+reportPrivateUsage = "none"  # Internal library usage
+reportUnknownMemberType = "none"  # Pydantic models
+reportUnknownVariableType = "none"  # Dynamic types OK
+reportUnknownArgumentType = "none"  # Function args OK
+reportUnknownParameterType = "none"  # Function params OK
+reportUnknownLambdaType = "none"  # Lambda OK
+reportMissingParameterType = "none"  # Gradual typing OK
+reportImplicitStringConcatenation = "none"  # Style preference
+reportUnusedImport = "warning"  # Helpful but not error
+reportUnusedVariable = "warning"  # Helpful but not error
+reportDeprecated = "warning"  # Helpful but not error
+reportExplicitAny = "none"  # Any is OK for flexibility
+reportMissingTypeStubs = "none"  # Third-party libraries
+reportIncompatibleMethodOverride = "warning"  # Inheritance issues
+reportIncompatibleVariableOverride = "warning"  # Class variables
+reportUnnecessaryTypeIgnoreComment = "none"  # Don't complain about old comments
+reportUnnecessaryIsInstance = "none"  # Sometimes needed for clarity
+reportUnnecessaryCast = "none"  # Sometimes needed for type checkers
+reportUnnecessaryComparison = "none"  # Sometimes needed for logic clarity
+reportAssertAlwaysTrue = "none"  # False positives with Pydantic
+reportSelfClsParameterName = "warning"  # Style issue
+reportImplicitRelativeImport = "none"  # Project style decision
+reportInvalidStubStatement = "none"  # Internal stubs
+reportIncompleteStub = "none"  # External stubs
+reportUnsupportedDunderAll = "none"  # __all__ management
+reportUnusedClass = "none"  # May be used by reflection
+reportUnusedFunction = "none"  # May be used by plugins/routes
+reportDuplicateImport = "warning"  # Helpful to clean up
+reportConstantRedefinition = "warning"  # Potential bug
+reportInvalidTypeForm = "error"  # Real syntax error
