@@ -1,6 +1,6 @@
 # Project learning register
 
-Updated 21 October 2026 (Asia/Bangkok). Record what happened, why, evidence, and future method. Suggestions/untested hypotheses remain labeled. Preserve retractions rather than deleting prior claims.
+Updated 22 October 2026 (Asia/Bangkok). Record what happened, why, evidence, and future method. Suggestions/untested hypotheses remain labeled. Preserve retractions rather than deleting prior claims.
 
 ## L001 — Reference depth does not transfer authority
 
@@ -18,9 +18,9 @@ A large documentation-authoring command was rejected before process creation wit
 
 The end reviewer identified ambiguous P04-T09/P05 entry wording. The earlier broad statement, ~~costly downstream mechanisms require a positive binding prerequisite~~, did not distinguish already specified same-Stage1 controls from new expensive extensions. The MDP now explicitly permits P05 T0-T7/separation after a negative preliminary P04 result, treats the dependency as evidence/sequence handoff, and places final Stage1 advancement at P05-T09. New B5/CDZ extensions retain their distinct prerequisite. Future method: name whether a dependency needs a produced artifact, a completed investigation, or a positive scientific result; these are different conditions.
 
-## Experimental evidence remains pending
+## Experimental evidence and limits
 
-P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. P03 adds actual conventional-retrieval development outcomes and descriptive CPU-serial costs (E-P03-003), with scientific superiority INCONCLUSIVE. P04 numerical controls and a mechanical16-update smoke now exercise training; the full current frozen-backbone study is running. Locked/external efficacy and production capacity remain unmeasured. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. P03 adds actual conventional-retrieval development outcomes and descriptive CPU-serial costs (E-P03-003), with scientific superiority INCONCLUSIVE. P04 adds actual200-update frozen-E5 training and a complete4,140-condition source-matched study (E-P04-005), with no observed decomposition benefit beyond matched adapters and scientific outcome INCONCLUSIVE. Locked/external efficacy and production capacity remain unmeasured. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
 
 ## L005 — Provenance history needs its own recording sequence
 
@@ -113,3 +113,11 @@ A backup must preserve an old immutable generation even when its geometry/checkp
 ## L018 — Derived-artifact selectors include copied model references
 
 The P04 end reviewer found the feature selector omitted checkpoint bytes copied into projection CAS. Main fixed the owning bounded query to UNION affected manifest checkpoint digests with feature digests. A real-E5 two-event B3 control proves both pending selectors, continued shared-checkpoint byte/reference integrity and source recall after rebuilding the unaffected event. Pending selectors do not grant permission to unlink shared bytes or imply model unlearning/physical purge. E-P04-005.
+
+## L019 — Cache labels must describe observed work
+
+P04's static resident-after-projection annotation was false after empty projections: preserved002 had 12 first recalls that loaded the encoder. Main and the sole reviewer independently derived these from ledger order and actual project/query attempt counts. The measured times and rankings remain valid; the interpretation is corrected openly, with cold starts separately counted and first quantiles labeled mixed-state. Rare cold starts can be omitted by nearest-rank p99. Preserve immutable artifacts, disclose the annotation defect and do not turn a repeated warm query into a cache-speedup or production-tail claim. Final003 independently confirms12 cold first queries with its own ledger-bound counts/times, rather than borrowing002 values. E-P04-005.
+
+## L020 — Installed readers need their test-only imports
+
+The final installed standalone reader stopped before execution because its runtime-only environment lacked pytest imported at the top of the test file. The completed experiment/source/wheel remained valid. Main preserved the failure, added the already-approved test tool from local cache to that isolated environment, and ran all seven previously unexecuted proof stages under a distinct003b receipt. Installed105-file parity still matched. Future method: inspect the complete standalone entry-point imports when preparing a clean installed test environment; distinguish setup failures from product/scoring failures and rerun only the unfinished proof. E-P04-005.

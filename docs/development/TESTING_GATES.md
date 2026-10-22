@@ -1,6 +1,6 @@
 # Testing gates
 
-Updated 21 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC and implemented P01–P03 checks are runnable. Unimplemented runtime gates remain NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
+Updated 22 October 2026 (Asia/Bangkok). Gates are proof contracts, not a list of passing tests. G-DOC and implemented P01–P04 checks are runnable. Unimplemented runtime gates remain NOT_RUN; paths/commands are planned until their producer is implemented and approved. Gate states are NOT_RUN/PARTIAL/PASS/FAIL/BLOCKED. A phase-local pass does not close later obligations.
 
 ## Execution and evidence rules
 
@@ -152,13 +152,13 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 ## G-BINDING — Complementary views and aligned cue geometry
 
-- **State:** PARTIAL.
+- **State:** PASS.
 - **Owner phases:** P04.
 - **Owning atomic tasks:** P04-T01, P04-T02, P04-T03, P04-T04, P04-T05, P04-T06, P04-T07, P04-T09.
 - **Positive / completion contract:** B0-B4 matched bytes/backbone/input/exposure actual query-to-memory reader; B5 explicit optional capability; conditional signal evaluated.
 - **Negative / falsification control:** Attention naming duplicate views extra budget and untrained fusion cannot be credited alignment; masks preserve unknowns.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P04-005:158-test/105-file installed/all7 public source and correction/revoke/deny controls; actual trained B3/B4 and matched S3/S4, masks/geometry/backup/replay/checkpoint selectors and sole source review resolved. Full0024140-pair exploratory report is source-versioned; final003 standalone/corruption/artifact review remains pending. No empirical superiority or whole-phase closure yet.
+- **Evidence:** E-P04-005; all9cards and parent exit verified.158 tests, actual B0–B4/matched-single frozen-E5 study4,140conditions, persisted source/geometry/packet reader, eight intended corruption rejections, final installed all7 source/correction/revoke/deny consumers, native cancellation/deadline and105-file parity pass. Sole source/artifact review resolved. Scientific outcome INCONCLUSIVE; no decomposition/attention efficacy or operational promotion. B5 explicitly unsupported. Static cache metadata is disclosed/corrected in evidence interpretation; later learning/graph/sealed obligations remain separate.
 
 ## G-LEARNING — Multi-objective training and checkpoints
 
@@ -298,7 +298,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Paired published inputs, source/model/budget/clock manifests, hand-calculated and perfect/empty/shuffled scorer controls, observed retrieval stages, full attempt/failure accounting, family-cluster uncertainty and pilot-frozen decision criteria. Actual report reopens exact raw artifacts and declares inference scope.
 - **Negative / falsification control:** Dropped errors, hidden label access, unequal resources, unobserved-stage metrics, model/coordinator labels called independent human truth, test tuning and post-result changed thresholds invalidate the affected claim. Null and unsupported outcomes remain visible.
 - **Phase-local boundary:** P02 proves harness/scorer mechanics; later phases prove specific mechanism experiments. Neither establishes P13 locked superiority. Whole-gate PASS requires declared multi-phase scope and evidence, not a successful control alone.
-- **Evidence:** E-P02-003/E-P03-003:540 paired observations, all14 categories/language/variant strata, applicability denominators, offline/cold/repeated costs and exploratory clustered uncertainty read back. Outcome INCONCLUSIVE; unaudited/reused development instances, no frozen practical margin/power or sealed/external study. Later owners remain NOT_RUN.
+- **Evidence:** E-P02-003/E-P03-003/E-P04-005; P04 final4,140conditions/all14categories/disjoint development roles, conditional/cue/capacity/resource tables and exploratory14-cluster seed-aware uncertainty read back. Outcome INCONCLUSIVE, matched singles erase decomposition-specific gain. Unaudited/reused synthetic instances, tiny cue strata, no practical margin/power, locked/external confirmation or general entailment. Later phase owners remain NOT_RUN; this cross-phase gate stays PARTIAL.
 
 ## G-REPRODUCIBLE — Clean consumer and complete final evidence
 

@@ -1,6 +1,6 @@
 # Norn goal and acceptance
 
-Updated 21 October 2026 (Asia/Bangkok). Current mandate is all nine P04 tasks; ADR-0020 choices are owner-approved. All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. P03 main publication needs separate authority. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Current documentation mandate
 
@@ -28,7 +28,7 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 | O01 | Source-backed event/atom/edge identity and independent epistemic/time/scope contracts | P01 foundation complete, E-P01-003; later source/retrieval paths keep their own gates | DONE |
 | O02 | Current ACL, correction, historical knowledge and deletion controls | P01/P03 local controls verified; P09/P11/P12 remain | IN_PROGRESS |
 | O03 | Fair conventional strong baseline and evidence-qualified recall | P02/P03; E-P03-003; actual local field-support/measurement proof, scientific outcome INCONCLUSIVE | DONE |
-| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04 active/ADR-0020; P05 planned; G-BINDING/G-LEARNING/G-SEPARATION | IN_PROGRESS |
+| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04 DONE/E-P04-005, outcome INCONCLUSIVE; P05 planned; G-BINDING PASS, learning/separation remain future | IN_PROGRESS |
 | O05 | Measured graph activation benefit and false-association tradeoff | P06; G-GRAPH/G-DIFFUSION; fixed-seed topology controls and path source proof | PLANNED |
 | O06 | Explicit CDZ/salience/consolidation retain/reject decisions | P07/P08; G-CDZ/G-SALIENCE/G-CONSOLIDATION; fidelity, rare exceptions, correction/revoke | PLANNED |
 | O07 | Real next-turn consumer and source-compatible external transfer | P09; G-INTEGRATION/G-TRANSFER; restarted host and separate retrieval/fixed-generator tracks | PLANNED |
@@ -38,13 +38,13 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 
 ## Baseline and dependencies
 
-Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. The owner subsequently selected Python/uv setup and Groq generative options and created `.venv/`, `.env` and `.gitignore`. P01 package/time/retraction/synthetic retention/original-code choices are approved. ADR-0017/0018 now approve pinned P03 retrieval models/dependencies/schema3/isolated workers. Later training, production retention and external backends remain pending. A plan path is not evidence that its producer exists.
+Before this suite the repository tracked only `docs/vision/subcortical_memory_blueprint.md`, at `81badbd` on main. No runtime manifest, package, schema, data, model, benchmark or test harness existed. No measurements justify performance targets. The owner subsequently selected Python/uv setup and Groq generative options and created `.venv/`, `.env` and `.gitignore`. P01 package/time/retraction/synthetic retention/original-code choices are approved. ADR-0017/0018 now approve pinned P03 retrieval models/dependencies/schema3/isolated workers. ADR-0020 approves the bounded P04 frozen-E5 training study. Other training, production retention and external backends remain pending. A plan path is not evidence that its producer exists.
 
 The phase sequence preserves Stage0-6 and hierarchical ablations. Do not run a giant Cartesian product. Freeze practical numeric efficacy/regression margins after pilot power estimation and before locked testing; current unknown targets are not a reason to invent numbers. Integrity controls apply from P01. More expensive mechanisms require their own prerequisites; rejecting them does not stop evaluation of a simpler retained winner.
 
 ## Completion discipline
 
-For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate is the explicit P03 GO following published P02. ADR-0017 records model/dependency/schema authority; another main publication still needs applicable push authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
+For each claimed outcome, inspect authoritative source, actual consumer, executed check, artifact identity, source/data/model versions, error/unsupported cases and proof scope. A file, prose promise, plan checkbox, green documentation check or narrow helper test is insufficient. Current mandate is all nine P04 cards following verified P03. ADR-0020 records training/comparison/integration authority; current scoped main publication is approved in ADR-0023; future publication still needs its own authority. MDP owns atomic task state; PROGRESS and READINESS_MATRIX derive summaries rather than competing checklists.
 
 ## P01 acceptance — verified
 
@@ -62,8 +62,10 @@ Owner GO21 October2026 authorizes all eleven P02 tasks; P01 baseline4618156. Req
 
 ## P03 acceptance — verified
 
-Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04 is now separately mandated below; P05+ and another main push have no mandate.
+Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04 is now separately mandated below; P05+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023).
 
-## P04 acceptance — active after owner approval
+## P04 acceptance — verified
 
 Prove all nine exact MDP cards: source-backed context/action views, semantic/S0 masks and measured fan-out; actual B1/B2 retrieval; genuinely trained aligned B3/B4 and immutable checkpoints; honest optional B5 disposition; held-out ambiguity-aware B0–B4 and capacity/conditional/cost comparisons; preliminary decision and installed consumer/end review. ADR-0020 training/comparison/integration choices are accepted. No helper-only or untrained substitute can close this phase.
+
+All nine P04 cards and the parent exit are DONE, E-P04-005:158 tests, final4,140conditions, actual trained B3/B4/capacity controls, installed source/native/guard proof and sole end-review resolution. G-BINDING passes its investigation contract; scientific outcome remains INCONCLUSIVE and O04 remains IN_PROGRESS because P05 losses/separation are not run. B5 is explicitly unsupported. Known static cache metadata is corrected in the evidence interpretation and disclosed under R15; no SLO/efficacy claim. No owned process/listener remains.

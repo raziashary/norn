@@ -1,6 +1,6 @@
 # Norn development suite
 
-Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime and P02 synthetic harness are verified (E-P01-003/E-P02-003). P03 is complete under ADR-0017/0018, with actual local R0–R3,540 development observations, installed source/native controls and sole end review resolved (E-P03-003; [baseline report](evidence/baselines.md)). Scientific superiority remains INCONCLUSIVE. P04 is active under approved ADR-0020/0021 with focused source/real-E5 controls E-P04-002; P05+ remain planned. No sealed efficacy study has run.
+Updated 22 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime and P02 synthetic harness are verified (E-P01-003/E-P02-003). P03 is complete under ADR-0017/0018, with actual local R0–R3,540 development observations, installed source/native controls and sole end review resolved (E-P03-003; [baseline report](evidence/baselines.md)). Scientific superiority remains INCONCLUSIVE. P04 is complete9/9 under approved ADR-0020/0021, with actual trained binding/capacity controls,4,140conditions, installed/native/guard consumers and sole end review resolved (E-P04-005; [binding report](evidence/binding.md)); P05+ remain planned. No sealed efficacy study has run.
 
 Read the root [project instructions](../../AGENTS.md), then start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
 
@@ -29,7 +29,7 @@ All durable agent-created project work records belong in this folder. Do not add
 
 ## Validation now
 
-Owner setup: existing uv `.venv/`, ignored root `.env` and `.gitignore`. Future authorized generative inference uses Groq with explicit Qwen 3.8 27B, GPT OSS 120B or GPT OSS 20B selection (ADR-0010); key/API availability are not tested now. P01 layout/tooling/timezone data are approved and locked; P03 local models are separately approved in ADR-0017/0018; later training/backends remain separate decisions.
+Owner setup: existing uv `.venv/`, ignored root `.env` and `.gitignore`. Future authorized generative inference uses Groq with explicit Qwen 3.8 27B, GPT OSS 120B or GPT OSS 20B selection (ADR-0010); key/API availability are not tested now. P01 layout/tooling/timezone data are approved and locked; P03 local models are separately approved in ADR-0017/0018; bounded P04 frozen-E5 training/comparison/integration is approved in ADR-0020; other training/backends remain separate decisions.
 
 From the repository root, using the existing environment:
 
@@ -186,7 +186,7 @@ accuracy and both answer/refusal failures retain their applicability denominator
 
 ## Opt-in functional views and binding
 
-P04 source and focused controls are implemented under ADR-0020; final full comparison, installed trained-checkpoint smoke and end review remain pending. See the current [binding evidence](evidence/binding.md) and E-P04-004 for exact source/version boundaries. Existing R0–R3 defaults are preserved. With an existing synthetic store and already acquired approved local model assets:
+P04 source, full frozen-E5 comparison, final-checkpoint installed smoke and sole end review are verified in E-P04-005. See the current [binding evidence](evidence/binding.md) for exact source/version/cost boundaries and the INCONCLUSIVE scientific result. Matched single-event adapters erase a decomposition-specific gain; B5 stays unsupported. Known static cache metadata is corrected in the timing interpretation. Existing R0–R3 defaults are preserved. With an existing synthetic store and already acquired approved local model assets:
 
 ```powershell
 uv run --locked --no-env-file --extra retrieval norn --store .norn/my-store --model-root .norn/models --enable-models binding-project --variant B1

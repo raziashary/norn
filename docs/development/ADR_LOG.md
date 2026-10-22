@@ -1,5 +1,33 @@
 # Architecture and research decision log
 
+
+## ADR-0023 — Scoped publication after verified P04 closeout
+
+- **Status:** ACCEPTED, scoped to this closeout.
+- **Question:** May the verified local P03/P04 work and final P04 evidence/status commit be pushed to the established main upstream?
+- **Why:** The owner explicitly requested, on22October2026: “we got hit by a rate limit please continue and push as well once done”. Earlier implementation mandates did not authorize main publication; this new direct instruction does.
+- **Options:** Keep verified commits local; publish the completed current work after final review/checks.
+- **Recommendation / decision:** Finish final documentation validation, sole reviewer status resolution, resource/secret/staged checks and descriptive local commit; inspect every outgoing full commit subject/body and upstream/remote head, then push normally to the current main branch's existing origin/main upstream. Verify remote HEAD and clean checkout afterward. No force, history rewrite, tag, PR, remote/credential/config mutation or publication of secrets/bulk artifacts.
+- **What affects what:** Current P03 d6f4beb, P04 source59f8021 and final P04 evidence/status closeout; publication only, no P05 mandate or new scientific claim. Old no-push statements in versioned execution history retain their original authority context and are superseded for this scoped publication.
+- **My answer (editable):** Direct owner instruction above explicitly authorizes pushing this completed work once verified. No repeat permission question is needed.
+- **Authority:** Latest user message,22October2026, following final P04 artifact verification.
+- **Verification:** E-P04-005 final docs/staged/reviewer proof, full outgoing messages, normal push exit and exact local/remote HEAD agreement. A rejected/divergent push requires inspection/report, never force.
+
+## ADR-0022 — Preliminary P04 frontier and advancement boundary
+
+**Timing interpretation correction, 22 October:** Static cache metadata incorrectly describes empty-projection first recalls as resident. Existing002 records identify 12 cold starts; first timings mix cold/warm, and rare starts can disappear from per-arm p99. Scoring/ranking do not read the label. E-P04-005 and evidence/binding.md preserve the erratum and exact observed boundaries. Main records the known annotation defect without changing the frozen003 runtime; its own completed immutable ledger independently confirms12 cold first queries, with its own exact timing ranges recorded in E-P04-005. The sole end reviewer confirmed interpretation can be corrected without a new model run. No performance promotion depends on the false annotation.
+
+- **Status:** PRELIMINARY_INCONCLUSIVE; P04 investigation complete, final003/artifact/installed proof and sole end review resolved. This is the preliminary within-Stage1 research interpretation under accepted ADR-0020, not a new owner answer or efficacy promotion.
+- **Question:** Does the observed pilot justify added functional decomposition or attention, and which controls should the Stage1 handoff preserve?
+- **Why:** Blueprint “Primary selection criterion,” “Proposed acceptance criteria” and Stage1 require resource-normalized evidence and the simpler winner. Learned alignment alone is not evidence that biological naming or extra facets caused a gain.
+- **Options:** Promote the most elaborate arm from a positive training curve; retain simpler controls and qualified challengers using actual held-out retrieval, answer errors and costs.
+- **Recommendation / preliminary decision:** Preserve B0 as the simplest new binding reference and S3 as the simplest trained capacity control; retain B3 as a cost/structure challenger, since its observed passage-token use is lower than S3 while their evidence quality is equal here. Fixed B1/B2 remain explicit controls. Do not promote B4's extra attention: its CompleteSet/episode results equal B3 and matched wider single controls. This does not prove attention or decomposition generally useless. B5 remains FEATURE_NOT_SUPPORTED without a separate generative hypothesis/budget. Existing R0–R3 serving defaults are unchanged.
+- **What affects what:** P04-T09 supplies candidate/checkpoint/control/limitation handoff for the predeclared P05 T0–T7/separation program; it does not authorize P05, a larger architecture, new generator, production deployment or main publication. P05-T09 remains the final Stage1 advancement owner.
+- **My answer (editable):** No new owner response is invented. Main's preliminary scientific disposition is INCONCLUSIVE for a decomposition-specific or attention-specific benefit, grounded in completed source-matched003, with prior version002 preserved. All learned arms and matched single-event controls recover47/51 CompleteSets per seed; B0/B1/B2 recover42/41/42. Equal-quality S3/S4 controls prevent attributing the gain to functional decomposition. All arms retain the same6/84 false answers and11/52 false abstentions per exposure. Cost tradeoffs must remain visible rather than calling one universally cheaper. Final003 and the sole artifact review have confirmed the source-matched record, supporting P04-T09 closure without an efficacy claim.
+- **Authority:** Blueprint I1–I10, “Shared latent binding,” “Primary selection criterion,” “Proposed acceptance criteria” and Stage1; MDP P04-T09/P05 entry; accepted ADR-0020/0021; RESEARCH_PROTOCOL. Main reread these exact blueprint headings before this interpretation.
+- **Verification:** Final003 immutable4140-condition report `f300a03bc20243a310084295270693429fdebcbcdbe3eb04885893ed7ea264b2` and clustered contrasts in E-P04-005/evidence/binding.md; no practical margins/power, locked confirmation, category/template transfer, external agent result or P04 head-to-head R3 comparison exists. No operational advancement criterion is met by this exploratory result alone. Source-matched003 completed with4050OK/90UNSUPPORTED/no runtime ERROR or TIMEOUT; all seven installed standalone/corruption/CLI/native/B5/parity stages pass and sole end-review artifact resolution found no material discrepancy or missing P04 proof. Preserve002/003 as the same fixed development instances, not independent replication.
+
+
 ## ADR-0021 — P04 implementation profile within approved pilot
 
 - **Status:** ACCEPTED implementation detail within ADR-0020; no new dependency or owner exception.

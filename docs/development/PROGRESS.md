@@ -1,10 +1,10 @@
 # Current progress
 
-Updated 22 October 2026 (Asia/Bangkok). The P03 mandate is fulfilled; the owner now mandates all nine P04 tasks. Owner approved all three ADR-0020 training/comparison/integration proposals; P04 implementation resumes. P02 is published at1b86549; main and origin/main matched after that authorized push. P03 is verified locally and awaits separate main-push authority. ADR-0017 records model/dependency/schema approvals.
+Updated 22 October 2026 (Asia/Bangkok). P04 is complete9/9 under ADR-0020/E-P04-005, following verified P00–P03. The synthetic frozen-E5 binding study is INCONCLUSIVE; completion is technical/research execution, not proven efficacy. P02 is published at1b86549; the owner authorizes current P03/P04 publication after final verification (ADR-0023). P05+ have no mandate.
 
 ## Derived phase register
 
-MDP atomic checkboxes and states own task status. Counts below must equal that register; they are work accounting, not readiness percentages. Deferred tasks stay unchecked with reason/owner/destination. Final phase receipts: E-DOC-004/005, E-P01-003, E-P02-003 and E-P03-003; full scoped end reviews resolved. Earlier receipts retain historical evidence.
+MDP atomic checkboxes and states own task status. Counts below must equal that register; they are work accounting, not readiness percentages. Deferred tasks stay unchecked with reason/owner/destination. Final phase receipts: E-DOC-004/005, E-P01-003, E-P02-003, E-P03-003 and E-P04-005; full scoped end reviews resolved. Earlier receipts retain historical evidence.
 
 | Phase | Tasks | Done | Deferred | State | Evidence |
 |---|---|---|---|---|---|
@@ -12,7 +12,7 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P01 | 12 | 12 | 0 | DONE | E-P01-001 through E-P01-003 |
 | P02 | 11 | 11 | 0 | DONE | E-P02-003; final main/installed proof and review resolved |
 | P03 | 12 | 12 | 0 | DONE | E-P03-003; final measurement/installed/end review verified |
-| P04 | 9 | 0 | 0 | IN_PROGRESS | E-P04-001; ADR-0020 accepted |
+| P04 | 9 | 9 | 0 | DONE | E-P04-005; final study/installed/native/guard proof and sole review resolved |
 | P05 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 | P06 | 12 | 0 | 0 | PLANNED | NOT_RUN |
 | P07 | 8 | 0 | 0 | PLANNED | NOT_RUN |
@@ -23,11 +23,11 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P12 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 | P13 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 
-Total atomic tasks: 139. Total completed: 41. Runtime tasks completed: 35. R0–R3 synthetic development outcome INCONCLUSIVE; no confirmatory efficacy claim.
+Total atomic tasks: 139. Total completed: 50. Runtime tasks completed: 44. R0–R3 and P04 synthetic development outcomes INCONCLUSIVE; no confirmatory efficacy claim.
 
 ## Current work
 
-P04 preflight: full blueprint, exact cards/design/protocol and current source owners reread; sole Luna Medium start adversary complete. ADR-0020 choices are now owner-approved. Mechanical smoke training has run (12 jobs/16 updates), without efficacy claims or dependency changes. Current source/real-E5 Engine/checkpoint proof is E-P04-002; mechanical CLI study completed450OK in E-P04-003, post-smoke fixes in E-P04-004 and full002/review correction/final003 preparation in E-P04-005, with no phase/card closure yet.
+P04 DONE9/9 and parent exit proven (E-P04-005).158 tests/no skips, Ruff/type/build, final4,140conditions (4,050OK/90UNSUPPORTED), twelve200-update frozen-E5 jobs, installed105-file parity/all7 binding consumers, R0–R3 regression, native cancellation/deadline and eight corruption controls pass. Sole GPT6 Luna Medium reviewer resolved source and final artifact proof. B3/B4 match capacity-controlled singles; no decomposition/attention benefit established. B5 explicitly unsupported. Static cache-label defect is disclosed with own-ledger timing correction; no performance promotion. Preserve the earlier missing-pytest setup failure and its successful isolated offline recovery, version002 and other prior attempts.
 
 P03 DONE12/12 and parent exit proven (E-P03-003). Real R0–R3, source-qualified field support, isolated native inference, exact local projections/readback and additive schema3 are verified.131 tests/no skips, Ruff/type/build,540 paired observations (528OK/12UNSUPPORTED),444 same-vector ANN measurements and80-file fresh installed parity pass. Actual installed all-arm source/correction/revoke/deny and native cancel/deadline controls pass. Sole GPT6 Luna Medium reviewer confirmed the public-interpreter prerequisite defect fixed and final artifacts consistent. No superiority: CompleteSet41/49 R0–R2 vs44/49 R3, with an exploratory interval including zero gain. Remaining semantic errors, negative results and previous attempts stay visible.
 
@@ -35,4 +35,4 @@ P02 DONE11/11 and parent exit proven. Final suite97PASS/no skips, Ruff/type/buil
 
 ## Next authorized work
 
-P04 is authorized and active under accepted ADR-0020; implement the exact nine-card exit with bounded actual training and consumer proof. P05+ remain PLANNED. Another main push requires explicit authority. Preserve final005 stores,007 wheel and all earlier attempts for version-bound readback. Only documented P04 verification/model command processes may be active; no task listener, credential loading, provider call or foreign change. Pre-existing unrelated resources are left alone.
+No further implementation is currently authorized. P05+ remain PLANNED; ADR-0022 is a sequencing/evidence handoff, not a P05 mandate. Current main publication is explicitly approved in ADR-0023; future publication needs its own authority. Source implementation59f8021 is locally committed; final documentation/status closeout forms a separate verified local commit. Preserve ignored models, original final003 artifacts, versioned002 and earlier failures/wheels. All owned study/verification/model processes ended; no task listener, credential load, provider call or foreign change. Leave pre-existing unrelated resources alone.
