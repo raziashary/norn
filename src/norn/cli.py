@@ -146,6 +146,16 @@ def parser() -> argparse.ArgumentParser:
     commands.add_parser("project", help="Explicitly build and read back local projections")
     recall = commands.add_parser("recall", help="Recall against a ready, source-verified snapshot")
     recall.add_argument("--input", type=Path, required=True)
+    binding_project = commands.add_parser(
+        "binding-project", help="Explicit opt-in binding projection"
+    )
+    binding_project.add_argument("--variant", required=True)
+    binding_project.add_argument("--checkpoint", type=Path)
+    binding_project.add_argument("--full-fanout", action="store_true")
+    binding_recall = commands.add_parser("binding-recall", help="Source-verified binding recall")
+    binding_recall.add_argument("--variant", required=True)
+    binding_recall.add_argument("--checkpoint", type=Path)
+    binding_recall.add_argument("--input", type=Path, required=True)
     write = commands.add_parser("write")
     write.add_argument("--input", type=Path, required=True)
     read = commands.add_parser("read")
@@ -199,6 +209,8 @@ def execute(args: argparse.Namespace) -> object:
             "providers_loaded": [],
             "models_loaded": [],
             "search": ["R0", "R1", "R2", "R3"],
+            "binding": ["B0", "B1", "B2", "B3", "B4", "S3", "S4"],
+            "denoising": "FEATURE_NOT_SUPPORTED",
             "local_models": "EXPLICIT_ENABLE_AND_PINNED_ASSETS_REQUIRED",
             "external_workers": "FEATURE_NOT_SUPPORTED",
             "physical_purge": "PENDING_ONLY",
@@ -225,7 +237,11 @@ def execute(args: argparse.Namespace) -> object:
                 return engine.write(request, correction=correction)
             case "project":
                 return engine.project()
-            case "recall":
+            case "binding-project":
+                return engine.project_binding(
+                    args.variant, args.checkpoint, full_fanout=args.full_fanout
+                )
+            case "recall" | "binding-recall":
                 with args.input.open("rb") as stream:
                     raw = stream.read(131_073)
                 require(len(raw) <= 131_072, "REQUEST_BUDGET")
@@ -254,7 +270,12 @@ def execute(args: argparse.Namespace) -> object:
                 for field in ("event_start", "event_end"):
                     if data.get(field) is not None:
                         data[field] = parse_instant(data[field])
-                return engine.recall(RecallRequest(clock=query_clock, **data)).serialize()
+                recall_request = RecallRequest(clock=query_clock, **data)
+                if args.command == "binding-recall":
+                    return engine.recall_binding(
+                        recall_request, args.variant, args.checkpoint
+                    ).serialize()
+                return engine.recall(recall_request).serialize()
             case "read":
                 clock = QueryClock(
                     parse_instant(args.evaluation_time),

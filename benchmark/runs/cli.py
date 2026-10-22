@@ -53,6 +53,19 @@ def parser() -> argparse.ArgumentParser:
     baseline_report.add_argument("directory", type=Path)
     baseline_report.add_argument("--model-root", type=Path, required=True)
     baseline_report.add_argument("--output", type=Path, required=True)
+    for operation in ("prepare", "train", "evaluate", "report", "run"):
+        binding = commands.add_parser(
+            "binding-" + operation, help="Explicit P04 development " + operation
+        )
+        binding.add_argument("directory", type=Path)
+        if operation != "train":
+            binding.add_argument("--model-root", type=Path, required=True)
+        if operation in ("prepare", "evaluate", "run"):
+            binding.add_argument("--enable-models", action="store_true")
+        if operation in ("prepare", "run"):
+            binding.add_argument("--smoke", action="store_true")
+        if operation == "report":
+            binding.add_argument("--output", type=Path, required=True)
     audit = commands.add_parser(
         "audit-pack", help="Render the smoke-tier stratified human review pack"
     )
@@ -71,7 +84,39 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
-        if args.command == "run-controls":
+        if args.command.startswith("binding-"):
+            from benchmark.runs.binding import evaluate, prepare, train_run
+
+            operation = args.command.removeprefix("binding-")
+            if operation == "prepare":
+                result = prepare(
+                    args.directory, args.model_root, enabled=args.enable_models, smoke=args.smoke
+                )
+            elif operation == "train":
+                result = train_run(args.directory)
+            elif operation == "evaluate":
+                result = evaluate(args.directory, args.model_root, enabled=args.enable_models)
+            else:
+                from benchmark.runs.binding_report import report as binding_report
+
+                if operation == "run":
+                    prepare(
+                        args.directory,
+                        args.model_root,
+                        enabled=args.enable_models,
+                        smoke=args.smoke,
+                    )
+                    train_run(args.directory)
+                    evaluate(args.directory, args.model_root, enabled=args.enable_models)
+                report = binding_report(args.directory, args.model_root)
+                output = args.output if operation == "report" else args.directory / "report.json"
+                result = {
+                    "pairs": report["pairs"],
+                    "outcome": report["scientific_outcome"],
+                    "report_digest": write_once(output, report),
+                    "arms": report["arms"],
+                }
+        elif args.command == "run-controls":
             result = run_controls(
                 args.directory,
                 seed=args.seed,

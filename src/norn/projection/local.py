@@ -103,19 +103,7 @@ def build(
         corpus = exact.eligible(engine, request, budget.checkpoint)
     require(corpus.complete, corpus.reason or "PROJECTION_INPUT_BUDGET")
     seq, epoch, ns = corpus.snapshot, corpus.security_epoch, engine.access.ns
-    journal = []
-    after = 0
-    while after < seq:
-        budget.checkpoint()
-        require(seq <= 100_000, "JOURNAL_REPLAY_BUDGET")
-        page = outbox.read_page(engine.db.connection, ns, after, 1000)
-        require(bool(page), "JOURNAL_GAP")
-        for entry in page:
-            require(entry["commit_seq"] == after + 1, "JOURNAL_GAP")
-            after += 1
-            journal.append(entry)
-        require(after <= seq, "PROJECTION_SUPERSEDED")
-    journal_digest = digest(canonical(journal).encode())
+    journal_digest = replay(engine, seq, budget)
     source_digest = digest(canonical(sorted((r.key, r.sha256) for r in corpus.records)).encode())
     store = artifacts(engine)
     manifests = {}
@@ -242,3 +230,21 @@ def load(
                 "PROJECTION_SOURCE_MISMATCH",
             )
     return snapshot["id"], output
+
+
+def replay(engine: Engine, seq: int, budget: QueryBudget) -> str:
+    """Verify one contiguous bounded canonical journal for a projection build."""
+    ns = engine.access.ns
+    journal = []
+    after = 0
+    while after < seq:
+        budget.checkpoint()
+        require(seq <= 100_000, "JOURNAL_REPLAY_BUDGET")
+        page = outbox.read_page(engine.db.connection, ns, after, 1000)
+        require(bool(page), "JOURNAL_GAP")
+        for entry in page:
+            require(entry["commit_seq"] == after + 1, "JOURNAL_GAP")
+            after += 1
+            journal.append(entry)
+        require(after <= seq, "PROJECTION_SUPERSEDED")
+    return digest(canonical(journal).encode())

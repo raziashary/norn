@@ -36,7 +36,7 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03 models/schema/workers are approved in ADR-0017/0018 and verified by E-P03-003. P04+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03 GO is accepted in ADR-0017 and closes with E-P03-003. P04+ and another main push retain their own authority.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03 models/schema/workers are approved in ADR-0017/0018 and verified by E-P03-003. P04+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03 GO is accepted in ADR-0017 and closes with E-P03-003. P04 GO is explicit in the current thread goal; ADR-0020 records accepted training/comparison/interface choices. P05+ and another main push retain their own authority.
 
 ### Owner setup and generative LLM policy
 
@@ -1539,15 +1539,15 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Source headings:** Functional operators; Shared latent binding; Train/test split and alignment challenges.
 - **Entry:** P03-T12.
 - **Exit:** B0-B4 matched comparison and B5 eligibility documented; simpler fusion retained when learned binding lacks benefit.
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 
 <a id="p04-t01"></a>
 
 ### P04-T01 — Derive context and action-outcome views
 
 - [ ] **P04-T01**
-- **State:** PLANNED.
-- **Files:** `src/norn/features/context.py`, `src/norn/features/actions.py`, `tests/test_features.py`.
+- **State:** IN_PROGRESS.
+- **Files:** `src/norn/features/context.py`, `src/norn/features/actions.py`, `src/norn/features/views.py`, `tests/test_features.py`, `tests/test_feature_masks.py`.
 - **Depends:** P03-T12.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
 - **Change:** Compute source-backed keys/time context and ordered observed action/outcome chains with applicability masks.
@@ -1564,8 +1564,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T02 — Bind semantic neutral-salience and fan-out contracts
 
 - [ ] **P04-T02**
-- **State:** PLANNED.
-- **Files:** `src/norn/features/semantic.py`, `src/norn/features/salience.py`, `tests/test_feature_masks.py`.
+- **State:** IN_PROGRESS.
+- **Files:** `src/norn/features/semantic.py`, `src/norn/features/salience.py`, `src/norn/features/views.py`, `src/norn/embedding/feature_encoder.py`, `tests/test_feature_masks.py`.
 - **Depends:** P04-T01.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
 - **Change:** Reuse approved semantic backbone and S0 mask; record model/facet/source versions and selective versus full fan-out cost.
@@ -1574,7 +1574,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Filled zero cannot masquerade as observed emotion; salience cannot set ACL/expiry.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_feature_masks.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t03"></a>
@@ -1582,8 +1582,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T03 — Implement B1 independent facet retrieval and late fusion
 
 - [ ] **P04-T03**
-- **State:** PLANNED.
-- **Files:** `src/norn/embedding/late_fusion.py`, `benchmark/adapters/r7.py`, `tests/test_late_fusion.py`.
+- **State:** IN_PROGRESS.
+- **Files:** `src/norn/embedding/late_fusion.py`, `benchmark/adapters/r7.py`, `benchmark/adapters/r8.py`, `src/norn/canonical/004_binding.sql`, `src/norn/canonical/database.py`, `src/norn/projection/binding.py`, `src/norn/projection/local.py`, `src/norn/retrieval/binding.py`, `src/norn/retrieval/service.py`, `src/norn/integration/engine.py`, `src/norn/governance/deletion.py`, `src/norn/cli.py`, `tests/test_late_fusion.py`, `tests/test_binding_projection.py`, `tests/test_binding_cli.py`.
 - **Depends:** P04-T02.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
 - **Change:** Fuse independent facet ranks at fixed weights under matched total bytes/training/model budgets.
@@ -1592,7 +1592,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Extra backbone capacity/candidate pool cannot be hidden as decomposition benefit.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_late_fusion.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t04"></a>
@@ -1600,7 +1600,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T04 — Implement B2 normalized concatenation
 
 - [ ] **P04-T04**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/concatenate.py`, `tests/test_concatenate.py`.
 - **Depends:** P04-T03.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
@@ -1610,7 +1610,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Dimension/scale domination, reordered facets and wrong revision fail.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_concatenate.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t05"></a>
@@ -1618,8 +1618,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T05 — Implement B3 shared heads and aligned cue encoder
 
 - [ ] **P04-T05**
-- **State:** PLANNED.
-- **Files:** `src/norn/embedding/binding.py`, `src/norn/embedding/query.py`, `tests/test_binding.py`.
+- **State:** IN_PROGRESS.
+- **Files:** `src/norn/embedding/binding.py`, `src/norn/embedding/query.py`, `src/norn/embedding/numerics.py`, `src/norn/embedding/training.py`, `src/norn/embedding/checkpoint.py`, `tests/test_binding.py`, `tests/test_binding_checkpoint.py`.
 - **Depends:** P04-T04.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
 - **Change:** Shared backbone small heads and typed pooling create normalized memory z and comparable incomplete-cue z.
@@ -1628,7 +1628,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Untrained fusion cannot claim alignment; latent similarity never replaces UUID/time/permission filtering.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_binding.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t06"></a>
@@ -1636,7 +1636,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T06 — Implement B4 typed-token attention candidate
 
 - [ ] **P04-T06**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/attention.py`, `tests/test_attention.py`.
 - **Depends:** P04-T05.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
@@ -1646,7 +1646,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Attention alone not supervision; no denied text or hidden gold enters representation.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_attention.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t07"></a>
@@ -1654,7 +1654,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T07 — Specify B5 corruption and generative denoising eligibility
 
 - [ ] **P04-T07**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/denoising.py`, `benchmark/adapters/binding_arms.py`, `tests/test_denoising_contract.py`.
 - **Depends:** P04-T06.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
@@ -1664,7 +1664,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Ordinary masking is not generative diffusion; sampled latent cannot become source fact.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_denoising_contract.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t08"></a>
@@ -1672,8 +1672,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P04-T08 — Measure complementary signal and query alignment
 
 - [ ] **P04-T08**
-- **State:** PLANNED.
-- **Files:** `benchmark/runs/binding.py`, `tests/test_binding_report.py`, `docs/development/evidence/binding.md`.
+- **State:** IN_PROGRESS.
+- **Files:** `benchmark/fixtures/binding_cases.py`, `benchmark/runs/binding.py`, `benchmark/runs/binding_report.py`, `benchmark/runs/cli.py`, `tests/test_binding_report.py`, `docs/development/evidence/binding.md`.
 - **Depends:** P04-T07.
 - **Source:** Functional operators; Shared latent binding; Train/test split and alignment challenges; [design](#binding).
 - **Change:** Compare B0-B4 and same-capacity larger single encoder with partial/ambiguous cues and held-out identities.
@@ -1682,7 +1682,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Identical facet signal cannot claim novelty by naming; development result not locked efficacy.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_binding_report.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P04-005; implementation/158-test/105-file installed/public all-arm controls and sole source review complete. Version0024140-pair study is preserved; final003/standalone/corruption/artifact review pending. This card remains unchecked until final owning proof closes.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p04-t09"></a>

@@ -1,6 +1,6 @@
 # Readiness matrix
 
-Updated 21 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior, not card count or percentage. The actual repository contains vision, documentation, P01 local canonical implementation (E-P01-003) and P02 synthetic harness (E-P02-003), plus verified local P03 retrieval (E-P03-003). Source present, tested, installed-consumer proven, measured, and externally transferred are different evidence levels. Algorithm outcome is also separate from engineering completion.
+Updated 22 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior, not card count or percentage. The actual repository contains vision, documentation, P01 local canonical implementation (E-P01-003) and P02 synthetic harness (E-P02-003), plus verified local P03 retrieval (E-P03-003). Source present, tested, installed-consumer proven, measured, and externally transferred are different evidence levels. Algorithm outcome is also separate from engineering completion.
 
 | Capability | Implementation | Behavioral proof | Efficacy outcome | Evidence / blocker |
 |---|---|---|---|---|
@@ -8,7 +8,7 @@ Updated 21 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior
 | Canonical contracts and durable source memory | IMPLEMENTED | INSTALLED_SYNTHETIC_CONSUMER_PASS | NOT_EVALUATED | P01 DONE; E-P01-003;63 tests/installed source+CLI/full review; source/graph/worker consumers remain later tasks |
 | Hidden world and evaluation harness | IMPLEMENTED | INSTALLED_SYNTHETIC_CONTROLS_PASS | NOT_EVALUATED | P02 DONE; E-P02-003;135 cases/1,620 main pairs/405 installed pairs,42 reviewed sample,97 tests/end review resolved; no actual retrieval/study efficacy |
 | Strong R0-R3 and qualified recall | IMPLEMENTED | INSTALLED_SOURCE_NATIVE_AND_MEASUREMENT_PASS | INCONCLUSIVE | P03 DONE12/12; E-P03-003;131 tests,540 pairs/444 tiny-corpus ANN measurements,80-file installed parity, actual CLI/native controls and end review resolved. Field support only; broader semantics/agent/production proof absent |
-| Functional views/shared binding | PLANNED | NOT_RUN | NOT_EVALUATED | P04; B0-B5 studies absent |
+| Functional views/shared binding | IMPLEMENTING | INSTALLED_AND_REVIEWED_SOURCE_PASS_FINAL_STUDY_PENDING | INCONCLUSIVE_VERSION002 | P04 E-P04-005;158 tests/105-file installed parity/all7 source-correction-revoke-deny CLI pass; sole source review resolved. Full0024140pairs shows no gain beyond matched adapter capacity. Final source-matched003 and artifact review pending |
 | Loss/separation frontier | PLANNED | NOT_RUN | NOT_EVALUATED | P05; T0-T7/toys/real embedding studies absent |
 | Typed graph activation | PLANNED | NOT_RUN | NOT_EVALUATED | P06; G0-G7/source path proof absent |
 | CDZ and salience | PLANNED | NOT_RUN | NOT_EVALUATED | P07; optional branch eligibility and S0-S2 absent |

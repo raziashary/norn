@@ -1,6 +1,6 @@
 # Norn goal and acceptance
 
-Updated 21 October 2026 (Asia/Bangkok). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. P03 main publication needs separate authority. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 21 October 2026 (Asia/Bangkok). Current mandate is all nine P04 tasks; ADR-0020 choices are owner-approved. All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. P03 main publication needs separate authority. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Current documentation mandate
 
@@ -28,7 +28,7 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 | O01 | Source-backed event/atom/edge identity and independent epistemic/time/scope contracts | P01 foundation complete, E-P01-003; later source/retrieval paths keep their own gates | DONE |
 | O02 | Current ACL, correction, historical knowledge and deletion controls | P01/P03 local controls verified; P09/P11/P12 remain | IN_PROGRESS |
 | O03 | Fair conventional strong baseline and evidence-qualified recall | P02/P03; E-P03-003; actual local field-support/measurement proof, scientific outcome INCONCLUSIVE | DONE |
-| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04/P05; G-BINDING/G-LEARNING/G-SEPARATION; matched ablations and raw outcomes | PLANNED |
+| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04 active/ADR-0020; P05 planned; G-BINDING/G-LEARNING/G-SEPARATION | IN_PROGRESS |
 | O05 | Measured graph activation benefit and false-association tradeoff | P06; G-GRAPH/G-DIFFUSION; fixed-seed topology controls and path source proof | PLANNED |
 | O06 | Explicit CDZ/salience/consolidation retain/reject decisions | P07/P08; G-CDZ/G-SALIENCE/G-CONSOLIDATION; fidelity, rare exceptions, correction/revoke | PLANNED |
 | O07 | Real next-turn consumer and source-compatible external transfer | P09; G-INTEGRATION/G-TRANSFER; restarted host and separate retrieval/fixed-generator tracks | PLANNED |
@@ -62,4 +62,8 @@ Owner GO21 October2026 authorizes all eleven P02 tasks; P01 baseline4618156. Req
 
 ## P03 acceptance — verified
 
-Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04+ and another main push have no mandate.
+Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04 is now separately mandated below; P05+ and another main push have no mandate.
+
+## P04 acceptance — active after owner approval
+
+Prove all nine exact MDP cards: source-backed context/action views, semantic/S0 masks and measured fan-out; actual B1/B2 retrieval; genuinely trained aligned B3/B4 and immutable checkpoints; honest optional B5 disposition; held-out ambiguity-aware B0–B4 and capacity/conditional/cost comparisons; preliminary decision and installed consumer/end review. ADR-0020 training/comparison/integration choices are accepted. No helper-only or untrained substitute can close this phase.

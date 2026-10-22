@@ -152,13 +152,13 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 ## G-BINDING — Complementary views and aligned cue geometry
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P04.
 - **Owning atomic tasks:** P04-T01, P04-T02, P04-T03, P04-T04, P04-T05, P04-T06, P04-T07, P04-T09.
 - **Positive / completion contract:** B0-B4 matched bytes/backbone/input/exposure actual query-to-memory reader; B5 explicit optional capability; conditional signal evaluated.
 - **Negative / falsification control:** Attention naming duplicate views extra budget and untrained fusion cannot be credited alignment; masks preserve unknowns.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** E-P04-005:158-test/105-file installed/all7 public source and correction/revoke/deny controls; actual trained B3/B4 and matched S3/S4, masks/geometry/backup/replay/checkpoint selectors and sole source review resolved. Full0024140-pair exploratory report is source-versioned; final003 standalone/corruption/artifact review remains pending. No empirical superiority or whole-phase closure yet.
 
 ## G-LEARNING — Multi-objective training and checkpoints
 

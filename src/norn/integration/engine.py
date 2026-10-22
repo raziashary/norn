@@ -11,6 +11,7 @@ from norn.canonical import corrections, outbox
 from norn.canonical.database import SCHEMA_VERSION, Database
 from norn.canonical.registry import Registry, WriteRequest
 from norn.canonical.sources import SourceSpan, SourceStore, safe_path
+from norn.contracts.budgets import QueryBudget
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest, label, stable_id
 from norn.contracts.time import QueryClock, stamp
@@ -92,6 +93,30 @@ class Engine:
         from norn.projection.local import build
 
         return build(self, models=self.local_models)
+
+    def project_binding(
+        self,
+        variant: str,
+        checkpoint: Path | None = None,
+        *,
+        full_fanout: bool = False,
+        budget: QueryBudget | None = None,
+    ) -> dict[str, Any]:
+        from norn.projection.binding import build
+
+        return build(self, variant, checkpoint, full_fanout=full_fanout, budget=budget)
+
+    def recall_binding(
+        self,
+        request: RecallRequest,
+        variant: str,
+        checkpoint: Path | None = None,
+        *,
+        cancelled: Event | None = None,
+    ) -> RecallView:
+        from norn.retrieval.binding import recall
+
+        return recall(self, request, variant, checkpoint, cancelled=cancelled)
 
     def write(
         self, request: WriteRequest, *, correction: corrections.CorrectionRequest | None = None
@@ -379,6 +404,14 @@ class Engine:
             ):
                 # Preserve legacy immutable artifacts without treating them as serving-ready.
                 readback(restored, manifest[0], current_revision=False)
+            binding_manifests = restored.db.connection.execute(
+                "SELECT id FROM binding_manifests WHERE ns=?", (self.access.ns,)
+            ).fetchall()
+            if binding_manifests:
+                from norn.projection.binding import readback as binding_readback
+
+                for manifest in binding_manifests:
+                    binding_readback(restored, manifest[0], current_revision=False)
         return {
             "path": str(destination),
             "verified": True,

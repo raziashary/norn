@@ -134,38 +134,12 @@ def _run(engine: Engine, request: RecallRequest, budget: QueryBudget) -> RecallV
             stages["before_rerank"] = len(candidates)
         stages["after_rerank"] = len(candidates)
         stages["candidates"] = len(candidates)
-        records = []
-        for hit in candidates:
-            budget.checkpoint()
-            records.append(resolve(engine, hit, request, snapshot, epoch))
-        stages["resolved"] = len(records)
-        tokenizer: assembly.TokenCounter = (
-            engine.evidence_tokenizer
-            if engine.evidence_tokenizer is not None
-            else UnicodeTokenizer()
+        data, verified_hits = assemble_hits(
+            engine, request, candidates, snapshot, epoch, budget, stages, complete=corpus.complete
         )
-        packet, tokens, _decision = assembly.assemble(
-            tuple(records),
-            request,
-            tokenizer,
-            complete=corpus.complete,
-            checkpoint=budget.checkpoint,
-        )
-        budget.checkpoint()
-        require(bool(packet), "EVIDENCE_HEADER_BUDGET")
-        selected = {
-            r["atom_id"] + ":" + r["source_version"] + ":" + str(r["start_byte"])
-            for r in packet["evidence"]
-        }
-        verified_hits = tuple(h for h in candidates if h.record.key in selected)
-        stages["final_evidence"] = len(verified_hits)
-        data = {
-            **packet,
-            "coverage": "CONSISTENT_READY" if corpus.complete else "DEGRADED",
-            "projection_snapshot": snapshot_id,
-            "evidence_tokens": tokens,
-            "authorizes_action": False,
-            "model_fingerprints": (
+        data.update(
+            projection_snapshot=snapshot_id,
+            model_fingerprints=(
                 {}
                 if request.arm == "R0"
                 else {
@@ -173,16 +147,7 @@ def _run(engine: Engine, request: RecallRequest, budget: QueryBudget) -> RecallV
                     **({"reranker": fingerprint("reranker")} if request.arm == "R3" else {}),
                 }
             ),
-            "tokenizer": tokenizer.version,
-            "possibly_truncated_model_input": bool(budget.model_truncated),
-            "resource_observation": {
-                "parent": memory(),
-                "max_worker_peak_bytes": engine.local_models.peak_worker_bytes
-                if engine.local_models
-                else None,
-                "scope": "SEPARATE_PROCESS_PEAKS_NOT_SIMULTANEOUS_TOTAL",
-            },
-        }
+        )
     except NornError as error:
         if error.code in {"NOT_AUTHORIZED_OR_NOT_FOUND", "QUERY_SECURITY_CHANGED"}:
             engine.close_models()
@@ -211,3 +176,56 @@ def _run(engine: Engine, request: RecallRequest, budget: QueryBudget) -> RecallV
     if data["status"] != "VERIFICATION_UNAVAILABLE":
         budget.checkpoint()
     return view
+
+
+def assemble_hits(
+    engine: Engine,
+    request: RecallRequest,
+    candidates: tuple[Hit, ...],
+    snapshot: int,
+    epoch: int,
+    budget: QueryBudget,
+    stages: dict[str, int],
+    *,
+    complete: bool,
+) -> tuple[dict[str, Any], tuple[Hit, ...]]:
+    """One canonical verification/evidence owner for conventional and binding hits."""
+    records = []
+    for hit in candidates:
+        budget.checkpoint()
+        records.append(resolve(engine, hit, request, snapshot, epoch))
+    stages["resolved"] = len(records)
+    tokenizer: assembly.TokenCounter = (
+        engine.evidence_tokenizer if engine.evidence_tokenizer is not None else UnicodeTokenizer()
+    )
+    packet, tokens, _decision = assembly.assemble(
+        tuple(records),
+        request,
+        tokenizer,
+        complete=complete,
+        checkpoint=budget.checkpoint,
+    )
+    budget.checkpoint()
+    require(bool(packet), "EVIDENCE_HEADER_BUDGET")
+    selected = {
+        r["atom_id"] + ":" + r["source_version"] + ":" + str(r["start_byte"])
+        for r in packet["evidence"]
+    }
+    verified_hits = tuple(h for h in candidates if h.record.key in selected)
+    stages["final_evidence"] = len(verified_hits)
+    data = {
+        **packet,
+        "coverage": "CONSISTENT_READY" if complete else "DEGRADED",
+        "evidence_tokens": tokens,
+        "authorizes_action": False,
+        "tokenizer": tokenizer.version,
+        "possibly_truncated_model_input": bool(budget.model_truncated),
+        "resource_observation": {
+            "parent": memory(),
+            "max_worker_peak_bytes": engine.local_models.peak_worker_bytes
+            if engine.local_models
+            else None,
+            "scope": "SEPARATE_PROCESS_PEAKS_NOT_SIMULTANEOUS_TOTAL",
+        },
+    }
+    return data, verified_hits

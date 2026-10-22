@@ -133,6 +133,23 @@ def deny(registry: Registry, selector: str, request_id: str, reason: str) -> dic
                         "VALUES(?,?,'projection_artifacts',?,'PENDING')",
                         (ns, request_id, artifact[0]),
                     )
+                binding_artifacts = connection.execute(
+                    "SELECT artifact_digest FROM binding_entries WHERE ns=? "
+                    "AND (atom_id=? OR event_id=?) UNION "
+                    "SELECT m.checkpoint_digest FROM binding_entries e JOIN binding_manifests m "
+                    "ON e.ns=m.ns AND e.manifest_id=m.id WHERE e.ns=? "
+                    "AND (e.atom_id=? OR e.event_id=?) AND m.checkpoint_digest<>'NONE' LIMIT 10001",
+                    (ns, object_id, object_id, ns, object_id, object_id),
+                ).fetchall()
+                require(len(binding_artifacts) <= 10_000, "LINEAGE_BUDGET")
+                # Checkpoints may be shared by unaffected generations. These are
+                # reconciliation obligations, never authority to unlink shared CAS bytes.
+                for artifact in binding_artifacts:
+                    connection.execute(
+                        "INSERT OR IGNORE INTO purge_obligations "
+                        "VALUES(?,?,'binding_artifacts',?,'PENDING')",
+                        (ns, request_id, artifact[0]),
+                    )
             publish(connection, ns, seq, "SERVING_DENIED", objects)
     return purge_status(registry, request_id)
 

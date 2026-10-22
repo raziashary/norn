@@ -1,6 +1,6 @@
 # Norn development suite
 
-Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime and P02 synthetic harness are verified (E-P01-003/E-P02-003). P03 is complete under ADR-0017/0018, with actual local R0–R3,540 development observations, installed source/native controls and sole end review resolved (E-P03-003; [baseline report](evidence/baselines.md)). Scientific superiority remains INCONCLUSIVE. P04+ remain planned; no sealed efficacy study has run.
+Updated 21 October 2026 (Asia/Bangkok). This suite translates the [research blueprint](../vision/subcortical_memory_blueprint.md) into an implementation and experimental program. P01 canonical runtime and P02 synthetic harness are verified (E-P01-003/E-P02-003). P03 is complete under ADR-0017/0018, with actual local R0–R3,540 development observations, installed source/native controls and sole end review resolved (E-P03-003; [baseline report](evidence/baselines.md)). Scientific superiority remains INCONCLUSIVE. P04 is active under approved ADR-0020/0021 with focused source/real-E5 controls E-P04-002; P05+ remain planned. No sealed efficacy study has run.
 
 Read the root [project instructions](../../AGENTS.md), then start with [current progress](PROGRESS.md), [goal](GOAL.md), and [working memory](PROJECT_MEMORY.md), then read the relevant parent phase and exact atomic card in the [master development plan](MASTER_DEV_PLAN.md). First-time contributors read the complete blueprint. The MDP contains the technical design: contracts, schema, algorithms, flows, ownership, execution order, and task-level proof.
 
@@ -183,3 +183,16 @@ Their full CompleteSet remains unavailable when a required source is missing, wh
 partial correctness/usefulness are reported separately. A full answer on that incomplete
 snapshot counts as an overclaim. Five-status classification, ambiguity/missing-reason
 accuracy and both answer/refusal failures retain their applicability denominators.
+
+## Opt-in functional views and binding
+
+P04 source and focused controls are implemented under ADR-0020; final full comparison, installed trained-checkpoint smoke and end review remain pending. See the current [binding evidence](evidence/binding.md) and E-P04-004 for exact source/version boundaries. Existing R0–R3 defaults are preserved. With an existing synthetic store and already acquired approved local model assets:
+
+```powershell
+uv run --locked --no-env-file --extra retrieval norn --store .norn/my-store --model-root .norn/models --enable-models binding-project --variant B1
+uv run --locked --no-env-file --extra retrieval norn --store .norn/my-store --model-root .norn/models --enable-models binding-recall --variant B1 --input .norn/my-recall.json
+```
+
+The input uses the same explicit clock/prerequisite RecallRequest JSON as conventional recall. B0/B1/B2 need no learned checkpoint. B3/B4/S3/S4 require `--checkpoint` from a completed, version-compatible bounded training run on both project and recall; a random or wrong-method checkpoint cannot stand in. Projection readback is immutable and source-qualified; a canonical write or security change requires a new current projection. All candidates still pass current access, scoped temporal/source resolution and the existing evidence assembly. B5 explicitly refuses with FEATURE_NOT_SUPPORTED.
+
+The separate explicit `binding-prepare`, `binding-train`, `binding-evaluate` and `binding-report` benchmark commands support immutable stage receipts. `binding-run <new-directory> --model-root .norn/models --enable-models` performs those stages; `--smoke` chooses only a mechanical15-case-per-role profile/16 updates, not the full276/138/138-case study. These commands consume approved local CPU work and cannot overwrite a prior run. No live generator, source reward inference, graph mechanism or provider call is implied.

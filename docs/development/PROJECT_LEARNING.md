@@ -20,7 +20,7 @@ The end reviewer identified ambiguous P04-T09/P05 entry wording. The earlier bro
 
 ## Experimental evidence remains pending
 
-P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. P03 adds actual conventional-retrieval development outcomes and descriptive CPU-serial costs (E-P03-003), with scientific superiority INCONCLUSIVE. Training, locked/external efficacy and production capacity remain unmeasured. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
+P01 local integrity/security/process recovery and P02 harness/scorer mechanics have narrow synthetic evidence. P03 adds actual conventional-retrieval development outcomes and descriptive CPU-serial costs (E-P03-003), with scientific superiority INCONCLUSIVE. P04 numerical controls and a mechanical16-update smoke now exercise training; the full current frozen-backbone study is running. Locked/external efficacy and production capacity remain unmeasured. Add findings only after executed proof; toy geometry, unit tests and small pilots must retain their scope. A no-benefit outcome can be a useful result without proving the mechanism generally useless or marking efficacy achieved.
 
 ## L005 — Provenance history needs its own recording sequence
 
@@ -101,3 +101,15 @@ of evidence. Actual public EN/ID Engine write/project/recall regression, exact s
 readback and the same reviewer resolve the mechanism (E-P03-002/ADR-0019). The replacement005
 comparison and installed007 consumer pass in E-P03-003, preserving old results and remaining errors. A perfect/oracle harness control or
 an interpreter-only assertion cannot substitute for this actual public consumer proof.
+
+## L016 — Ambiguous cues need their own positive-set audit
+
+P04 source inspection found AMBIGUOUS gold slots retained one previously specified episode although the public cue omitted the distinguishing date. Treating only those slots as positives would penalize another compatible captured occurrence. The trainer now marks all currently eligible compatible memories positive for those cues, without changing fixtures or evaluator labels. Actual-case positive/negative and multi-positive loss controls pass. The smoke sample contained no such ambiguous training case, so smoke success alone could not reveal the defect. E-P04-004 preserves the mechanism and version boundary.
+
+## L017 — Archive integrity and serving compatibility are different proofs
+
+A backup must preserve an old immutable generation even when its geometry/checkpoint cannot serve with current code. P04 archival readback verifies hashes, entry/source digests and locators while strict serving checks current geometry, S0/masks and checkpoint versions. An appended incompatible generation survives backup/restore; current serving refuses it and a poisoned CAS file is still rejected. This does not make old data current or physically purge denied copies. E-P04-004.
+
+## L018 — Derived-artifact selectors include copied model references
+
+The P04 end reviewer found the feature selector omitted checkpoint bytes copied into projection CAS. Main fixed the owning bounded query to UNION affected manifest checkpoint digests with feature digests. A real-E5 two-event B3 control proves both pending selectors, continued shared-checkpoint byte/reference integrity and source recall after rebuilding the unaffected event. Pending selectors do not grant permission to unlink shared bytes or imply model unlearning/physical purge. E-P04-005.

@@ -15,8 +15,8 @@ from norn.contracts.identity import digest
 from norn.contracts.time import stamp
 
 APPLICATION_ID = 0x4E4F524E
-SCHEMA_VERSION = 3
-MIGRATIONS = ("schema.sql", "002_governance.sql", "003_projection.sql")
+SCHEMA_VERSION = 4
+MIGRATIONS = ("schema.sql", "002_governance.sql", "003_projection.sql", "004_binding.sql")
 MUTABLE_TABLES = {"namespaces", "migration_state"}
 
 
