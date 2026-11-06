@@ -10,7 +10,7 @@ from norn.embedding.numerics import Array, array, norm_gradient, normalize
 
 VARIANTS = ("B0", "B1", "B2", "B3", "B4", "S3", "S4")
 LEARNED = ("B3", "B4", "S3", "S4")
-REVISION = "frozen-e5-adapter-analytic-v1"
+REVISION = "frozen-e5-adapter-analytic-v2-type-after-activation"
 DIMENSION, HIDDEN, FACETS = 384, 32, 3
 
 
@@ -87,14 +87,16 @@ class BindingModel:
                 bool(((mask == 0) | (mask == 1)).all()) and bool((mask.sum(1) > 0).all()),
                 "BINDING_ALL_MISSING_OR_INVALID_MASK",
             )
-            h = np.einsum("nfd,fdh->nfh", inputs, p["heads"]) + p["bias"]
-            if self.variant == "B4":
-                h += p["types"]
-            h = np.tanh(h) * mask[:, :, None]
+            h = np.tanh(np.einsum("nfd,fdh->nfh", inputs, p["heads"]) + p["bias"])
+            h = h * mask[:, :, None]
             cache = {"x": inputs, "h": h, "mask": mask}
             fused = h
             if self.variant == "B4":
-                fused, cache["attention"] = attention.forward(h, mask, p)
+                # The facet-type embedding is added after the nonlinearity. Added before it, a
+                # (facet, hidden) offset is the same parameter as the per-facet bias and the
+                # "typed" model had no type information the bias did not already carry (v1).
+                typed = (h + p["types"]) * mask[:, :, None]
+                fused, cache["attention"] = attention.forward(typed, mask, p)
             pooled = (fused * mask[:, :, None]).sum(1) / mask.sum(1, keepdims=True)
         raw = pooled @ p["out"] + p["out_bias"]
         code, norms = normalize(raw)
@@ -120,9 +122,9 @@ class BindingModel:
             if self.variant == "B4":
                 gh, ag = attention.backward(gh, cache["attention"], p)
                 grads.update(ag)
+                gh = gh * mask[:, :, None]
+                grads["types"] = gh.sum(0)
             gh *= (1 - h * h) * mask[:, :, None]
             grads["heads"] = np.einsum("nfd,nfh->fdh", x, gh)
             grads["bias"] = gh.sum(0)
-            if self.variant == "B4":
-                grads["types"] = gh.sum(0)
         return grads

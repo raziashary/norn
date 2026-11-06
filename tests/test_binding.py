@@ -106,3 +106,18 @@ def test_candidate_limit_counts_events_so_one_large_event_cannot_crowd_out_the_r
     # Negative control: the old atom-level cut at the same limit would have kept only "big".
     atom_level = sorted((h for h in ranked), key=lambda h: (-h.score, h.record.key))[:3]
     assert {h.record.event_id for h in atom_level} == {"big"}
+
+
+def test_b4_type_embedding_is_not_a_redundant_second_bias():
+    # In v1 the type offset entered before the tanh, so (types + c, bias - c) was an exact
+    # reparametrisation. After the activation the two differ, so types carry their own signal.
+    b = batch()
+    rng = np.random.default_rng(3)
+    model = BindingModel("B4")
+    shifted = BindingModel("B4", parameters={k: v.copy() for k, v in model.parameters.items()})
+    delta = rng.normal(0, 0.5, model.parameters["types"].shape)
+    shifted.parameters["types"] += delta
+    shifted.parameters["bias"] -= delta
+    base = model.forward(b.facets, b.mask)[0]
+    moved = shifted.forward(b.facets, b.mask)[0]
+    assert not np.allclose(base, moved, atol=1e-3)

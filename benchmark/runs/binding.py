@@ -30,7 +30,7 @@ from norn.embedding.training import TrainingBatch, train
 from norn.integration.engine import Engine
 
 CONFIG: dict[str, Any] = {
-    "revision": "binding-development-v2",
+    "revision": "binding-development-v3-b4-type-after-activation",
     "split": ROLE_INDICES,
     "seeds": [11, 29, 47],
     "updates": 200,
