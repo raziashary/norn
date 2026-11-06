@@ -201,18 +201,18 @@ def report(root: Path, model_root: Path, attestation: Path | None = None) -> dic
                 ]
                 contrasts[arm + "-minus-R0"] = paired_difference(*paired, seed=47, samples=1000)
     preparations = load(root / "preparations.json")
+    # An injected projection outage (E12) never built a projection, so it has no offline usage.
+    built = [p["projection"] for p in preparations.values() if "usage" in p["projection"]]
     return {
         **{k: v for k, v in result.items() if k != "observations"},
         "strata": strata,
         "costs": costs,
         "contrasts": adjust_family(contrasts),
         "offline_build_ns": sum(p["offline_ns"] for p in preparations.values()),
-        "offline_model_attempts": sum(
-            p["projection"]["usage"]["model_calls"] for p in preparations.values()
-        ),
-        "offline_model_tokens": sum(
-            p["projection"]["usage"]["model_tokens"] for p in preparations.values()
-        ),
+        "projection_built_queries": len(built),
+        "injected_projection_outage_queries": len(preparations) - len(built),
+        "offline_model_attempts": sum(p["usage"]["model_calls"] for p in built),
+        "offline_model_tokens": sum(p["usage"]["model_tokens"] for p in built),
         "metric_stage": "FINAL_EVIDENCE; earlier stages expose counts only",
         "limits": (
             "Synthetic development instances; question schema interpreter; "

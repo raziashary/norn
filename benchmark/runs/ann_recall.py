@@ -28,9 +28,14 @@ def measure(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
     )
     result = []
     omitted = 0
+    outage = 0
+    prepared = load(root / "preparations.json")
     models = LocalModels(model_root, enabled=enabled)
     try:
         for qid in sorted({pair[0] for pair in manifest["planned_pairs"]}):
+            if "usage" not in prepared[qid]["projection"]:
+                outage += 1  # Injected outage: no projection was built, so nothing to index.
+                continue
             public = validate_public(load(root / "published" / (qid + ".json")))
             request = interpret(public, "R1")
             budget = QueryBudget(120_000)
@@ -82,6 +87,7 @@ def measure(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
         "encoder": fingerprint("encoder"),
         "measurements": result,
         "empty_eligible_queries": omitted,
+        "injected_projection_outage_queries": outage,
         "scope": "SMALL_ELIGIBLE_SYNTHETIC_CORPORA; SAME_VECTOR_APPROXIMATION_ONLY",
         "limits": (
             "Per-query eligible indices; native HNSW measured offline. "
@@ -105,6 +111,7 @@ def main() -> None:
                 "artifact_digest": write_once(args.output, result),
                 "measurements": len(result["measurements"]),
                 "empty_eligible_queries": result["empty_eligible_queries"],
+                "injected_projection_outage_queries": result["injected_projection_outage_queries"],
             }
         )
     )
