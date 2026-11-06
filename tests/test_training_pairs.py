@@ -11,6 +11,7 @@ from benchmark.fixtures.training_pairs import (
     ONE_FIELD_NAMES,
     PAIRS_VERSION,
     TrainingPairs,
+    _bump_action,
     _bump_value,
     _content,
     _differing,
@@ -74,6 +75,23 @@ def test_value_perturbation_is_hand_checked():
     assert _bump_value("12.5kg") == "12.6kg" and _bump_value("v9") == "v10"
     with pytest.raises(NornError, match="PAIR_VALUE_NOT_PERTURBABLE"):
         _bump_value("--")
+
+
+def test_structured_action_values_keep_their_timestamp_when_perturbed():
+    value = "step=0;tool=restart;result=exit0;at=2026-10-19T09:00:00+00:00"
+    bumped = _bump_action(value)
+    assert bumped == "step=0;tool=restart;result=exit1;at=2026-10-19T09:00:00+00:00"
+    two = "step=0;tool=a;result=ok;at=T0|step=1;tool=b;result=ok;at=T1"
+    assert _bump_action(two) == "step=0;tool=a;result=ol;at=T0|step=1;tool=b;result=ok;at=T1"
+    # Control: the generic bump would corrupt the timestamp offset, which the engine refuses.
+    assert _bump_value(value).endswith("+00:1")
+    with pytest.raises(NornError, match="PAIR_VALUE_NOT_PERTURBABLE"):
+        _bump_action("tool=restart")
+    built = build_pairs(smoke=True)
+    for pair in built.pairs:
+        for negative in pair.negatives:
+            if negative.source and negative.source.observation.predicate == "observed_action":
+                assert "+00:00" in negative.source.observation.value
 
 
 def test_ambiguous_cue_keeps_every_eligible_source_positive_and_forces_no_negative():

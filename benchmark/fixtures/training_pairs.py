@@ -16,6 +16,7 @@ tenant separation is enforced by deterministic filtering, not learned (blueprint
 """
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from typing import Any
@@ -128,11 +129,30 @@ def _bump_value(value: str) -> str:
     return value[:i] + chr(base + (ord(ch) - base + 1) % 26) + value[i + 1 :]
 
 
+RESULT = re.compile(r"result=([\w-]{1,64})")
+
+
+def _bump_action(value: str) -> str:
+    """Change only the first action's observed result.
+
+    The value is structured: its step order and timestamps are validated by the engine, so a
+    generic bump (which rewrote the timestamp offset, then the step order) cannot be used.
+    """
+    found = RESULT.search(value)
+    require(found is not None, "PAIR_VALUE_NOT_PERTURBABLE")
+    assert found is not None
+    return value[: found.start(1)] + _bump_value(found.group(1)) + value[found.end(1) :]
+
+
 def _perturbed(source: PublishedSource, name: str) -> Fact:
     observation = source.observation
     value, event_time, origin = observation.value, observation.event_time, observation.origin
     if name == "value":
-        value = _bump_value(value)
+        value = (
+            _bump_action(value)
+            if observation.predicate == "observed_action"
+            else _bump_value(value)
+        )
     elif name == "event_time":
         event_time = (datetime.fromisoformat(event_time) + timedelta(days=1)).isoformat()
     else:

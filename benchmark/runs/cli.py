@@ -76,6 +76,19 @@ def parser() -> argparse.ArgumentParser:
             binding.add_argument("--smoke", action="store_true")
         if operation == "report":
             binding.add_argument("--output", type=Path, required=True)
+    for operation in ("prepare", "train", "report", "run"):
+        factorial = commands.add_parser(
+            "factorial-" + operation, help="Explicit P05 loss-factorial " + operation
+        )
+        factorial.add_argument("directory", type=Path)
+        if operation != "train":
+            factorial.add_argument("--model-root", type=Path, required=True)
+            factorial.add_argument("--enable-models", action="store_true")
+        if operation in ("prepare", "run"):
+            factorial.add_argument("--wall-cap-seconds", type=float, required=True)
+            factorial.add_argument("--smoke", action="store_true")
+        if operation == "report":
+            factorial.add_argument("--output", type=Path, required=True)
     audit = commands.add_parser(
         "audit-pack", help="Render the smoke-tier stratified human review pack"
     )
@@ -127,6 +140,30 @@ def main(argv: list[str] | None = None) -> int:
                     "outcome": report["scientific_outcome"],
                     "report_digest": write_once(output, report),
                     "arms": report["arms"],
+                }
+        elif args.command.startswith("factorial-"):
+            from benchmark.runs import loss_factorial
+
+            operation = args.command.removeprefix("factorial-")
+            if operation in ("prepare", "run"):
+                result = loss_factorial.prepare(
+                    args.directory,
+                    args.model_root,
+                    enabled=args.enable_models,
+                    wall_cap_seconds=args.wall_cap_seconds,
+                    smoke=args.smoke,
+                )
+            if operation in ("train", "run"):
+                result = loss_factorial.train_run(args.directory)
+            if operation in ("report", "run"):
+                value = loss_factorial.report(
+                    args.directory, args.model_root, enabled=args.enable_models
+                )
+                output = args.output if operation == "report" else args.directory / "report.json"
+                result = {
+                    "scope": value["scope"],
+                    "report_digest": write_once(output, value),
+                    "reload_ok": value["reload"]["all_within_tolerance"],
                 }
         elif args.command == "run-controls":
             result = run_controls(
