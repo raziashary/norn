@@ -7,6 +7,9 @@ import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
+from conftest import REPO
+
 
 def scenario(
     python: str, root: Path, models: Path, checkpoints: dict[str, Path]
@@ -148,6 +151,23 @@ def scenario(
         "correction_and_revocation": True,
         "python": python,
     }
+
+
+MODEL_ROOT = REPO / ".norn" / "models"
+CHECKPOINTS = REPO / ".norn" / "p05-pre-b-001" / "checkpoints"
+
+
+@pytest.mark.skipif(
+    not (MODEL_ROOT / "encoder").is_dir() or not (CHECKPOINTS / "B4-11.json").is_file(),
+    reason="needs the pinned local models and the retrained B3/B4/S3/S4 seed-11 checkpoints",
+)
+def test_source_backed_binding_cli_all_variants_correction_denial_and_restore():
+    checkpoints = {v: CHECKPOINTS / f"{v}-11.json" for v in ("B3", "B4", "S3", "S4")}
+    with TemporaryDirectory(prefix="norn-binding-cli-") as temporary:
+        observed = scenario(sys.executable, Path(temporary), MODEL_ROOT, checkpoints)
+    assert observed["variants"] == ["B0", "B1", "B2", "B3", "B4", "S3", "S4"]
+    assert observed["source_readback"] and observed["current_denial"]
+    assert observed["correction_and_revocation"]
 
 
 if __name__ == "__main__":
