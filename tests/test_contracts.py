@@ -6,54 +6,40 @@ from conftest import HOST
 from norn.cli import parse_write
 from norn.contracts.errors import NornError
 from norn.contracts.evidence import (
-    Applicability,
     AssertionStatus,
     Epistemic,
     EpistemicState,
-    Lifecycle,
-    Outcome,
     TaggedValue,
 )
 from norn.contracts.identity import Namespace, ObjectRef
 
 
 @pytest.mark.parametrize(
-    "tag,value",
+    "tag,value,code",
     [
-        ("INTEGER", True),
-        ("INTEGER", 2**64),
-        ("BOOLEAN", 1),
-        ("DECIMAL", float("nan")),
-        ("DECIMAL", "NaN"),
-        ("DECIMAL", "Infinity"),
-        ("DECIMAL", Decimal("1.2")),
-        ("TEXT", ""),
-        ("JSON_NULL", "null"),
-        ("FLOAT", 1.0),
+        ("INTEGER", True, "INVALID_CONTRACT"),
+        ("INTEGER", 2**64, "INVALID_CONTRACT"),
+        ("BOOLEAN", 1, "INVALID_CONTRACT"),
+        ("DECIMAL", float("nan"), "INVALID_CONTRACT"),
+        ("DECIMAL", "NaN", "NONFINITE_VALUE"),
+        ("DECIMAL", "Infinity", "NONFINITE_VALUE"),
+        ("DECIMAL", Decimal("1.2"), "INVALID_CONTRACT"),
+        ("TEXT", "", "INVALID_CONTRACT"),
+        ("JSON_NULL", "null", "INVALID_CONTRACT"),
+        ("FLOAT", 1.0, "INVALID_TAG"),
     ],
 )
-def test_invalid_values(tag, value):
-    with pytest.raises(NornError):
+def test_invalid_values(tag, value, code):
+    with pytest.raises(NornError, match=code):
         TaggedValue(tag, value)
 
 
 def test_id_namespace_and_independent_axes():
-    with pytest.raises(NornError):
+    with pytest.raises(NornError, match="INVALID_LABEL"):
         Namespace("../../tenant", "w", "p")
-    with pytest.raises(NornError):
+    with pytest.raises(NornError, match="INVALID_ID"):
         ObjectRef(HOST.namespace, "atom", "arbitrary")
     assert TaggedValue("DECIMAL", "1.200").value == "1.200"
-    assert (
-        len(
-            {
-                Lifecycle.INDEX_PENDING,
-                AssertionStatus.ACTIVE,
-                Applicability.CURRENT,
-                Outcome.SUPPORTED,
-            }
-        )
-        == 4
-    )
 
 
 @pytest.mark.parametrize("external", list(Epistemic))

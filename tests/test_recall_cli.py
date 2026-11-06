@@ -30,7 +30,6 @@ def scenario(python: str, root: Path, model_root: Path | None = None) -> dict[st
     def write(occurrence: str, day: int, value: str, correction=None):
         content = f"Alex parked in {value}."
         payload = {
-            "request_id": occurrence,
             "delivery": occurrence,
             "occurrence": occurrence,
             "content": content,

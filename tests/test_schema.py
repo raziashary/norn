@@ -71,7 +71,6 @@ def test_actual_composite_namespace_foreign_key(engine):
 
 def seeded_v4_store(tmp_path):
     """A populated schema-4 store with primary and additional-evidence supports."""
-    from dataclasses import replace
 
     from conftest import TUESDAY
 
@@ -84,7 +83,7 @@ def seeded_v4_store(tmp_path):
     registry = Registry(old, SourceStore(root / "blobs"), access)
     first = registry.ingest(request())
     extra = registry.ingest(
-        replace(request("extra"), request_id="req-extra"),
+        request("extra"),
         correction=CorrectionRequest(
             first["atom_ids"][0], "ADDITIONAL_EVIDENCE", "parking", TUESDAY, None, "corroboration"
         ),

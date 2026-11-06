@@ -33,7 +33,6 @@ def scenario(
     invoke("init")
     content = "Alex parked in ZoneA."
     write = {
-        "request_id": "episode",
         "delivery": "episode",
         "occurrence": "episode",
         "content": content,
@@ -78,7 +77,6 @@ def scenario(
         assert packet["evidence"][0]["text"] == content and packet["authorizes_action"] is False
     corrected = json.loads(json.dumps(write))
     corrected.update(
-        request_id="correction",
         delivery="correction",
         occurrence="correction",
         content="Alex parked in ZoneB.",

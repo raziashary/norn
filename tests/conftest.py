@@ -4,6 +4,7 @@ No test loads .env, calls a provider, opens a listener, or targets an existing D
 """
 
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 
@@ -17,6 +18,7 @@ from norn.integration.engine import Engine
 
 HOST = HostIdentity(Namespace("tenant", "workspace", "local"), "operator")
 TUESDAY = datetime(2026, 10, 20, 9, tzinfo=UTC)
+REPO = Path(__file__).resolve().parents[1]
 
 
 def request(occurrence="tuesday", delivery=None, place="ZoneA", *, scope="parking", origin=None):
@@ -31,7 +33,6 @@ def request(occurrence="tuesday", delivery=None, place="ZoneA", *, scope="parkin
         (("scope", scope),),
     )
     return WriteRequest(
-        "req-" + occurrence,
         "operator",
         delivery or occurrence,
         occurrence,

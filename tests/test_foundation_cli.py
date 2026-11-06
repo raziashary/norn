@@ -37,7 +37,6 @@ def scenario(python: str, root: Path) -> dict[str, object]:
     def payload(occurrence: str, day: int, place: str = "ZoneA") -> dict[str, object]:
         content = f"Alex parked in {place}."
         return {
-            "request_id": occurrence,
             "delivery": occurrence,
             "occurrence": occurrence,
             "content": content,

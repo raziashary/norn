@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from conftest import REPO
 
 from benchmark.fixtures.binding_cases import cases
 from benchmark.fixtures.publication import check_import_barrier, publish
@@ -31,7 +32,7 @@ def test_binding_roles_are_disjoint_before_wording_and_keep_all_categories():
     assert digest(canonical([c.query.query_id for c in cases("evaluation")]).encode()) == digest(
         canonical([c.query.query_id for c in datasets["evaluation"]]).encode()
     )
-    check_import_barrier(Path("src/norn"), Path("benchmark/adapters"))
+    check_import_barrier(REPO / "src" / "norn", REPO / "benchmark" / "adapters")
 
 
 def test_identical_facets_do_not_create_conditional_information():

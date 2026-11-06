@@ -228,7 +228,7 @@ Finite pilot limits are safety bounds, not performance targets: source1MiB, requ
 
 | Contract | Required fields | Output/behavior |
 |---|---|---|
-| WriteRequest | request_id, namespace, producer identity, delivery_id, occurrence_key or unresolved occurrence, source descriptor, content digest/bytes handle, event_time, observed_at, schema_version | authenticated producer; idempotency compares payload digest; same delivery/different bytes is conflict |
+| WriteRequest | namespace, producer identity, delivery_id, occurrence_key or unresolved occurrence, source descriptor, content digest/bytes handle, event_time, observed_at, schema_version | authenticated producer; idempotency compares payload digest; same delivery/different bytes is conflict |
 | WriteReceipt | event_id, atom_ids, relation_ids, commit_seq, source handles, projection states, durable_at | COMMITTED does not mean searchable; no false READY acknowledgment |
 | RecallRequest | query_id, cue_text, trusted principal/namespace, evaluation_time, query_timezone, temporal_basis, event/valid/knowledge bounds, task_goal, requested/minimum_snapshot, required capabilities, budget | exact time/entity filters parsed with ambiguity; server narrows requested edge types |
 | RecallBudget | max_candidates, max_evidence_tokens, max_graph_seeds/nodes/edges/hops/iterations, deadline, max_encoder_calls, max_retries | global per-query accounting; invalid/negative/nonfinite/unbounded values rejected |
@@ -922,7 +922,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Files:** `src/norn/contracts/time.py`, `src/norn/governance/temporal.py`, `tests/test_temporal.py`.
 - **Depends:** P01-T02.
 - **Source:** Memory ontology; Principles and non-negotiable invariants; Encoding and write pipeline; Temporal identity; Data contracts; [design](#canonical-schema).
-- **Change:** Implement exact/interval/unknown time, timezone/precision, event/valid/knowledge bases and independent lifecycle/epistemic/applicability/outcome.
+- **Change:** Implement exact/interval/unknown time, timezone/precision, event/valid/knowledge bases and independent lifecycle/epistemic/applicability/outcome. (Post-P04 audit: the never-consumed `Lifecycle`/`Applicability`/`Outcome` enums and the unstored `WriteRequest.request_id` were removed under ADR-0025; each returns only with the phase that consumes it. Read-time applicability and outcome stay computed strings.)
 - **Consumer:** Canonical readers and query parser use explicit request clock.
 - **Positive proof:** Late arrival/correction replays distinguish event time and knowledge time; yesterday uses query zone.
 - **Negative proof:** READY hypothesis never becomes verified; ambiguous DST/date-only time is not silently precise.

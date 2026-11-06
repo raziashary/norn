@@ -165,7 +165,7 @@ def test_real_binding_project_reopen_source_current_denial_and_backup(tmp_path):
 def test_public_binding_owns_native_cancellation_and_deadline(tmp_path, monkeypatch):
     import multiprocessing
     from dataclasses import replace
-    from threading import Event, Timer
+    from threading import Event
 
     with Engine(
         tmp_path / "native", HOST, create=True, model_root=MODELS, enable_models=True
@@ -178,10 +178,11 @@ def test_public_binding_owns_native_cancellation_and_deadline(tmp_path, monkeypa
         pid = worker.process.pid
         original = worker.call
         stop = Event()
-        timer = Timer(0.03, stop.set)
 
         def observed_call(*args, **kwargs):
-            timer.start()
+            # Cancellation is raised by the owner as the native call is issued, not by a timer
+            # racing the inference, so the outcome does not depend on model speed.
+            stop.set()
             return original(*args, **kwargs)
 
         query = RecallRequest("parking " * 1200, clock(), deadline_ms=120000)
@@ -195,9 +196,7 @@ def test_public_binding_owns_native_cancellation_and_deadline(tmp_path, monkeypa
                 p.pid for p in multiprocessing.active_children()
             }
         finally:
-            timer.cancel()
-            if timer.ident is not None:
-                timer.join(1)
+            stop.set()
         failed = engine.recall_binding(replace(query, deadline_ms=50), "B0").serialize()
         assert failed["reason"] == "QUERY_DEADLINE" and not failed["evidence"]
         assert models.worker is None

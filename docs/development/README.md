@@ -67,7 +67,7 @@ uv run --no-env-file python tests/test_foundation_cli.py
 For a manual write, save this synthetic request as a local JSON file, then run `norn --store .norn write --input <file>` using the uv prefix above:
 
 ```json
-{"request_id":"parking-1","delivery":"delivery-1","occurrence":"tuesday-1","content":"Alex parked in ZoneA.","event_time":{"kind":"EXACT","start":"2026-10-20T09:00:00+00:00","source_timezone":"UTC"},"observed_at":"2026-10-20T09:01:00+00:00","schema_version":1,"atoms":[{"subject":"Alex","predicate":"parked_in","value":{"tag":"TEXT","value":"ZoneA"},"start":0,"end":21,"epistemic":"USER_REPORTED","qualifiers":{"scope":"parking"}}]}
+{"delivery":"delivery-1","occurrence":"tuesday-1","content":"Alex parked in ZoneA.","event_time":{"kind":"EXACT","start":"2026-10-20T09:00:00+00:00","source_timezone":"UTC"},"observed_at":"2026-10-20T09:01:00+00:00","schema_version":1,"atoms":[{"subject":"Alex","predicate":"parked_in","value":{"tag":"TEXT","value":"ZoneA"},"start":0,"end":21,"epistemic":"USER_REPORTED","qualifiers":{"scope":"parking"}}]}
 ```
 
 Use the returned event ID with `read <event_id> --evaluation-time 2030-01-01T00:00:00+00:00 --timezone UTC --basis VALID_TIME --valid-at 2026-10-20T09:00:00+00:00 --knowledge-at 2030-01-01T00:00:00+00:00`. Clocks are explicit; the example's future query evaluation is synthetic. `resolve-time yesterday --evaluation-time 2026-03-09T16:00:00+00:00 --timezone America/New_York` resolves a request-clock interval without opening a store. `journal --after <commit_seq> --limit 100` reads stable publication pages and does not claim indexing. Identical bytes at different occurrences remain different events. Source paths, approval and principal fields are rejected in write JSON.

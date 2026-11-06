@@ -84,7 +84,6 @@ def prepare(
             )
             receipt = engine.write(
                 WriteRequest(
-                    source.source_id,
                     host(published).principal,
                     source.source_id,
                     source.source_id,

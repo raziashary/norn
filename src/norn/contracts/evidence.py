@@ -26,29 +26,6 @@ class AssertionStatus(StrEnum):
     UNRESOLVED = "UNRESOLVED"
 
 
-class Lifecycle(StrEnum):
-    COMMITTED = "COMMITTED"
-    INDEX_PENDING = "INDEX_PENDING"
-    TOMBSTONED = "TOMBSTONED"
-
-
-class Applicability(StrEnum):
-    CURRENT = "CURRENT"
-    HISTORICAL = "HISTORICAL"
-    SUPERSEDED = "SUPERSEDED"
-    FUTURE = "FUTURE"
-    UNKNOWN = "UNKNOWN"
-    CONFLICT = "CONFLICT"
-
-
-class Outcome(StrEnum):
-    SUPPORTED = "SUPPORTED"
-    PARTIALLY_SUPPORTED = "PARTIALLY_SUPPORTED"
-    CONFLICT = "CONFLICT"
-    NOT_ESTABLISHED = "NOT_ESTABLISHED"
-    VERIFICATION_UNAVAILABLE = "VERIFICATION_UNAVAILABLE"
-
-
 @dataclass(frozen=True)
 class EpistemicState:
     external: Epistemic

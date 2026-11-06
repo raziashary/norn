@@ -83,7 +83,6 @@ def test_missing_source_field_cannot_remove_an_explicit_question_prerequisite(tm
         clock.set(parse_instant(observation.recorded_at))
         engine.write(
             WriteRequest(
-                "partial-pair",
                 "operator",
                 "partial-pair",
                 "partial-pair",

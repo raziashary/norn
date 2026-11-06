@@ -60,7 +60,6 @@ def parse_write(raw: object, host: HostIdentity) -> tuple[WriteRequest, Correcti
     data = fields(
         raw,
         {
-            "request_id",
             "delivery",
             "occurrence",
             "content",
@@ -113,7 +112,6 @@ def parse_write(raw: object, host: HostIdentity) -> tuple[WriteRequest, Correcti
         )
     return (
         WriteRequest(
-            data["request_id"],
             host.principal,
             data["delivery"],
             data["occurrence"],

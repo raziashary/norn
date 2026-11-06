@@ -1,9 +1,9 @@
 import json
 import subprocess
 import sys
-from pathlib import Path
 
 import pytest
+from conftest import REPO
 
 from benchmark.fixtures.partitions import partition
 from benchmark.fixtures.publication import check_import_barrier, publish, validate_public
@@ -35,19 +35,19 @@ def test_actual_publication_guards_nested_metadata_canary_scope_and_source_hash(
 
 def test_import_barrier_fails_closed_on_a_wrong_or_empty_root(tmp_path):
     with pytest.raises(NornError, match="IMPORT_BARRIER_ROOT_EMPTY"):
-        check_import_barrier(tmp_path / "missing", Path("benchmark/adapters"))
+        check_import_barrier(tmp_path / "missing", REPO / "benchmark" / "adapters")
     (tmp_path / "empty").mkdir()
     with pytest.raises(NornError, match="IMPORT_BARRIER_ROOT_EMPTY"):
-        check_import_barrier(tmp_path / "empty", Path("benchmark/adapters"))
+        check_import_barrier(tmp_path / "empty", REPO / "benchmark" / "adapters")
 
 
 def test_structural_and_actual_import_barrier(tmp_path):
-    check_import_barrier(Path("src/norn"), Path("benchmark/adapters"))
+    check_import_barrier(REPO / "src" / "norn", REPO / "benchmark" / "adapters")
     fake = tmp_path / "runtime"
     fake.mkdir()
     (fake / "consumer.py").write_text("from benchmark.fixtures import world\n")
     with pytest.raises(NornError, match="RUNTIME_EVALUATOR_IMPORT"):
-        check_import_barrier(fake, Path("benchmark/adapters"))
+        check_import_barrier(fake, REPO / "benchmark" / "adapters")
     code = (
         "import sys; import benchmark.adapters.common; "
         "assert 'benchmark.fixtures.world' not in sys.modules; "
@@ -70,7 +70,7 @@ def test_adapter_from_import_aliases_cannot_bypass_custody(tmp_path, statement):
     adapter.mkdir()
     (adapter / "consumer.py").write_text(statement + "\n")
     with pytest.raises(NornError, match="ADAPTER_GOLD_IMPORT"):
-        check_import_barrier(Path("src/norn"), adapter)
+        check_import_barrier(REPO / "src" / "norn", adapter)
 
 
 @pytest.mark.parametrize(
@@ -87,4 +87,4 @@ def test_aliased_dynamic_import_and_execution_functions_are_rejected(tmp_path, s
     adapter.mkdir()
     (adapter / "consumer.py").write_text(statement + "\n")
     with pytest.raises(NornError, match="DYNAMIC_IMPORT_OR_EXECUTION"):
-        check_import_barrier(Path("src/norn"), adapter)
+        check_import_barrier(REPO / "src" / "norn", adapter)

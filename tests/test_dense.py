@@ -34,5 +34,5 @@ def test_invalid_geometry_cannot_fake_embeddings(values):
 def test_models_require_explicit_enable_and_exact_assets(tmp_path):
     with pytest.raises(NornError, match="LOCAL_MODELS_NOT_ENABLED"):
         ModelWorker(tmp_path, "encoder", enabled=False, checkpoint=lambda: None)
-    with pytest.raises(NornError):
+    with pytest.raises(NornError, match="MODEL_ASSET_MISSING_OR_SIZE"):
         verified(tmp_path, "encoder")

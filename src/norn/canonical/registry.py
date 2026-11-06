@@ -21,7 +21,6 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class WriteRequest:
-    request_id: str
     producer: str
     delivery: str
     occurrence: str
@@ -32,7 +31,7 @@ class WriteRequest:
     schema_version: int = 1
 
     def __post_init__(self) -> None:
-        for value in (self.request_id, self.producer, self.delivery, self.occurrence):
+        for value in (self.producer, self.delivery, self.occurrence):
             label(value, 256)
         require(type(self.content) is bytes and 0 < len(self.content) <= 1_048_576)
         require(isinstance(self.event_time, TimeValue))

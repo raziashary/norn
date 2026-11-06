@@ -81,7 +81,6 @@ def ingest(engine: Engine, published: PublicInput, clock: ReplayClock) -> dict[s
         )
         receipt = engine.write(
             WriteRequest(
-                source.source_id,
                 engine.access.host.principal,
                 source.source_id,
                 source.source_id,
