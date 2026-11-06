@@ -1778,7 +1778,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T04 — Measure gradient conflicts collapse and schedules
 
 - [ ] **P05-T04**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/diagnostics.py`, `tests/test_diagnostics.py`; per-objective gradients need `training.objective` to return each objective term separately (today it returns only the contrastive gradient), so that refactor is part of this card.
 - **Depends:** P05-T03.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1788,7 +1788,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Missing metric not proof of no conflict; different exposure/schedule must not be hidden.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_diagnostics.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-002 (`8ca3037`): per-objective gradient conflict, collapse flags and warm-start disclosure measured on `p05-t03-001`; T7 re-run reproduced T03 exactly; card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t05"></a>
@@ -1796,7 +1796,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T05 — Reproduce sparse-support toy study
 
 - [ ] **P05-T05**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `benchmark/runs/toy_support.py`, `tests/test_toy_support.py`, declared output `docs/development/evidence/p05_toy_expected.json` (transcribed from blueprint 10.3 before any reproduction code existed).
 - **Depends:** P05-T04.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1806,7 +1806,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Support overlap not cosine/Recall@K; failed reproduction remains visible.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_toy_support.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-002: ordering V1 reproduces the declared table exactly (V2/V3 NOT_EXACT but within 3 SE); card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t06"></a>
@@ -1814,7 +1814,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T06 — Reproduce weak-cue correlated-competitor study
 
 - [ ] **P05-T06**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `benchmark/runs/toy_cues.py`, `tests/test_toy_cues.py`, declared output `docs/development/evidence/p05_toy_expected.json`.
 - **Depends:** P05-T05.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1824,7 +1824,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Ties not credited; toy cannot establish real trained-language benefit.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_toy_cues.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-002: ordering V1 reproduces the declared proportions within 0.0005 (V2 NOT_EXACT, within 3 SE); ties not credited; card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t07"></a>

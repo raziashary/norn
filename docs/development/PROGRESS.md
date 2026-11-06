@@ -13,7 +13,7 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P02 | 11 | 11 | 0 | DONE | E-P02-003; final main/installed proof and review resolved |
 | P03 | 12 | 12 | 0 | DONE | E-P03-003; final measurement/installed/end review verified |
 | P04 | 9 | 9 | 0 | DONE | E-P04-005; final study/installed/native/guard proof and sole review resolved |
-| P05 | 9 | 0 | 0 | IN_PROGRESS | E-P05-001 (T01–T03 train half); cards close at the P05 end review |
+| P05 | 9 | 0 | 0 | IN_PROGRESS | E-P05-001 (T01–T03 train half), E-P05-002 (T04–T06); cards close at the P05 end review |
 | P06 | 12 | 0 | 0 | PLANNED | NOT_RUN |
 | P07 | 8 | 0 | 0 | PLANNED | NOT_RUN |
 | P08 | 8 | 0 | 0 | PLANNED | NOT_RUN |
@@ -37,4 +37,4 @@ P02 DONE11/11 and parent exit proven. Final suite97PASS/no skips, Ruff/type/buil
 
 ## Next authorized work
 
-P05 implementation is authorized by ADR-0026 (all nine cards, local CPU, frozen pinned E5-small plus small heads, GPT OSS 120B only if a card needs generation); T01–T03 are IN_PROGRESS (E-P05-001: pairs, objectives, 21 trained and reloaded checkpoints on the train role); held-out scoring waits for ADR-0027 Q-D (margin proposal in `docs/development/evidence/p05_r09_margin_proposal.md`), T07 for Q-A, and P06+ have no mandate. ADR-0022 remains a sequencing/evidence handoff. Current main publication is explicitly approved in ADR-0023; future publication needs its own authority. Source implementation59f8021 is locally committed; final documentation/status closeout forms a separate verified local commit. Preserve ignored models, original final003 artifacts, versioned002 and earlier failures/wheels. All owned study/verification/model processes ended; no task listener, credential load, provider call or foreign change. Leave pre-existing unrelated resources alone.
+P05 implementation is authorized by ADR-0026 (all nine cards, local CPU, frozen pinned E5-small plus small heads, GPT OSS 120B only if a card needs generation); T01–T06 are IN_PROGRESS (E-P05-001: pairs, objectives, 21 trained and reloaded checkpoints on the train role; E-P05-002: gradient-conflict/collapse diagnostics and both toy reproductions); held-out scoring waits for ADR-0027 Q-D (margin proposal in `docs/development/evidence/p05_r09_margin_proposal.md`), T07 for Q-A, and P06+ have no mandate. ADR-0022 remains a sequencing/evidence handoff. Current main publication is explicitly approved in ADR-0023; future publication needs its own authority. Source implementation59f8021 is locally committed; final documentation/status closeout forms a separate verified local commit. Preserve ignored models, original final003 artifacts, versioned002 and earlier failures/wheels. All owned study/verification/model processes ended; no task listener, credential load, provider call or foreign change. Leave pre-existing unrelated resources alone.
