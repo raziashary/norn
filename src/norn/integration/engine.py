@@ -216,9 +216,10 @@ class Engine:
             citations = []
             supports = self.db.connection.execute(
                 "SELECT s.*,v.source_id,x.independence_group,x.support_kind FROM atom_support x "
+                "JOIN atom_support_times t ON x.ns=t.ns AND x.id=t.support_id "
                 "JOIN source_spans s ON x.ns=s.ns AND x.span_id=s.id JOIN source_versions v "
                 "ON s.ns=v.ns AND s.version_id=v.id WHERE x.ns=? AND x.atom_id=? "
-                "AND x.recorded_seq<=? AND v.recorded_at<=? ORDER BY x.id LIMIT 65",
+                "AND x.recorded_seq<=? AND t.recorded_at<=? ORDER BY x.id LIMIT 65",
                 (ns, row["id"], snapshot, known),
             ).fetchall()
             require(0 < len(supports) <= corrections.MAX_SUPPORTS, "SUPPORT_INTEGRITY_OR_BUDGET")

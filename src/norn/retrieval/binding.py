@@ -112,6 +112,9 @@ def recall(
                 projection_snapshot=identity,
                 binding_checkpoint=checkpoint_digest,
                 model_fingerprints={"encoder": fingerprint("encoder")},
+                # Candidates before sufficiency and the final evidence limit: not the evidence.
+                binding_ranking_stage="CANDIDATES_BEFORE_SUFFICIENCY_AND_FINAL_LIMIT",
+                binding_ranked_events=len(event_keys),
                 binding_ranking=[h.record.key for h in ranked],
                 binding_scores=[h.score for h in ranked],
             )

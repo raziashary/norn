@@ -63,8 +63,9 @@ def test_masks_envelopes_and_multi_positive_are_real_controls():
     b.mask[0] = 0
     with pytest.raises(NornError, match="BINDING_ALL_MISSING"):
         objective(BindingModel("B4"), b)
-    with pytest.raises(NornError, match="TRAINING_ENVELOPE"):
-        train(BindingModel("B3"), (batch(),), seed=0)
+    for bad_seed in (-1, 2**32, True, 1.5):
+        with pytest.raises(NornError, match="TRAINING_ENVELOPE"):
+            train(BindingModel("B3"), (batch(),), seed=bad_seed)  # type: ignore[arg-type]
 
 
 def test_candidate_limit_counts_events_so_one_large_event_cannot_crowd_out_the_rest():

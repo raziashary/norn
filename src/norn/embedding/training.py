@@ -78,7 +78,8 @@ def train(
     now: Callable[[], float] = time.monotonic,
 ) -> dict[str, Any]:
     require(
-        seed in (11, 29, 47) and type(updates) is int and 1 <= updates <= 200, "TRAINING_ENVELOPE"
+        type(seed) is int and 0 <= seed < 2**32 and type(updates) is int and 1 <= updates <= 200,
+        "TRAINING_ENVELOPE",
     )
     require(
         0 < seconds <= 1200 and 0 < learning_rate <= 0.01 and 0 < len(batches) <= 512,

@@ -43,3 +43,13 @@ def test_current_denial_precedes_window_and_historical_snapshot(engine):
     assert corpus.complete and len(corpus.records) == 1
     assert corpus.records[0].event_id == good["event_id"]
     assert "FORBIDDEN" not in corpus.records[0].text
+
+
+def test_atom_without_any_alias_row_is_still_eligible(engine):
+    written = engine.write(request("aliasless"))
+    connection = engine.db.connection
+    connection.execute('DROP TRIGGER IF EXISTS "immutable_entity_aliases_delete"')
+    connection.execute("DELETE FROM entity_aliases")
+    assert connection.execute("SELECT count(*) FROM entity_aliases").fetchone()[0] == 0
+    corpus = eligible(engine, RecallRequest("anything", clock()))
+    assert {r.event_id for r in corpus.records} == {written["event_id"]}

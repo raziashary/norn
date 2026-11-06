@@ -30,12 +30,16 @@ def search(
     limit: int,
     checkpoint: Callable[[], None] | None = None,
 ) -> tuple[Hit, ...]:
+    # Stored vectors come from projection readback, which already enforces finite, 384-d,
+    # unit-norm geometry once per load; re-validating every vector on every query repeated that
+    # work in pure Python. Only the query vector is validated here, plus a length guard.
     q = vector(list(query))
     hits = []
     for record in corpus.records:
         if checkpoint:
             checkpoint()
         require(record.key in vectors, "DENSE_ENTRY_UNAVAILABLE")
-        value = vector(list(vectors[record.key]))
+        value = vectors[record.key]
+        require(len(value) == len(q), "INVALID_VECTOR_GEOMETRY")
         hits.append(Hit(record, sum(a * b for a, b in zip(q, value, strict=True)), "dense"))
     return tuple(sorted(hits, key=lambda h: (-h.score, h.record.key))[:limit])

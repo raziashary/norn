@@ -67,6 +67,7 @@ def test_wrong_scope_and_cycle_reject_atomically(engine):
             correction(changed["atom_ids"][0]),
             first["atom_ids"][0],
             allocate(engine.db.connection, engine.access.ns),
+            engine.db.now(),
         )
     assert engine.db.connection.execute("SELECT count(*) FROM corrections").fetchone()[0] == 1
 
@@ -172,3 +173,32 @@ def test_only_the_producer_or_an_admin_can_retract(engine, tmp_path):
     # The producer itself needs no extra grant.
     mine = engine.write(request("mine", place="ZoneB"))
     retract(engine.registry, mine["atom_ids"][0], TUESDAY, None, "withdrawn")
+
+
+def test_additional_evidence_is_not_known_before_the_link_was_recorded(tmp_path):
+    from datetime import UTC, datetime
+
+    from conftest import HOST
+
+    from norn.contracts.time import QueryClock
+    from norn.integration.engine import Engine
+
+    now = [datetime(2026, 10, 20, 10, tzinfo=UTC)]
+    with Engine(tmp_path / "store", HOST, create=True, clock=lambda: now[0]) as engine:
+        engine.access.bootstrap()
+        first = engine.write(request())
+        now[0] = datetime(2026, 10, 25, 10, tzinfo=UTC)
+        # Identical bytes: the same source version, recorded on the 20th, is cited again.
+        engine.write(
+            request("extra"), correction=correction(first["atom_ids"][0], "ADDITIONAL_EVIDENCE")
+        )
+
+        def known(day):
+            cut = datetime(2026, 10, day, 12, tzinfo=UTC)
+            return QueryClock(cut, "UTC", "VALID_TIME", TUESDAY, cut, None)
+
+        before = engine.read(first["event_id"], known(22)).serialize()["atoms"][0]["citations"]
+        after = engine.read(first["event_id"], known(26)).serialize()["atoms"][0]["citations"]
+        # Before the link existed only the primary support is knowable (the old source-version
+        # time would have shown both on the 22nd).
+        assert len(before) == 1 and len(after) == 2

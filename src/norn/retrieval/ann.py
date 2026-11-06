@@ -30,20 +30,28 @@ def search(
     matrix = np.asarray([vector(list(vectors[k])) for k in keys], dtype=np.float32)
     if not keys:
         return (), {"count": 0, "index_bytes": 0, "build_ns": 0, "search_ns": 0}
+    # One thread makes the timing reproducible; the process-wide setting is put back afterwards
+    # so a diagnostic cannot silently slow unrelated native work in the same process.
+    previous_threads = faiss.omp_get_max_threads()
     faiss.omp_set_num_threads(1)
-    before = memory()
-    started = time.perf_counter_ns()
-    index = faiss.IndexHNSWFlat(384, 16, faiss.METRIC_INNER_PRODUCT)
-    index.hnsw.efConstruction = 40
-    index.hnsw.efSearch = ef_search
-    index.add(matrix)
-    encoded = faiss.serialize_index(index)
-    # Actual reload of the same derived native index is part of this diagnostic.
-    reopened = faiss.deserialize_index(encoded)
-    build_ns = time.perf_counter_ns() - started
-    started = time.perf_counter_ns()
-    scores, positions = reopened.search(np.asarray([q], dtype=np.float32), min(limit, len(keys)))
-    search_ns = time.perf_counter_ns() - started
+    try:
+        before = memory()
+        started = time.perf_counter_ns()
+        index = faiss.IndexHNSWFlat(384, 16, faiss.METRIC_INNER_PRODUCT)
+        index.hnsw.efConstruction = 40
+        index.hnsw.efSearch = ef_search
+        index.add(matrix)
+        encoded = faiss.serialize_index(index)
+        # Actual reload of the same derived native index is part of this diagnostic.
+        reopened = faiss.deserialize_index(encoded)
+        build_ns = time.perf_counter_ns() - started
+        started = time.perf_counter_ns()
+        scores, positions = reopened.search(
+            np.asarray([q], dtype=np.float32), min(limit, len(keys))
+        )
+        search_ns = time.perf_counter_ns() - started
+    finally:
+        faiss.omp_set_num_threads(previous_threads)
     hits = tuple(
         Hit(corpus.records[int(i)], float(s), "ann")
         for s, i in zip(scores[0], positions[0], strict=True)

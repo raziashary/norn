@@ -2,14 +2,17 @@
 
 from datetime import datetime, time, timedelta
 
-from norn.contracts.errors import require
+from norn.contracts.errors import NornError, require
 from norn.contracts.time import QueryClock, TimeKind, TimeValue, local_instant, zone
 
 
 def yesterday(clock: QueryClock) -> TimeValue:
-    day = clock.evaluation_time.astimezone(zone(clock.timezone)).date() - timedelta(days=1)
-    start = local_instant(datetime.combine(day, time()), clock.timezone)
-    end = local_instant(datetime.combine(day + timedelta(days=1), time()), clock.timezone)
+    try:
+        day = clock.evaluation_time.astimezone(zone(clock.timezone)).date() - timedelta(days=1)
+        start = local_instant(datetime.combine(day, time()), clock.timezone)
+        end = local_instant(datetime.combine(day + timedelta(days=1), time()), clock.timezone)
+    except OverflowError:
+        raise NornError("INVALID_TIME") from None
     return TimeValue(TimeKind.INTERVAL, start, end, clock.timezone, "day")
 
 

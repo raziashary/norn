@@ -102,7 +102,7 @@ Model acquisition is separately enabled and verifies publisher byte lengths/SHA2
 
 ```powershell
 uv run --locked --no-env-file --extra retrieval python -m norn.embedding.assets .norn/models --enable-download
-uv run --locked --no-env-file --extra retrieval python -m norn.embedding.baseline .norn/models --enable-models --check-controls
+uv run --locked --no-env-file --extra retrieval python -m norn.embedding.controls .norn/models --enable-models --check-controls
 uv run --locked --no-env-file --extra retrieval norn --store <store> --model-root .norn/models --enable-models project
 uv run --locked --no-env-file --extra retrieval norn --store <store> --model-root .norn/models --enable-models recall --input <JSON>
 ```

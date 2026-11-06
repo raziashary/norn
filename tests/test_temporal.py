@@ -32,3 +32,22 @@ def test_yesterday_uses_request_timezone_and_23_hour_day():
     value = yesterday(QueryClock(now, "America/New_York", "EVENT_TIME", now, now))
     assert (value.end - value.start).total_seconds() == 23 * 3600
     assert value.start.isoformat() == "2026-03-08T05:00:00+00:00"
+
+
+def test_range_overflow_is_an_invalid_time_not_a_crash():
+    from datetime import UTC, datetime
+
+    import pytest
+
+    from norn.contracts.errors import NornError
+    from norn.contracts.time import QueryClock, local_instant, parse_instant
+    from norn.governance.temporal import yesterday
+
+    with pytest.raises(NornError, match="INVALID_TIME"):
+        parse_instant("0001-01-01T00:00:00+05:00")
+    with pytest.raises(NornError, match="INVALID_TIME"):
+        local_instant(datetime(1, 1, 1), "Asia/Tokyo")
+    early = datetime(1, 1, 1, 12, tzinfo=UTC)
+    with pytest.raises(NornError, match="INVALID_TIME"):
+        yesterday(QueryClock(early, "UTC", "EVENT_TIME", early, early, None))
+    assert parse_instant("2026-10-20T00:00:00+05:00").isoformat().startswith("2026-10-19T19:00")

@@ -83,7 +83,8 @@ def parse(raw: bytes) -> Checkpoint:
             type(receipt) is dict
             and type(receipt.get("updates")) is int
             and 0 < receipt["updates"] <= 200
-            and receipt.get("seed") in (11, 29, 47)
+            and type(receipt.get("seed")) is int
+            and 0 <= receipt["seed"] < 2**32
             and receipt.get("backbone") == "FROZEN",
             "UNTRAINED_BINDING_CHECKPOINT",
         )

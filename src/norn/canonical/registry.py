@@ -119,8 +119,10 @@ class Registry:
     ) -> None:
         version = staged.version
         extracted = extract(staged.content, version, request.atoms)
-        now = self.db.now()
         with self.db.transaction() as connection:
+            # Stamped after BEGIN IMMEDIATE: the write lock orders recorded_at with commit_seq,
+            # so a slower writer cannot commit a later sequence with an earlier instant.
+            now = self.db.now()
             self.access.check("WRITE")
             prior = connection.execute(
                 "SELECT payload_digest,event_id FROM deliveries "
@@ -173,7 +175,7 @@ class Registry:
                     )
                 for index, atom in enumerate(extracted):
                     atom_ids.append(
-                        self._atom(connection, event_id, index, atom, seq, subject_entity)
+                        self._atom(connection, event_id, index, atom, seq, subject_entity, now)
                     )
                 connection.execute(
                     "INSERT INTO deliveries VALUES(?,?,?,?,?,?)",
@@ -184,7 +186,7 @@ class Registry:
                     from norn.canonical.corrections import append_relation
 
                     require(len(atom_ids) == 1, "CORRECTION_REQUIRES_ONE_ATOM")
-                    relation_ids.append(append_relation(self, correction, atom_ids[0], seq))
+                    relation_ids.append(append_relation(self, correction, atom_ids[0], seq, now))
                 publish(connection, self.ns, seq, "INGEST", [event_id, *atom_ids, *relation_ids])
             # Last statement before COMMIT: SQL never references a blob that is not published.
             self.sources.publish(staged)
@@ -234,6 +236,7 @@ class Registry:
         extracted: ExtractedAtom,
         seq: int,
         subject_entity: str | None,
+        recorded_at: str,
     ) -> str:
         fixture = extracted.fixture
         from norn.contracts.identity import ObjectRef
@@ -294,17 +297,21 @@ class Registry:
                 seq,
             ),
         )
+        support_id = stable_id("support", atom_id, span_id)
         connection.execute(
             "INSERT INTO atom_support VALUES(?,?,?,?,'PRIMARY',?,?,?)",
             (
                 self.ns,
-                stable_id("support", atom_id, span_id),
+                support_id,
                 atom_id,
                 span_id,
                 stable_id("independence", self.ns, extracted.span.version_id),
                 "fixture-v1",
                 seq,
             ),
+        )
+        connection.execute(
+            "INSERT INTO atom_support_times VALUES(?,?,?)", (self.ns, support_id, recorded_at)
         )
         return atom_id
 

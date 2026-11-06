@@ -4,7 +4,7 @@ import re
 import sqlite3
 import time
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -15,8 +15,14 @@ from norn.contracts.identity import digest
 from norn.contracts.time import Clock, aware, stamp, wall_clock
 
 APPLICATION_ID = 0x4E4F524E
-SCHEMA_VERSION = 4
-MIGRATIONS = ("schema.sql", "002_governance.sql", "003_projection.sql", "004_binding.sql")
+SCHEMA_VERSION = 5
+MIGRATIONS = (
+    "schema.sql",
+    "002_governance.sql",
+    "003_projection.sql",
+    "004_binding.sql",
+    "005_indexes_support_time.sql",
+)
 MUTABLE_TABLES = {"namespaces", "migration_state"}
 
 
@@ -113,11 +119,15 @@ class Database:
     def _verify(self, version: int) -> None:
         try:
             expected_tables = {}
+            expected_indexes = {}
             for name in MIGRATIONS[:version]:
                 for sql in statements(Path(__file__).with_name(name).read_text(encoding="utf-8")):
                     match = re.match(r"\s*CREATE TABLE (\w+)", sql)
                     if match:
                         expected_tables[match[1]] = " ".join(sql.strip().rstrip(";").split())
+                    match = re.match(r"\s*CREATE INDEX (\w+)", sql)
+                    if match:
+                        expected_indexes[match[1]] = " ".join(sql.strip().rstrip(";").split())
             actual_tables = {
                 row[0]: " ".join(row[1].strip().rstrip(";").split())
                 for row in self.connection.execute(
@@ -125,6 +135,13 @@ class Database:
                 )
             }
             require(expected_tables == actual_tables, "SCHEMA_CATALOG_MISMATCH")
+            actual_indexes = {
+                row[0]: " ".join(row[1].strip().rstrip(";").split())
+                for row in self.connection.execute(
+                    "SELECT name,sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL"
+                )
+            }
+            require(expected_indexes == actual_indexes, "SCHEMA_CATALOG_MISMATCH")
             actual_triggers = {
                 r[0]: " ".join(r[1].strip().rstrip(";").split())
                 for r in self.connection.execute(
@@ -204,12 +221,20 @@ class Database:
         def progress(status: int, remaining: int, total: int) -> None:
             require(time.monotonic() <= deadline, "BACKUP_DEADLINE")
 
-        with sqlite3.connect(destination) as backup:
-            self.connection.backup(backup, pages=256, progress=progress)
-            require(
-                backup.execute("PRAGMA integrity_check").fetchone()[0] == "ok", "BACKUP_INTEGRITY"
-            )
-            require(not backup.execute("PRAGMA foreign_key_check").fetchall(), "BACKUP_INTEGRITY")
+        try:
+            with closing(sqlite3.connect(destination)) as backup:
+                self.connection.backup(backup, pages=256, progress=progress)
+                require(
+                    backup.execute("PRAGMA integrity_check").fetchone()[0] == "ok",
+                    "BACKUP_INTEGRITY",
+                )
+                require(
+                    not backup.execute("PRAGMA foreign_key_check").fetchall(), "BACKUP_INTEGRITY"
+                )
+        except BaseException:
+            # A partial or unverified file must neither look like a backup nor block a retry.
+            destination.unlink(missing_ok=True)
+            raise
         return destination
 
     def close(self) -> None:

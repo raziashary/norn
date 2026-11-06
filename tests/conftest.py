@@ -52,3 +52,28 @@ def engine(tmp_path):
     with Engine(tmp_path / "store", HOST, create=True) as instance:
         instance.access.bootstrap()
         yield instance
+
+
+class _PreMigration005Writer:
+    """Connection proxy emulating a writer that predates atom_support_times.
+
+    Schema versions below 5 have no such table and their writers never filled it, so a populated
+    older store is produced by dropping exactly that insert and nothing else.
+    """
+
+    def __init__(self, real):
+        self._real = real
+
+    def execute(self, sql, *params):
+        if sql.lstrip().startswith("INSERT INTO atom_support_times"):
+            return self._real.execute("SELECT 1")
+        return self._real.execute(sql, *params)
+
+    def __getattr__(self, name):
+        return getattr(self._real, name)
+
+
+def legacy_writer(database):
+    """Make ``database`` write like a pre-005 store (use only with target < 5)."""
+    database.connection = _PreMigration005Writer(database.connection)
+    return database

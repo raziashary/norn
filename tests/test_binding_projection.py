@@ -3,7 +3,7 @@ import sqlite3
 from pathlib import Path
 
 import pytest
-from conftest import HOST, clock, request
+from conftest import HOST, clock, legacy_writer, request
 
 from norn.canonical.database import Database
 from norn.canonical.registry import Registry
@@ -98,7 +98,7 @@ def test_interrupted_publication_replays_and_legacy_backup_is_integrity_only(tmp
 
 def test_populated_schema3_upgrade_preserves_source_and_restorable_backup(tmp_path):
     root = tmp_path / "upgrade"
-    old = Database(root / "canonical.sqlite3", create=True, target=3)
+    old = legacy_writer(Database(root / "canonical.sqlite3", create=True, target=3))
     access = Access(old, HOST)
     access.bootstrap()
     receipt = Registry(old, SourceStore(root / "blobs"), access).ingest(request())
@@ -139,6 +139,10 @@ def test_real_binding_project_reopen_source_current_denial_and_backup(tmp_path):
             assert result["status"] == "SUPPORTED"
             assert result["evidence"][0]["text"] == "Alex parked in ZoneA."
             assert result["authorizes_action"] is False
+            assert (
+                result["binding_ranking_stage"] == "CANDIDATES_BEFORE_SUFFICIENCY_AND_FINAL_LIMIT"
+            )
+            assert result["binding_ranked_events"] >= 1 and result["binding_ranking"]
         held = engine.recall_binding(query, "B0")
         engine.deny(receipt["event_id"], "deny-binding", "test")
         with pytest.raises(NornError, match="NOT_AUTHORIZED_OR_NOT_FOUND"):

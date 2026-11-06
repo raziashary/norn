@@ -123,7 +123,7 @@ def eligible(
     sql = (
         "SELECT DISTINCT a.id,a.event_id FROM atoms a JOIN events e ON a.ns=e.ns "
         "AND a.event_id=e.id JOIN source_versions v ON e.ns=v.ns AND e.source_version=v.id "
-        "JOIN entity_aliases x ON a.ns=x.ns AND a.subject_ref=x.entity_id WHERE "
+        "LEFT JOIN entity_aliases x ON a.ns=x.ns AND a.subject_ref=x.entity_id WHERE "
         + " AND ".join(clauses)
         + " ORDER BY a.event_id,a.id LIMIT ?"
     )

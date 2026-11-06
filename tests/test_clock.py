@@ -71,3 +71,26 @@ def test_failed_upgrade_rolls_back_without_bricking_the_store(tmp_path, monkeypa
     upgraded = Database(path)
     assert upgraded.connection.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION
     upgraded.close()
+
+
+def test_recording_instant_is_taken_inside_the_write_lock(tmp_path):
+    from conftest import HOST, request
+
+    from norn.integration.engine import Engine
+
+    seen = []
+    holder = {}
+
+    def clock():
+        database = holder.get("database")
+        seen.append(database is not None and database.connection.in_transaction)
+        return datetime(2026, 10, 20, 10, tzinfo=UTC)
+
+    with Engine(tmp_path / "store", HOST, create=True, clock=clock) as engine:
+        holder["database"] = engine.db
+        engine.access.bootstrap()
+        seen.clear()
+        engine.write(request())
+    # Every stamp used by an ingest happens after BEGIN IMMEDIATE, so recorded_at follows
+    # commit order; stamping before the lock could let a slower writer commit an older instant.
+    assert seen and all(seen)

@@ -58,7 +58,9 @@ def _bounded(connection: sqlite3.Connection, sql: str, params: tuple[str, ...], 
     require(count < limit, "ATOM_APPEND_BUDGET")
 
 
-def append_relation(registry: Registry, request: CorrectionRequest, new_atom: str, seq: int) -> str:
+def append_relation(
+    registry: Registry, request: CorrectionRequest, new_atom: str, seq: int, recorded_at: str
+) -> str:
     registry.access.check("WRITE")
     if request.classification == "SUPERSEDES":
         registry.access.check("ADMIN")
@@ -111,16 +113,22 @@ def append_relation(registry: Registry, request: CorrectionRequest, new_atom: st
             MAX_SUPPORTS,
         )
         support = registry.source_for_atom(new_atom)
+        support_id = stable_id("support", request.prior_atom, new_atom)
         connection.execute(
             "INSERT INTO atom_support VALUES(?,?,?,?,'ADDITIONAL',?,'fixture-v1',?)",
             (
                 ns,
-                stable_id("support", request.prior_atom, new_atom),
+                support_id,
                 request.prior_atom,
                 new["source_span_id"],
                 stable_id("independence", ns, support["version_id"]),
                 seq,
             ),
+        )
+        # The link is knowable only from the moment it was recorded, not from the older
+        # source version's own recording time.
+        connection.execute(
+            "INSERT INTO atom_support_times VALUES(?,?,?)", (ns, support_id, recorded_at)
         )
     edge = stable_id("edge", ns, request.prior_atom, new_atom, canonical(request.payload()))
     connection.execute("INSERT INTO objects VALUES(?,?,'edge')", (ns, edge))

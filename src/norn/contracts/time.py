@@ -21,7 +21,11 @@ def aware(value: datetime) -> datetime:
         isinstance(value, datetime) and value.tzinfo is not None and value.utcoffset() is not None,
         "NAIVE_TIME",
     )
-    return value.astimezone(UTC)
+    try:
+        return value.astimezone(UTC)
+    except OverflowError:
+        # An offset pushes the instant outside the representable range (e.g. year 1 at +05:00).
+        raise NornError("INVALID_TIME") from None
 
 
 def parse_instant(value: str) -> datetime:
@@ -51,7 +55,11 @@ def local_instant(value: datetime, timezone: str, fold: int | None = None) -> da
     candidates = []
     for choice in (0, 1):
         candidate = value.replace(tzinfo=tz, fold=choice)
-        if candidate.astimezone(UTC).astimezone(tz).replace(tzinfo=None) == value:
+        try:
+            roundtrip = candidate.astimezone(UTC).astimezone(tz).replace(tzinfo=None)
+        except OverflowError:
+            raise NornError("INVALID_TIME") from None
+        if roundtrip == value:
             candidates.append(candidate)
     require(bool(candidates), "NONEXISTENT_LOCAL_TIME")
     ambiguous = len({c.utcoffset() for c in candidates}) > 1

@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 import pytest
-from conftest import HOST, clock, request
+from conftest import HOST, clock, legacy_writer, request
 
 from norn.canonical.database import Database
 from norn.canonical.registry import Registry
@@ -59,7 +59,7 @@ def test_corrupt_artifact_is_unavailable_not_absence(engine):
 
 def test_populated_schema2_upgrade_has_restorable_backup(tmp_path):
     root = tmp_path / "upgrade"
-    db = Database(root / "canonical.sqlite3", create=True, target=2)
+    db = legacy_writer(Database(root / "canonical.sqlite3", create=True, target=2))
     access = Access(db, HOST)
     access.bootstrap()
     receipt = Registry(db, SourceStore(root / "blobs"), access).ingest(request())
