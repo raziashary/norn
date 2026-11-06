@@ -111,7 +111,11 @@ def run_controls(
         cases = stratified_sample(cases)
     require(len(cases) <= 10_000, "RUN_QUERY_BUDGET")
     judgments = load_judgments(judgments_path) if judgments_path else ()
-    attested = load_attestations(attestation_path) if attestation_path else frozenset()
+    attested = (
+        load_attestations(attestation_path, judgments_path)
+        if attestation_path and judgments_path
+        else frozenset()
+    )
     audit = audit_summary(cases, judgments, attested)
     inputs = {case.query.query_id: publish(case, (world.gold_canary,)) for case in cases}
     artifacts = {

@@ -182,7 +182,9 @@ def main(argv: list[str] | None = None) -> int:
                     scenarios(world),
                     args.destination,
                     load_judgments(args.judgments) if args.judgments else (),
-                    load_attestations(args.attestation) if args.attestation else frozenset(),
+                    load_attestations(args.attestation, args.judgments)
+                    if args.attestation and args.judgments
+                    else frozenset(),
                 ),
                 "human_review": "PENDING; PACK_IS_NOT_A_JUDGMENT",
             }

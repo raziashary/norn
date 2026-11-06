@@ -67,8 +67,15 @@ def test_sample_covers_every_family_twin_and_language_and_contains_the_v1_sample
 def test_actual_owner_records_count_only_when_current_and_attested(tmp_path):
     cases = scenarios(build_world(47, partition(47, "smoke")))
     judgments = load_judgments(REPO / "docs/development/evidence/label_judgments.json")
-    attested = load_attestations(REPO / "docs/development/evidence/label_attestation.json")
+    attestation = REPO / "docs/development/evidence/label_attestation.json"
+    judgments_file = REPO / "docs/development/evidence/label_judgments.json"
+    attested = load_attestations(attestation, judgments_file)
     assert attested == {"project-owner"}
+    # Negative control: the statement covers one exact judgments file; a changed file (a new or
+    # edited judgment) attests no one until the owner renews the statement.
+    changed = tmp_path / "judgments.json"
+    changed.write_bytes(judgments_file.read_bytes() + b" ")
+    assert load_attestations(attestation, changed) == frozenset()
     assert {j.annotator for j in judgments} == {"project-owner"}
     assert all(j.role == "HUMAN" and j.independent for j in judgments)
     summary = audit_summary(cases, judgments, attested)

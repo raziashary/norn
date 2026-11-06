@@ -166,8 +166,13 @@ def current(case: Case, judgments: tuple[Judgment, ...]) -> tuple[Judgment, ...]
     )
 
 
-def load_attestations(path: Path) -> frozenset[str]:
-    """Annotators the owner has attested as independent humans (a separate external record)."""
+def load_attestations(path: Path, judgments_path: Path | None = None) -> frozenset[str]:
+    """Annotators the owner has attested as independent humans (a separate owner-declared record).
+
+    An attestation names the exact judgments file it covers (``covers_judgments_sha256``). When
+    ``judgments_path`` is given, an attestation whose digest differs from that file attests no one,
+    so adding or editing judgments requires the owner to renew the statement (fail closed).
+    """
     require(path.is_file() and path.stat().st_size <= 1_000_000, "AUDIT_RECORD_BUDGET")
     raw: Any = json.loads(path.read_bytes())
     require(type(raw) is list and len(raw) <= 1000, "AUDIT_RECORD_SCHEMA")
@@ -179,12 +184,18 @@ def load_attestations(path: Path) -> frozenset[str]:
             and type(item.get("statement")) is str
             and bool(item["statement"])
             and type(item.get("authority")) is str
-            and bool(item["authority"]),
+            and bool(item["authority"])
+            and type(item.get("covers_judgments_sha256")) is str,
             "AUDIT_ATTESTATION_SCHEMA",
         )
         names.append(item["annotator"])
     require(len(set(names)) == len(names), "DUPLICATE_ATTESTATION")
-    return frozenset(names)
+    if judgments_path is None:
+        return frozenset(names)
+    covered = digest(judgments_path.read_bytes())
+    return frozenset(
+        item["annotator"] for item in raw if item["covers_judgments_sha256"] == covered
+    )
 
 
 def load_judgments(path: Path) -> tuple[Judgment, ...]:
@@ -228,5 +239,5 @@ def audit_summary(
         "unattested_annotators": sorted(declared - attested),
         "sampling": SAMPLING,
         "state": "SAMPLE_REVIEWED" if reviewed == len(sample) else "PENDING_OR_DISPUTED",
-        "provenance": "HUMAN_COUNTED_ONLY_WITH_EXTERNAL_ATTESTATION_RECORD",
+        "provenance": "HUMAN_COUNTED_ONLY_WITH_OWNER_ATTESTATION_BOUND_TO_JUDGMENTS_DIGEST",
     }
