@@ -37,7 +37,7 @@ From the repository root, using the existing environment:
 .venv/Scripts/python.exe docs/development/check_docs.py
 .venv/Scripts/python.exe docs/development/check_docs.py --self-test
 .venv/Scripts/python.exe -c "from pathlib import Path; p=Path('docs/development/check_docs.py'); compile(p.read_text(encoding='utf-8'),str(p),'exec')"
-git diff --check
+git diff --cached --check
 ```
 
 The checker validates links, IDs, task metadata/dependencies, coverage, and status consistency. It cannot prove the science, runtime algorithms, SQL migrations, ACL enforcement, or research outcomes. Those remain separate gates. No provider call, model download, database, or listener is required for documentation validation.

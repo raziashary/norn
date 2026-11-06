@@ -12,7 +12,7 @@ from uuid import uuid4
 from norn.canonical.sources import safe_path
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import digest
-from norn.contracts.time import stamp
+from norn.contracts.time import Clock, aware, stamp, wall_clock
 
 APPLICATION_ID = 0x4E4F524E
 SCHEMA_VERSION = 4
@@ -39,13 +39,21 @@ def immutable_trigger(table: str, operation: str) -> str:
 
 
 class Database:
-    def __init__(self, path: Path, *, create: bool = False, target: int = SCHEMA_VERSION):
+    def __init__(
+        self,
+        path: Path,
+        *,
+        create: bool = False,
+        target: int = SCHEMA_VERSION,
+        clock: Clock = wall_clock,
+    ):
         require(target in range(1, SCHEMA_VERSION + 1), "UNSUPPORTED_SCHEMA")
         safe_path(path)
         existed = path.exists()
         require(existed or create, "STORE_NOT_FOUND")
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
+        self.clock = clock
         self.connection = sqlite3.connect(path, timeout=5, isolation_level=None)
         self.connection.row_factory = sqlite3.Row
         try:
@@ -66,24 +74,14 @@ class Database:
                 )
                 if current:
                     self.connection.execute("UPDATE migration_state SET dirty=1")
-                with self.transaction():
-                    for version in range(current + 1, target + 1):
-                        raw = Path(__file__).with_name(MIGRATIONS[version - 1]).read_bytes()
-                        for sql in statements(raw.decode()):
-                            self.connection.execute(sql)
-                        self.connection.execute(
-                            "INSERT INTO schema_migrations VALUES(?,?,?,?)",
-                            (
-                                version,
-                                digest(raw),
-                                stamp(datetime.now(UTC)),
-                                str(backup) if backup else None,
-                            ),
-                        )
-                    self._immutability()
-                    self.connection.execute("UPDATE migration_state SET dirty=0")
-                    self.connection.execute(f"PRAGMA application_id={APPLICATION_ID}")
-                    self.connection.execute(f"PRAGMA user_version={target}")
+                try:
+                    self._migrate(current, target, backup)
+                except BaseException:
+                    # The migration transaction rolled back atomically, so the store is intact;
+                    # a leftover marker would brick it after a concurrent or failed attempt.
+                    if current:
+                        self.connection.execute("UPDATE migration_state SET dirty=0")
+                    raise
             self._verify(target)
         except sqlite3.Error:
             self.connection.close()
@@ -91,6 +89,26 @@ class Database:
         except BaseException:
             self.connection.close()
             raise
+
+    def _migrate(self, current: int, target: int, backup: Path | None) -> None:
+        with self.transaction():
+            for version in range(current + 1, target + 1):
+                raw = Path(__file__).with_name(MIGRATIONS[version - 1]).read_bytes()
+                for sql in statements(raw.decode()):
+                    self.connection.execute(sql)
+                self.connection.execute(
+                    "INSERT INTO schema_migrations VALUES(?,?,?,?)",
+                    (
+                        version,
+                        digest(raw),
+                        stamp(datetime.now(UTC)),
+                        str(backup) if backup else None,
+                    ),
+                )
+            self._immutability()
+            self.connection.execute("UPDATE migration_state SET dirty=0")
+            self.connection.execute(f"PRAGMA application_id={APPLICATION_ID}")
+            self.connection.execute(f"PRAGMA user_version={target}")
 
     def _verify(self, version: int) -> None:
         try:
@@ -160,6 +178,10 @@ class Database:
                         )
                         + ";"
                     )
+
+    def now(self) -> str:
+        """Canonical recording instant from the host-owned clock; must be timezone-aware."""
+        return stamp(aware(self.clock()))
 
     @contextmanager
     def transaction(self) -> Iterator[sqlite3.Connection]:

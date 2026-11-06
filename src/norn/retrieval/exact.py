@@ -145,8 +145,12 @@ def eligible(
                     row["event_id"], replace(request.clock, snapshot=snapshot)
                 ).serialize()
             view = views[row["event_id"]]
-            atom = next(a for a in view["atoms"] if a["atom_id"] == row["id"])
-            primary = next(c for c in atom["citations"] if c["support_kind"] == "PRIMARY")
+            atom = next((a for a in view["atoms"] if a["atom_id"] == row["id"]), None)
+            if atom is None:
+                raise NornError("CANDIDATE_IDENTITY_MISMATCH")
+            primary = next((c for c in atom["citations"] if c["support_kind"] == "PRIMARY"), None)
+            if primary is None:
+                raise NornError("PRIMARY_CITATION_MISSING")
             engine.access.check("READ", row["id"])
         except NornError as error:
             if error.code == "NOT_AUTHORIZED_OR_NOT_FOUND":
@@ -208,4 +212,8 @@ def lookup(corpus: EligibleCorpus, request: RecallRequest) -> tuple[Hit, ...]:
         or request.event_start
     ):
         return ()
-    return tuple(Hit(record, 1.0, "exact") for record in corpus.records[: request.candidate_limit])
+    # A filter that matches more records than a candidate list can hold is a scope, not an
+    # exact lookup; truncating it by id order would retain arbitrary records.
+    if len(corpus.records) > request.candidate_limit:
+        return ()
+    return tuple(Hit(record, 1.0, "exact") for record in corpus.records)

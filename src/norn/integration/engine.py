@@ -2,7 +2,6 @@
 
 import json
 import shutil
-from datetime import UTC, datetime
 from pathlib import Path
 from threading import Event
 from typing import Any, Self
@@ -14,7 +13,7 @@ from norn.canonical.sources import SourceSpan, SourceStore, safe_path
 from norn.contracts.budgets import QueryBudget
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest, label, stable_id
-from norn.contracts.time import QueryClock, stamp
+from norn.contracts.time import Clock, QueryClock, stamp, wall_clock
 from norn.embedding.baseline import LocalModels
 from norn.governance import deletion
 from norn.governance.access import Access, HostIdentity
@@ -49,10 +48,11 @@ class Engine:
         create: bool = False,
         model_root: Path | None = None,
         enable_models: bool = False,
+        clock: Clock = wall_clock,
     ):
         safe_path(root)
         self.root = root.absolute()
-        self.db = Database(self.root / "canonical.sqlite3", create=create)
+        self.db = Database(self.root / "canonical.sqlite3", create=create, clock=clock)
         try:
             self.sources = SourceStore(self.root / "blobs")
             self.access = Access(self.db, host)
@@ -163,11 +163,14 @@ class Engine:
                 "AND recorded_at<=? ORDER BY recorded_seq LIMIT 257",
                 (ns, row["id"], snapshot, known),
             ).fetchall()
-            require(len(controls) <= 256, "CONTROL_BUDGET")
+            require(len(controls) <= corrections.MAX_CONTROLS, "CONTROL_BUDGET")
             for control in controls:
                 if contains(control["valid_from"], control["valid_to"], valid):
                     status = control["status"]
             applicable = "CURRENT" if status == "ACTIVE" else "UNKNOWN"
+            superseded = False
+            window: str | None = None
+            contradictions: list[str] = []
             edges = self.db.connection.execute(
                 "SELECT r.*,e.recorded_at FROM relationships r JOIN atoms a "
                 "ON r.ns=a.ns AND r.from_id=a.id JOIN events e ON a.ns=e.ns AND a.event_id=e.id "
@@ -175,7 +178,7 @@ class Engine:
                 "AND e.recorded_at<=? ORDER BY r.id LIMIT 257",
                 (ns, row["id"], row["id"], snapshot, known),
             ).fetchall()
-            require(len(edges) <= 256, "RELATION_BUDGET")
+            require(len(edges) <= corrections.MAX_RELATIONS, "RELATION_BUDGET")
             for edge in edges:
                 # Do not expose a relation endpoint without its current source access.
                 self.access.check("READ", edge["id"])
@@ -186,12 +189,20 @@ class Engine:
                 active = contains(edge["valid_from"], edge["valid_to"], valid)
                 if edge["relation_type"] == "SUPERSEDES":
                     if edge["to_id"] == row["id"] and active:
-                        applicable = "SUPERSEDED"
+                        superseded = True
                     elif edge["from_id"] == row["id"] and not active:
-                        applicable = "FUTURE" if valid < edge["valid_from"] else "HISTORICAL"
+                        window = "FUTURE" if valid < edge["valid_from"] else "HISTORICAL"
                 elif edge["relation_type"] == "CONTRADICTS" and active:
-                    applicable = "CONFLICT"
-                    conflicts.append(edge["id"])
+                    contradictions.append(edge["id"])
+            # Fixed precedence, never relationship-id order: a replaced or out-of-window atom is
+            # not also in live conflict, and a retracted atom cannot become a conflict.
+            if superseded:
+                applicable = "SUPERSEDED"
+            elif window is not None:
+                applicable = window
+            elif contradictions and status == "ACTIVE":
+                applicable = "CONFLICT"
+                conflicts.extend(contradictions)
             citations = []
             supports = self.db.connection.execute(
                 "SELECT s.*,v.source_id,x.independence_group,x.support_kind FROM atom_support x "
@@ -200,7 +211,7 @@ class Engine:
                 "AND x.recorded_seq<=? AND v.recorded_at<=? ORDER BY x.id LIMIT 65",
                 (ns, row["id"], snapshot, known),
             ).fetchall()
-            require(0 < len(supports) <= 64, "SUPPORT_INTEGRITY_OR_BUDGET")
+            require(0 < len(supports) <= corrections.MAX_SUPPORTS, "SUPPORT_INTEGRITY_OR_BUDGET")
             for support in supports:
                 evidence_bytes += support["end_byte"] - support["start_byte"]
                 require(evidence_bytes <= 1_048_576, "EVIDENCE_BUDGET")
@@ -328,7 +339,7 @@ class Engine:
                     output,
                     revision,
                     digest(canonical(inputs).encode()),
-                    stamp(datetime.now(UTC)),
+                    self.db.now(),
                 ),
             )
             for item in inputs:

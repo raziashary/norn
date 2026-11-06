@@ -1,5 +1,37 @@
 # Architecture and research decision log
 
+## ADR-0025 — Audit findings escalated for owner decision
+
+- **Status:** PROPOSED. Nothing below is approved; each item keeps its affected capability open.
+- **Question:** Which audit findings change a metric definition, trained architecture, security semantics, stored schema or published evidence, and so need an owner answer before repair?
+- **Why:** The 6 November 2026 five-reader audit (E-FIX-001) found defects whose repair would alter reported numbers, require retraining or add a schema migration. AGENTS.md reserves shipped-contract, schema and scientific-claim changes for the owner.
+- **Options / recommendation (one line each):**
+  1. Metric denominators: `retrieval.py` ideal DCG and `abstention.partial_utility` count unsatisfiable slots, so a perfect E9 qualified partial scores nDCG 0.613 and utility 0.5. Recommend satisfiable-slot denominators and re-scoring the immutable ledgers (no model rerun needed), keeping old values as labelled history.
+  2. E12 exposure: the published query carries `coverage_state=UNAVAILABLE` and every arm short-circuits to VERIFICATION_UNAVAILABLE before retrieval (`adapters/common.py`, `baseline.py`, `r7.py`), so E12 measures the harness. Recommend the arm observing real projection coverage from the engine and E12 becoming an injected-outage control.
+  3. Retraction authority: WRITE may retract any atom while supersession needs ADMIN, and a WRITE-only CONTRADICTS edge from a hypothesis or inference can mark an observation CONFLICT (I2). Recommend ADMIN or own-atom-only retraction and origin-aware contradiction.
+  4. B4 parameterisation: `types` and `bias` receive identical gradients, so B4 and the S4 control are not capacity-matched as claimed. Recommend fixing in P05 entry and re-training before any B4 claim; R01 carries the caveat until then.
+  5. Binding candidate granularity: scores are per event but limits are per atom, so one many-atom event can fill the candidate list. Recommend event-level ranking with expansion.
+  6. Orphan source blobs: `sources.put` precedes validation, so a rejected ingest leaves a blob that no purge selector reaches and backups copy. Recommend a staged publish with reference reconciliation (P12 retention work).
+  7. Schema: no secondary indexes exist (graph/scale cost, quadratic deletion walk) and `atom_support` has no recorded time, so support visibility uses the source-version time. Recommend one additive migration 005 with the verified-backup upgrade proof, before P06.
+  8. Run-artifact binding: `completion.json` digests are not bound by the manifest, so a rehashed corrupted ledger passes. Recommend binding ledger and final-chain digests in the manifest.
+  9. Cost: per-query artifact re-parse, 4-text embedding batches and two ONNX respawns with full re-hash per R3 query are unmeasured. Recommend measuring (P11) before optimising.
+  10. Re-measurement: fusion v2 and the clock repair change code that E-P03-003/E-P04-005 froze. Recommend one bounded R0–R3 development re-run (CPU cost, explicit enablement) before P05 reuses those numbers as its baseline.
+- **What affects what:** G-RETRIEVAL/G-BINDING/G-SECURITY interpretation, R01/R08/R10/R15 and risks R19–R28, P05–P06 entry, any reuse of P03/P04 numbers.
+- **My answer (editable):** _(empty: owner not yet asked)_
+- **Authority:** None granted. Preserve prior answers when this is resolved.
+- **Verification:** Each item cites a file and a read or hand calculation in E-FIX-001; items 1, 2 and 8 were confirmed by reading the producing and consuming code, items 4–5 and 9 are single-reader static claims.
+
+## ADR-0024 — Audit repair: host-owned recording clock and verified defect fixes
+
+- **Status:** ACCEPTED, scoped to the repairs listed here.
+- **Question:** How is canonical recording time made reproducible, and which unambiguous audit defects are repaired now?
+- **Why:** On 6 November 2026 `test_missing_source_field_cannot_remove_an_explicit_question_prerequisite` failed (157 passed, 1 failed, against the recorded 158 passing). Ingest stamped `recorded_at` from the machine clock while benchmark queries use the fixed knowledge basis 2026-10-23; once the machine date passed it every fresh write was unknown to those queries (0 eligible). Blueprint 15.5 forbids the current machine clock in a replayed benchmark. The owner then asked for this to be fixed, followed by the remaining bugs, and for everything to be logged.
+- **Options:** Request-level `recorded_at` (lets any writer backdate); injectable host clock (chosen); freeze the tests' wall clock (hides the product defect).
+- **Recommendation / decision:** `contracts.time.Clock`/`wall_clock`; `Database(clock=)` with `Database.now()` (aware UTC or NAIVE_TIME); `Engine(clock=)`. Event, source, assertion-event, deletion-request, grant and derivation stamps use it; migration and projection-build instants stay on the machine clock as operational data. The benchmark `ReplayClock` stamps each synthetic source with the world's declared `recorded_at`. Repairs in the same unit: exact-channel fusion v2 (rank-one vote, oversized scope returns no exact hits); build budgets sized from the validated corpus (default 256 model calls could not index more than 256 records); failed upgrade no longer leaves the store marked dirty; per-atom relation/control/support appends refused at the read ceilings (ATOM_APPEND_BUDGET); deterministic applicability precedence SUPERSEDED > window > CONFLICT; explicit errors instead of StopIteration; exclusive atomic checkpoint publication; fail-closed import barrier; additive metrics `selective_coverage_itt`, `answerable_unobserved`, `ambiguity_overreach_*`; cwd-independent test paths.
+- **What affects what:** `canonical/{database,registry,corrections}`, `governance/{access,deletion}`, `integration/engine`, `projection/{local,binding}`, `retrieval/{fusion,exact,resolve}`, `contracts/{time,budgets}`, `embedding/checkpoint`, benchmark adapters/metrics/publication and their tests. Frozen digests quoted by E-P03-003 and E-P04-005 no longer equal the current source; those results stay valid for the source they name and are not relabelled or promoted. Preserved `.norn` stores keep their old wall-clock `recorded_at`, which is earlier than 2026-10-23, so they remain readable. No schema change, new dependency, provider call or credential read.
+- **My answer (editable):** Owner: "Yes, fix clock", then "good continue the clock and finish the rest of the bug" and "log all in docs/development".
+- **Authority:** User messages of 6 November 2026. Items that need an answer are in ADR-0025, not here.
+- **Verification:** E-FIX-001: 173 tests pass, no failures or skips (95.6 s), Ruff check and format on 150 files and strict mypy on 101 modules pass; negative controls fail on the pre-fix source; independent-reader findings were checked against code before use.
 
 ## ADR-0023 — Scoped publication after verified P04 closeout
 

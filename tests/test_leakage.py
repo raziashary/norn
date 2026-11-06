@@ -33,6 +33,14 @@ def test_actual_publication_guards_nested_metadata_canary_scope_and_source_hash(
         validate_public(raw)
 
 
+def test_import_barrier_fails_closed_on_a_wrong_or_empty_root(tmp_path):
+    with pytest.raises(NornError, match="IMPORT_BARRIER_ROOT_EMPTY"):
+        check_import_barrier(tmp_path / "missing", Path("benchmark/adapters"))
+    (tmp_path / "empty").mkdir()
+    with pytest.raises(NornError, match="IMPORT_BARRIER_ROOT_EMPTY"):
+        check_import_barrier(tmp_path / "empty", Path("benchmark/adapters"))
+
+
 def test_structural_and_actual_import_barrier(tmp_path):
     check_import_barrier(Path("src/norn"), Path("benchmark/adapters"))
     fake = tmp_path / "runtime"

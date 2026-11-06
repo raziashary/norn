@@ -62,6 +62,8 @@ evidence and verifies each complete copied baseline before applying its intended
 Negative checks need a valid starting point and an observable intended rejection.
 
 
+_L011 was never assigned; the numbering gap is historical, not a lost entry._
+
 ## L012 — Native cancellation needs an owned termination boundary
 
 P03's actual encoder controls showed cancellation/deadline expiry can terminate an owned
@@ -121,3 +123,15 @@ P04's static resident-after-projection annotation was false after empty projecti
 ## L020 — Installed readers need their test-only imports
 
 The final installed standalone reader stopped before execution because its runtime-only environment lacked pytest imported at the top of the test file. The completed experiment/source/wheel remained valid. Main preserved the failure, added the already-approved test tool from local cache to that isolated environment, and ran all seven previously unexecuted proof stages under a distinct003b receipt. Installed105-file parity still matched. Future method: inspect the complete standalone entry-point imports when preparing a clean installed test environment; distinguish setup failures from product/scoring failures and rerun only the unfinished proof. E-P04-005.
+
+## L021 — Recording time is a host input, not an ambient wall-clock read
+
+P01 stamped canonical `recorded_at` with the machine date while the benchmark fixed its knowledge basis at 2026-10-23. Everything passed on the day it was written and failed from the next day: a fresh write was "unknown" to the query, recall returned 0 eligible, and the suite went from 158 passing to one failure with no source change. Any store the evaluator populates is a replay; its recording instants must come from the replay. Future method: a clock that can change a result is a parameter with a test that fails when it is the machine clock; run the suite on a date after every fixed instant in the fixtures. ADR-0024, E-FIX-001.
+
+## L022 — A filter is not a ranking
+
+The exact channel returned the first N records of a filtered scope in canonical id order and fusion then gave each an ordered rank vote, so identifiers biased R2/R3 order and an over-large scope was truncated arbitrarily. Membership evidence is a retained set; ordering must come from channels that measure relevance. Future method: add a permutation-invariance control (shuffle ids, ranking unchanged) to every fusion or candidate stage. ADR-0024, tests/test_fusion.py.
+
+## L023 — Independent readers are leads; the claims that survived were checked in code
+
+Five bounded readers (three haiku, two sonnet) returned about 100 findings in 1.2k-word reports. Main re-read the code for the load-bearing ones (clock, exact ordering, E12 exposure, call budget, timeout denominators, barrier fail-open, uncollected CLI test) and recorded the rest as unverified in ADR-0025. The reader that audited docs also confirmed that every headline count reconciled, which the suite alone had not: it counted 158 collected tests and 157 passing. Future method: reproduce a headline claim by running it before reading about it; a green record is a claim until re-executed on a later day. E-FIX-001.

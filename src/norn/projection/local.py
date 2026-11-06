@@ -90,6 +90,7 @@ def readback(
 def build(
     engine: Engine, *, models: LocalModels | None = None, budget: QueryBudget | None = None
 ) -> dict[str, Any]:
+    owned_budget = budget is None
     budget = budget or QueryBudget(600_000)
     engine.access.check("ADMIN")
     now = datetime.now(UTC)
@@ -102,6 +103,8 @@ def build(
     with budget.sqlite_guard(engine.db.connection):
         corpus = exact.eligible(engine, request, budget.checkpoint)
     require(corpus.complete, corpus.reason or "PROJECTION_INPUT_BUDGET")
+    if owned_budget:
+        budget.size_for_build(len(corpus.records))
     seq, epoch, ns = corpus.snapshot, corpus.security_epoch, engine.access.ns
     journal_digest = replay(engine, seq, budget)
     source_digest = digest(canonical(sorted((r.key, r.sha256) for r in corpus.records)).encode())

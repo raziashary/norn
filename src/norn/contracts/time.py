@@ -1,11 +1,19 @@
 """Explicit clocks, bounded intervals, precision and ambiguous local times."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from norn.contracts.errors import NornError, require
+
+Clock = Callable[[], datetime]
+"""Host-owned source of canonical recording time; replays inject a fixed one."""
+
+
+def wall_clock() -> datetime:
+    return datetime.now(UTC)
 
 
 def aware(value: datetime) -> datetime:

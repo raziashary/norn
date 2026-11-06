@@ -73,3 +73,12 @@ def test_ranking_and_packing_share_cancellation_owner(engine):
     ):
         with pytest.raises(NornError, match="QUERY_CANCELLED"):
             run()
+
+
+def test_build_budget_scales_with_the_validated_corpus_and_never_shrinks():
+    budget = QueryBudget(600_000)
+    assert budget.max_model_calls == 256
+    budget.size_for_build(1000)
+    assert budget.max_model_calls == 1016 and budget.max_model_tokens >= 512_000
+    budget.size_for_build(1)
+    assert budget.max_model_calls == 1016

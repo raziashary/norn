@@ -6,14 +6,12 @@ The local CLI is an OS/filesystem-trusted operator, not a network authenticator.
 
 import sqlite3
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from uuid import uuid4
 
 from norn.canonical.database import Database
 from norn.canonical.outbox import allocate, publish
 from norn.contracts.errors import require
 from norn.contracts.identity import Namespace, canonical, label
-from norn.contracts.time import stamp
 
 DENIED = "NOT_AUTHORIZED_OR_NOT_FOUND"
 POLICY = "synthetic-pilot-v1"
@@ -112,7 +110,7 @@ class Access:
                 operation,
                 decision,
                 epoch,
-                stamp(datetime.now(UTC)),
+                self.db.now(),
                 self.host.principal,
             ),
         )

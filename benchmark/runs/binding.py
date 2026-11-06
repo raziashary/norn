@@ -13,6 +13,7 @@ import numpy as np
 
 from benchmark.adapters.baseline import host
 from benchmark.adapters.binding_arms import capability
+from benchmark.adapters.common import replay_clock
 from benchmark.adapters.r7 import BindingAdapter, capture, ingest
 from benchmark.fixtures.binding_cases import ROLE_INDICES, cases
 from benchmark.fixtures.publication import check_import_barrier, publish, validate_public
@@ -122,15 +123,17 @@ def prepare(root: Path, model_root: Path, *, enabled: bool, smoke: bool = False)
             ):
                 artifacts[relative] = write_once(root / relative, value)
             started = time.perf_counter_ns()
+            clock = replay_clock(public)
             with Engine(
                 root / "stores" / role / qid,
                 host(public),
                 create=True,
                 model_root=model_root,
                 enable_models=True,
+                clock=clock,
             ) as engine:
                 engine.access.bootstrap()
-                mapping = ingest(engine, public)
+                mapping = ingest(engine, public, clock)
                 captured = capture(engine, public, mapping)
             captured.update(mapping=mapping, offline_ns=time.perf_counter_ns() - started)
             relative = f"captures/{role}/{qid}.json"

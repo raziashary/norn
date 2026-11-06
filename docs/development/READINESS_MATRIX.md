@@ -19,6 +19,8 @@ Updated 22 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior
 | Expanded privacy/security envelope | PLANNED | NOT_RUN | NOT_EVALUATED | P12; P01 direct canonical controls proven, expanded privacy envelope remains unexecuted |
 | Sealed reproducible study | PLANNED | NOT_RUN | NOT_EVALUATED | P13; no frozen numeric threshold or locked result |
 
+Audit repair 6 November 2026 (ADR-0024, E-FIX-001): canonical recording time is injectable; the earlier "158 tests pass" receipts were correct on 22 October and failed on 6 November through a wall-clock dependency, now removed. P03/P04 rows keep their evidence levels for the source they froze; re-measurement on current source is proposed (ADR-0025 item 10), not done.
+
 ## Promotion rules
 
 A capability advances only with the exact owning test/consumer and declared scope. A successful experiment can conclude REJECT or INCONCLUSIVE and retain a simpler implementation. Efficacy cannot become RETAIN because a source file compiles. An unsupported optional branch gets explicit capability/error/disposition, never a fake test score. Required comparator absence limits the final claim even if supported arms finish. P01-owning gates have phase-local evidence; cross-phase gates remain PARTIAL and other runtime gates NOT_RUN.

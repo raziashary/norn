@@ -49,6 +49,7 @@ def build(
     if variant == "B5":
         denoising.encode()
     require(variant in VARIANTS, "UNSUPPORTED_BINDING_VARIANT")
+    owned_budget = budget is None
     budget = budget or QueryBudget(600_000)
     engine.access.check("ADMIN")
     codec = FeatureEncoder(engine, budget)
@@ -74,6 +75,8 @@ def build(
     with budget.sqlite_guard(engine.db.connection):
         corpus = exact.eligible(engine, request, budget.checkpoint)
     require(corpus.complete, corpus.reason or "BINDING_CORPUS_BUDGET")
+    if owned_budget:
+        budget.size_for_build(len({r.event_id for r in corpus.records}), calls_per_unit=4)
     seq, epoch, ns = corpus.snapshot, corpus.security_epoch, engine.access.ns
     journal_digest = replay(engine, seq, budget)
     grouped: dict[str, list[Record]] = {}

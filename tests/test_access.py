@@ -53,3 +53,20 @@ def test_text_does_not_grant_producer_or_supersession_authority(engine):
                 correction=correction,
             )
     assert engine.db.connection.execute("SELECT count(*) FROM events").fetchone()[0] == 1
+
+
+def test_foreign_tenant_recall_and_candidate_generation_reveal_nothing(engine):
+    from norn.retrieval import exact
+    from norn.retrieval.contracts import RecallRequest
+
+    engine.write(request())
+    foreign = HostIdentity(Namespace("other", "workspace", "local"), "operator")
+    with Engine(engine.root, foreign) as intruder:
+        query = RecallRequest("parking", clock(), subject="Alex")
+        with pytest.raises(NornError) as error:
+            exact.eligible(intruder, query)
+        assert error.value.code == "NOT_AUTHORIZED_OR_NOT_FOUND"
+        with pytest.raises(NornError) as recall_error:
+            intruder.recall(query)
+        assert recall_error.value.code == "NOT_AUTHORIZED_OR_NOT_FOUND"
+        assert "ZoneA" not in str(recall_error.value.envelope())

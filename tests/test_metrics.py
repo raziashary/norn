@@ -87,3 +87,19 @@ def test_qualified_partial_returns_supported_subset_and_explicit_unknowns():
     assert wrong["false_answer"] is True and wrong["correct_supported"] is False
     unknown = replace(result, missing_fields=("release",))
     assert abstention_score(unknown, case.gold, None, True)["correct_supported"] is False
+
+
+def test_timeouts_cannot_improve_coverage_and_always_abstaining_is_not_perfect():
+    case = next(c for c in fixtures() if c.gold.expected_status == "SUPPORTED")
+    ok = abstention_score(Result("OK", "SUPPORTED", ()), case.gold, True)
+    lost = abstention_score(Result("TIMEOUT", None, ()), case.gold, None)
+    report = aggregate([ok, *([lost] * 9)])
+    assert report["selective_coverage"] == 1 and report["selective_coverage_itt"] == 0.1
+    assert report["answerable_unobserved"] == 9
+    refusing = abstention_score(Result("OK", "NOT_ESTABLISHED", ()), case.gold, None)
+    report = aggregate([refusing])
+    assert report["ambiguity_overreach_rate"] == 1 and report["false_abstention_rate"] == 1
+    ambiguous = next(c for c in fixtures() if c.gold.reason == "AMBIGUOUS")
+    detected = abstention_score(Result("OK", "NOT_ESTABLISHED", ()), ambiguous.gold, None)
+    assert detected["ambiguity_overreach"] is None
+    assert aggregate([detected])["ambiguity_detection_rate"] == 1

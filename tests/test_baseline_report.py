@@ -7,8 +7,10 @@ from datetime import timedelta
 from pathlib import Path
 
 import pytest
+from conftest import HOST
 
 from benchmark.adapters.baseline import interpret, spec
+from benchmark.adapters.common import replay_clock
 from benchmark.fixtures.partitions import partition
 from benchmark.fixtures.publication import publish
 from benchmark.fixtures.scenarios import scenarios
@@ -19,6 +21,7 @@ from norn.contracts.errors import NornError
 from norn.contracts.evidence import Epistemic, EpistemicState, TaggedValue
 from norn.contracts.time import TimeKind, TimeValue, parse_instant
 from norn.extraction.atoms import FixtureAtom
+from norn.integration.engine import Engine
 
 
 def test_baseline_profile_and_public_question_constraints():
@@ -52,7 +55,7 @@ def test_chain_root_is_a_cue_and_unsupported_path_goal_is_not_one_field():
     assert len({s.observation.actor for s in public.sources}) > 1
 
 
-def test_missing_source_field_cannot_remove_an_explicit_question_prerequisite(engine):
+def test_missing_source_field_cannot_remove_an_explicit_question_prerequisite(tmp_path):
     world = build_world(47, partition(47, "development"))
     public = next(
         published
@@ -73,33 +76,38 @@ def test_missing_source_field_cannot_remove_an_explicit_question_prerequisite(en
     assert interpret(translated, "R0").requested_fields == ("release", "rollback")
     content = source.text.encode()
     event = parse_instant(observation.event_time)
-    engine.write(
-        WriteRequest(
-            "partial-pair",
-            "operator",
-            "partial-pair",
-            "partial-pair",
-            content,
-            TimeValue(TimeKind.EXACT, event),
-            event,
-            (
-                FixtureAtom(
-                    observation.actor,
-                    "release",
-                    TaggedValue("TEXT", observation.value),
-                    0,
-                    len(content),
-                    EpistemicState(Epistemic(observation.origin)),
+    # Recording time is the world's declared instant, so this holds on any machine date.
+    clock = replay_clock(public)
+    with Engine(tmp_path / "store", HOST, create=True, clock=clock) as engine:
+        engine.access.bootstrap()
+        clock.set(parse_instant(observation.recorded_at))
+        engine.write(
+            WriteRequest(
+                "partial-pair",
+                "operator",
+                "partial-pair",
+                "partial-pair",
+                content,
+                TimeValue(TimeKind.EXACT, event),
+                event,
+                (
+                    FixtureAtom(
+                        observation.actor,
+                        "release",
+                        TaggedValue("TEXT", observation.value),
+                        0,
+                        len(content),
+                        EpistemicState(Epistemic(observation.origin)),
+                    ),
                 ),
-            ),
+            )
         )
-    )
-    engine.project()
-    for question in (public, translated):
-        result = engine.recall(interpret(question, "R0")).serialize()
-        assert result["status"] == "PARTIALLY_SUPPORTED", result
-        assert result["missing_fields"] == ["rollback"]
-        assert [r["text"] for r in result["evidence"]] == [source.text]
+        engine.project()
+        for question in (public, translated):
+            result = engine.recall(interpret(question, "R0")).serialize()
+            assert result["status"] == "PARTIALLY_SUPPORTED", result
+            assert result["missing_fields"] == ["rollback"]
+            assert [r["text"] for r in result["evidence"]] == [source.text]
 
 
 if __name__ == "__main__":

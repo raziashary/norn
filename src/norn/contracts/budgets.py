@@ -28,6 +28,16 @@ class QueryBudget:
         require(0 < self.deadline_ms <= 600_000)
         self.started = self.now()
 
+    def size_for_build(self, units: int, *, calls_per_unit: int = 1) -> None:
+        """Raise, never lower, model ceilings to a corpus the owner already bounded and validated.
+
+        A default per-query ceiling cannot index more than a few hundred records; a build owns
+        its own budget and sizes it from the validated corpus (reads keep the small defaults).
+        """
+        require(units >= 0 and calls_per_unit >= 1)
+        self.max_model_calls = max(self.max_model_calls, units * calls_per_unit + 16)
+        self.max_model_tokens = max(self.max_model_tokens, units * 512 + 16_000)
+
     def checkpoint(self) -> None:
         require(not self.cancelled.is_set(), "QUERY_CANCELLED")
         require((self.now() - self.started) * 1000 < self.deadline_ms, "QUERY_DEADLINE")

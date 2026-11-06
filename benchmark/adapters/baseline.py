@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from benchmark.adapters import r0, r1, r2, r3
-from benchmark.adapters.common import candidate, parse_source
+from benchmark.adapters.common import candidate, parse_source, replay_clock
 from benchmark.adapters.contracts import ArmSpec, PublicInput, Result
 from norn.canonical.registry import WriteRequest
 from norn.contracts.errors import require
@@ -46,14 +46,21 @@ def prepare(published: PublicInput, root: Path, model_root: Path, enabled: bool)
     require(enabled, "LOCAL_MODELS_NOT_ENABLED")
     require(not root.exists(), "BASELINE_STORE_EXISTS")
     start = time.perf_counter_ns()
+    clock = replay_clock(published)
     with Engine(
-        root, host(published), create=True, model_root=model_root, enable_models=True
+        root,
+        host(published),
+        create=True,
+        model_root=model_root,
+        enable_models=True,
+        clock=clock,
     ) as engine:
         engine.access.bootstrap()
         mapping = {}
         for source in published.sources:
             observation = parse_source(source)
             content = source.text.encode()
+            clock.set(parse_instant(observation.recorded_at))
             fixture = FixtureAtom(
                 observation.actor,
                 observation.predicate,

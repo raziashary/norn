@@ -69,6 +69,10 @@ def abstention_score(
         "ambiguity_correct": result.evidence_status == "NOT_ESTABLISHED"
         if observed and gold.reason == "AMBIGUOUS"
         else None,
+        # Companion to ambiguity detection: refusing an answerable, unambiguous case must cost.
+        "ambiguity_overreach": result.evidence_status == "NOT_ESTABLISHED"
+        if observed and answerable and gold.reason != "AMBIGUOUS"
+        else None,
     }
 
 
@@ -78,6 +82,7 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     insufficient = [r for r in observed if r["insufficient_for_full"]]
     partial = [r for r in observed if r["partial_answerable"]]
     ambiguous = [r for r in observed if r["ambiguity_correct"] is not None]
+    overreach = [r for r in observed if r.get("ambiguity_overreach") is not None]
     reasons = [r for r in observed if r["missing_reason_correct"] is not None]
     accepted = [r for r in observed if r["accepted"]]
     return {
@@ -92,7 +97,11 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if answerable
         else None,
         "false_abstention_denominator": len(answerable),
+        # Rates above use observed rows only (declared); the intent-to-treat view keeps every
+        # planned row, so timeouts and errors cannot improve coverage or false abstention.
         "selective_coverage": len(accepted) / len(observed) if observed else None,
+        "selective_coverage_itt": len(accepted) / len(rows) if rows else None,
+        "answerable_unobserved": sum(1 for r in rows if r["answerable"] and not r["observed"]),
         "selective_risk": sum(not r["correct_supported"] for r in accepted) / len(accepted)
         if accepted
         else None,
@@ -112,6 +121,13 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
         if ambiguous
         else None,
         "ambiguity_denominator": len(ambiguous),
+        # Read with ambiguity_detection_rate: an arm that always abstains is perfect on one
+        # and fully wrong on the other.
+        "ambiguity_overreach_rate": sum(r["ambiguity_overreach"] for r in overreach)
+        / len(overreach)
+        if overreach
+        else None,
+        "ambiguity_overreach_denominator": len(overreach),
         "missing_reason_accuracy": sum(r["missing_reason_correct"] for r in reasons) / len(reasons)
         if reasons
         else None,

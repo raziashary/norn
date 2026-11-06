@@ -3,12 +3,36 @@
 import json
 import random
 from dataclasses import replace
+from datetime import datetime
 
 from benchmark.adapters.contracts import ArmSpec, Candidate, PublicInput, PublishedSource, Result
 from benchmark.fixtures.observations import Observation
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import digest
+from norn.contracts.time import aware, parse_instant
 from norn.retrieval.assembly import TokenCounter
+
+
+class ReplayClock:
+    """Canonical recording time for a synthetic replay, never the machine's wall clock.
+
+    Each published source is stamped with the world's declared ``recorded_at``, so the
+    knowledge-time basis of a query stays reproducible whenever the replay is executed.
+    """
+
+    def __init__(self, initial: datetime):
+        self._now = aware(initial)
+
+    def set(self, instant: datetime) -> None:
+        self._now = aware(instant)
+
+    def __call__(self) -> datetime:
+        return self._now
+
+
+def replay_clock(published: PublicInput) -> ReplayClock:
+    recorded = [parse_instant(s.observation.recorded_at) for s in published.sources]
+    return ReplayClock(min(recorded, default=parse_instant(published.query.knowledge_at)))
 
 
 def parse_source(source: PublishedSource) -> Observation:

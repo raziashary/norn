@@ -1,8 +1,9 @@
 """Append scoped source-backed correction edges without rewriting assertions."""
 
 import json
+import sqlite3
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from norn.canonical.outbox import allocate, publish
@@ -45,12 +46,24 @@ class CorrectionRequest:
         }
 
 
+MAX_RELATIONS = 256
+MAX_CONTROLS = 256
+MAX_SUPPORTS = 64
+"""Per-atom ceilings shared with Engine.read: appends beyond them would make an immutable atom
+permanently unreadable, so they are refused at write time instead."""
+
+
+def _bounded(connection: sqlite3.Connection, sql: str, params: tuple[str, ...], limit: int) -> None:
+    count = connection.execute(sql, params).fetchone()[0]
+    require(count < limit, "ATOM_APPEND_BUDGET")
+
+
 def append_relation(registry: Registry, request: CorrectionRequest, new_atom: str, seq: int) -> str:
     registry.access.check("WRITE")
     if request.classification == "SUPERSEDES":
         registry.access.check("ADMIN")
     connection, ns = registry.db.connection, registry.ns
-    prior_source = registry.source_for_atom(request.prior_atom)
+    registry.source_for_atom(request.prior_atom)  # current access and existence check
     registry.source_for_atom(new_atom)
     prior = connection.execute(
         "SELECT * FROM atoms WHERE ns=? AND id=?", (ns, request.prior_atom)
@@ -82,8 +95,21 @@ def append_relation(registry: Registry, request: CorrectionRequest, new_atom: st
             (ns, current),
         ).fetchall()
         pending.extend(row[0] for row in rows)
+    for atom in (request.prior_atom, new_atom):
+        _bounded(
+            connection,
+            "SELECT count(*) FROM relationships WHERE ns=? AND (from_id=? OR to_id=?)",
+            (ns, atom, atom),
+            MAX_RELATIONS,
+        )
     if request.classification == "ADDITIONAL_EVIDENCE":
         require(prior["object_value"] == new["object_value"], "EVIDENCE_VALUE_MISMATCH")
+        _bounded(
+            connection,
+            "SELECT count(*) FROM atom_support WHERE ns=? AND atom_id=?",
+            (ns, request.prior_atom),
+            MAX_SUPPORTS,
+        )
         support = registry.source_for_atom(new_atom)
         connection.execute(
             "INSERT INTO atom_support VALUES(?,?,?,?,'ADDITIONAL',?,'fixture-v1',?)",
@@ -133,7 +159,6 @@ def append_relation(registry: Registry, request: CorrectionRequest, new_atom: st
         "INSERT INTO edge_support VALUES(?,?,?,?,'fixture-v1')",
         (ns, edge, new_atom, new["source_span_id"]),
     )
-    require(prior_source is not None)
     return edge
 
 
@@ -145,6 +170,12 @@ def retract(
     with registry.db.transaction() as connection:
         registry.access.check("WRITE")
         registry.source_for_atom(atom_id)
+        _bounded(
+            connection,
+            "SELECT count(*) FROM assertion_events WHERE ns=? AND atom_id=?",
+            (registry.ns, atom_id),
+            MAX_CONTROLS,
+        )
         seq = allocate(connection, registry.ns)
         connection.execute(
             "INSERT INTO assertion_events VALUES(?,?,?,'RETRACTED',?,?,?,?,?,?)",
@@ -155,7 +186,7 @@ def retract(
                 stamp(valid_from),
                 stamp(valid_to) if valid_to else None,
                 seq,
-                stamp(datetime.now(UTC)),
+                registry.db.now(),
                 registry.access.host.principal,
                 reason,
             ),

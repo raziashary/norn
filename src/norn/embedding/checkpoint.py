@@ -2,6 +2,7 @@
 
 import base64
 import json
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -112,8 +113,16 @@ def save(path: Path, model: BindingModel, receipt: dict[str, Any], data_digest: 
     raw = (canonical(payload(model, receipt, data_digest)) + "\n").encode()
     verified = parse(raw)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("xb") as stream:
-        stream.write(raw)
+    # Publish whole or not at all: a crash must not leave a truncated immutable checkpoint.
+    staging = path.with_name(path.name + f".{os.getpid()}.part")
+    try:
+        with staging.open("xb") as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.link(staging, path)  # fails if the checkpoint already exists
+    finally:
+        staging.unlink(missing_ok=True)
     return verified
 
 

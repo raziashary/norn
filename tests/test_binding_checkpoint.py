@@ -47,3 +47,14 @@ def test_all_acceptable_positives_do_not_force_single_episode_and_deadline_stops
     times = iter((0.0, 1201.0))
     with pytest.raises(NornError, match="TRAINING_DEADLINE"):
         train(BindingModel("B3"), (batch(),), seed=11, now=lambda: next(times))
+
+
+def test_checkpoint_publication_is_exclusive_and_leaves_no_partial_file(tmp_path):
+    model, b = BindingModel("B3"), batch()
+    receipt = train(model, (b,), seed=11, updates=2)
+    path = tmp_path / "checkpoint.json"
+    first = save(path, model, receipt, "0" * 64)
+    with pytest.raises(FileExistsError):
+        save(path, model, receipt, "0" * 64)
+    assert load(path).sha256 == first.sha256
+    assert [p.name for p in tmp_path.iterdir()] == ["checkpoint.json"]

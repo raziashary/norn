@@ -98,3 +98,37 @@ def test_retraction_preserves_origin_and_history(engine):
     assert atom["assertion_status"] == "RETRACTED"
     earlier = engine.read(receipt["event_id"], clock(receipt["commit_seq"])).serialize()["atoms"][0]
     assert earlier["epistemic"] == "USER_REPORTED" and earlier["assertion_status"] == "ACTIVE"
+
+
+def test_applicability_precedence_is_fixed_not_relationship_id_order(engine):
+    first = engine.write(request())
+    engine.write(request("replace", place="ZoneB"), correction=correction(first["atom_ids"][0]))
+    engine.write(
+        request("dispute", place="ZoneC"),
+        correction=correction(first["atom_ids"][0], "CONTRADICTS"),
+    )
+    atom = engine.read(first["event_id"], clock()).serialize()["atoms"][0]
+    # Replaced evidence is superseded; a later dispute must not turn it back into a live conflict.
+    assert atom["applicability"] == "SUPERSEDED"
+
+
+def test_retracted_atom_is_not_reported_as_a_live_conflict(engine):
+    first = engine.write(request())
+    retract(engine.registry, first["atom_ids"][0], TUESDAY, None, "withdrawn")
+    engine.write(
+        request("dispute", place="ZoneC"),
+        correction=correction(first["atom_ids"][0], "CONTRADICTS"),
+    )
+    atom = engine.read(first["event_id"], clock()).serialize()["atoms"][0]
+    assert atom["applicability"] == "UNKNOWN"
+
+
+def test_writes_cannot_push_an_atom_past_the_limit_that_makes_it_unreadable(engine):
+    first = engine.write(request())
+    atom = first["atom_ids"][0]
+    for minute in range(256):
+        retract(engine.registry, atom, TUESDAY + timedelta(minutes=minute), None, "withdrawn")
+    with pytest.raises(NornError, match="ATOM_APPEND_BUDGET"):
+        retract(engine.registry, atom, TUESDAY + timedelta(minutes=999), None, "withdrawn")
+    # The refusal leaves the event readable; the old behaviour made it fail permanently.
+    assert engine.read(first["event_id"], clock()).serialize()["atoms"]

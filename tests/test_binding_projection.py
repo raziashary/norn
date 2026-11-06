@@ -13,7 +13,7 @@ from norn.governance.access import Access
 from norn.integration.engine import Engine
 from norn.retrieval.contracts import RecallRequest
 
-MODELS = Path(".norn/models").absolute()
+MODELS = Path(__file__).resolve().parents[1] / ".norn" / "models"
 
 
 def test_interrupted_publication_replays_and_legacy_backup_is_integrity_only(tmp_path, monkeypatch):

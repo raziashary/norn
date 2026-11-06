@@ -1,12 +1,10 @@
 """Immediate logical denial plus explicit, incomplete physical-purge obligations."""
 
-from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from norn.canonical.outbox import allocate, publish
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest, label
-from norn.contracts.time import stamp
 from norn.governance.access import POLICY
 
 if TYPE_CHECKING:
@@ -90,7 +88,7 @@ def deny(registry: Registry, selector: str, request_id: str, reason: str) -> dic
                     selector,
                     POLICY,
                     registry.access.host.principal,
-                    stamp(datetime.now(UTC)),
+                    registry.db.now(),
                     seq,
                     reason,
                 ),

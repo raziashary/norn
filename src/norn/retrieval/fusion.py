@@ -3,7 +3,7 @@
 from norn.contracts.errors import require
 from norn.retrieval.contracts import Hit, Record
 
-VERSION = "rrf-k60-exact-union-v1"
+VERSION = "rrf-k60-exact-union-v2"
 
 
 def fuse(
@@ -12,9 +12,12 @@ def fuse(
     require(1 <= limit <= 1000)
     scores: dict[str, float] = {}
     records: dict[str, Record] = {}
-    for channel in (exact, *channels):
+    for position, channel in enumerate((exact, *channels)):
         seen: set[str] = set()
         for rank, hit in enumerate(channel, 1):
+            # Exact membership is not an ordered list: every exact record votes at rank one, so
+            # canonical id order cannot bias the fused ranking.
+            rank = 1 if position == 0 else rank
             key = hit.record.key
             require(key not in seen, "DUPLICATE_CHANNEL_VOTE")
             seen.add(key)

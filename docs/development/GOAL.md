@@ -2,6 +2,10 @@
 
 Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
+## Audit repair — 6 November 2026
+
+P00–P04 task states are unchanged. An audit found and the owner asked to repair a wall-clock dependency and related defects (ADR-0024, E-FIX-001). Frozen P03/P04 digests no longer equal current source; their scientific outcomes stay INCONCLUSIVE and scoped to those sources. Open owner decisions: ADR-0025.
+
 ## Current documentation mandate
 
 Create `docs/development` with an extensive MDP containing algorithms, schemas, flows, ownership, dependencies, atomic tasks and proof; supporting records follow the useful Palladion anchor format and Arcana's technical depth. Preserve the vision unchanged. Initial suite creation excluded runtime implementation, dependency installation, provider use, foreign-project edits and remote publication. The owner separately authorized and published the suite/setup/instructions amendment (ADR-0010/0011), then approved P01 under ADR-0012. P01 is verified in E-P01-003.

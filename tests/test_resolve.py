@@ -4,6 +4,7 @@ import pytest
 from conftest import HOST, clock, request
 
 from norn.contracts.errors import NornError
+from norn.governance.access import HostIdentity
 from norn.integration.engine import Engine
 from norn.retrieval import exact
 from norn.retrieval.contracts import Hit, RecallRequest
@@ -42,3 +43,16 @@ def test_ranked_payload_reloads_source_and_rejects_poison(engine):
     engine.deny(hit.record.source_id, "deny", "test")
     with pytest.raises(NornError, match="NOT_AUTHORIZED_OR_NOT_FOUND"):
         resolve(engine, hit, query, corpus.snapshot, corpus.security_epoch)
+
+
+def test_security_change_between_eligibility_and_resolution_is_refused(engine):
+    receipt = engine.write(request())
+    engine.access.grant("reader", "READ")
+    query = RecallRequest("parking", clock(), subject="Alex")
+    with Engine(engine.root, HostIdentity(engine.access.host.namespace, "reader")) as reader:
+        corpus = exact.eligible(reader, query)
+        hit = Hit(corpus.records[0], 0.9, "dense")
+        engine.access.grant("reader", "WRITE")  # any epoch change after candidate generation
+        with pytest.raises(NornError, match="QUERY_SECURITY_CHANGED"):
+            resolve(reader, hit, query, corpus.snapshot, corpus.security_epoch)
+    assert receipt["event_id"] == corpus.records[0].event_id

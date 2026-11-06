@@ -2,7 +2,7 @@
 
 import sqlite3
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from norn.canonical.database import Database
@@ -101,7 +101,7 @@ class Registry:
         event_id = event_identity(self.access.host.namespace, request.producer, request.occurrence)
         version = self.sources.put(request.content)
         extracted = extract(self.sources, version, request.atoms)
-        now = stamp(datetime.now(UTC))
+        now = self.db.now()
         with self.db.transaction() as connection:
             self.access.check("WRITE")
             prior = connection.execute(

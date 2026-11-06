@@ -22,7 +22,9 @@ def resolve(engine: Engine, hit: Hit, request: RecallRequest, snapshot: int, epo
     atom = next((a for a in view["atoms"] if a["atom_id"] == record.atom_id), None)
     if atom is None:
         raise NornError("CANDIDATE_IDENTITY_MISMATCH")
-    primary = next(c for c in atom["citations"] if c["support_kind"] == "PRIMARY")
+    primary = next((c for c in atom["citations"] if c["support_kind"] == "PRIMARY"), None)
+    if primary is None:
+        raise NornError("PRIMARY_CITATION_MISSING")
     source = engine.registry.source_for_atom(record.atom_id)
     aliases = tuple(
         r[0]

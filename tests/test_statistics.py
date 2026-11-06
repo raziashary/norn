@@ -48,3 +48,15 @@ def test_proper_scores_ties_calibration_custody_and_zero_incident_limits():
     assert zero_incident_bound(0) is None
     assert zero_incident_bound(1) == 0.95
     assert 0 < zero_incident_bound(100) < 0.03
+
+
+def test_paired_difference_weights_clusters_equally_and_resamples_clusters_not_rows():
+    # One cluster of ten wins; five single-query clusters tie. Hand value: (1+0*5)/6.
+    a = [PairedValue(f"big{i}", "big", 7, 1) for i in range(10)]
+    a += [PairedValue(f"small{c}", f"small{c}", 7, 0) for c in range(5)]
+    b = [PairedValue(v.query_id, v.cluster_id, 7, 0) for v in a]
+    report = paired_difference(tuple(a), tuple(b), seed=47, samples=400)
+    assert report["difference"] == pytest.approx(1 / 6)
+    low, high = report["confidence_interval"]
+    # Cluster resampling can draw samples without the winning cluster; row resampling could not.
+    assert low == 0 and 0 < high <= 1

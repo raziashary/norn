@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 
 from benchmark.adapters.baseline import interpret
-from benchmark.adapters.common import candidate, parse_source
+from benchmark.adapters.common import ReplayClock, candidate, parse_source
 from benchmark.adapters.contracts import ArmSpec, PublicInput, Result
 from benchmark.adapters.r8 import SPECS as LEARNED_SPECS
 from norn.canonical.registry import WriteRequest
@@ -40,11 +40,12 @@ SPECS = {
 ACTION = re.compile(r"step=(\d{1,2});tool=([\w-]{1,64});result=([\w-]{1,64});at=([^|]{1,80})")
 
 
-def ingest(engine: Engine, published: PublicInput) -> dict[str, str]:
+def ingest(engine: Engine, published: PublicInput, clock: ReplayClock) -> dict[str, str]:
     require(engine.access.ns == published.query.namespace, "ARM_NAMESPACE_MISMATCH")
     mapping = {}
     for source in published.sources:
         capture = parse_source(source)
+        clock.set(parse_instant(capture.recorded_at))
         qualifiers: list[tuple[tuple[str, str], ...]] = [()]
         if capture.predicate == "parked_in":
             qualifiers = [(("location", capture.value),)]

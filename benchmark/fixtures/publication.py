@@ -77,6 +77,8 @@ def publish(case: Case, hidden_markers: tuple[str, ...] = ()) -> PublicInput:
 def check_import_barrier(runtime_root: Path, adapter_root: Path) -> None:
     """AST import checks plus dynamic-import denial; no recursive visitor calls."""
     for root in (runtime_root, adapter_root):
+        # A wrong working directory must fail the guard, never silently scan zero files.
+        require(root.is_dir() and any(root.rglob("*.py")), "IMPORT_BARRIER_ROOT_EMPTY")
         for path in sorted(root.rglob("*.py")):
             tree = ast.parse(path.read_text(encoding="utf-8"))
             nodes = list(ast.walk(tree))
