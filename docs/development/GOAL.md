@@ -19,7 +19,7 @@ Create `docs/development` with an extensive MDP containing algorithms, schemas, 
 | D05 | Proposed decisions are distinct from accepted user/blueprint constraints; unknown runtime stays unbuilt | ADR owner-answer audit and readiness inspection | DONE |
 | D06 | Research design covers required arms, custody, fairness, external transfer, costs, negative results and locked confirmation | RESEARCH_PROTOCOL plus MDP/evidence/traceability review | DONE |
 | D07 | Real documentation CLI passes, and independent damaged-suite controls fail for intended reasons | P00-T05/P00-T06, G-DOC, exact evidence commands | DONE |
-| D08 | Main and one Luna Medium end reviewer resolve material findings; verified scoped work preserved | EVIDENCE_LOG final receipt, clean reviewed local commit | DONE |
+| D08 | Main and one end reviewer (Luna Medium through P04; Haiku 5.5 High from ADR-0026) resolve material findings; verified scoped work preserved | EVIDENCE_LOG final receipt, clean reviewed local commit | DONE |
 
 Documentation completion does not prove any runtime/system outcome below. The checker is a documentation tool; SQL/algorithm examples in the MDP are proposed contracts, not a deployed implementation.
 

@@ -59,7 +59,7 @@ Use existing `.venv/Scripts/python.exe` for docs-only validation. Use `uv run --
 
 ### Reviews and closure
 
-Use one start adversary and one end reviewer for substantial phases, GPT 6 Luna Medium, per the standing user rules. The main agent owns exploration, implementation, tests, intermediate checks and integration. Give reviewers self-contained scope, full blueprint, changed contracts, source/proof paths, and read-only restrictions; no credentials, runtime resource access, writes, git mutations, or extra agents. Reuse the end reviewer for resolution. Review does not replace tests or measurements.
+Use one start adversary and one end reviewer for substantial phases, Claude Haiku 5.5 at high effort (ADR-0026; earlier phases used GPT 6 Luna Medium), per the standing user rules. The main agent owns exploration, implementation, tests, intermediate checks and integration. Give reviewers self-contained scope, full blueprint, changed contracts, source/proof paths, and read-only restrictions; no credentials, runtime resource access, writes, git mutations, or extra agents. Reuse the end reviewer for resolution. Review does not replace tests or measurements.
 
 Task states: PLANNED, IN_PROGRESS, BLOCKED, DONE, DEFERRED. A checked atomic card means DONE with evidence; DEFERRED is unchecked with owner/reason/destination. Gate states: NOT_RUN, PARTIAL, PASS, FAIL, BLOCKED. Algorithm outcomes: NOT_EVALUATED, RETAIN, REJECT, INCONCLUSIVE, UNSUPPORTED. These are three independent axes. A valid negative experiment can complete a task while its efficacy remains REJECT or INCONCLUSIVE; it never becomes an efficacy PASS by renaming the metric.
 
