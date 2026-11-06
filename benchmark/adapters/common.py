@@ -163,14 +163,6 @@ class CommonControl:
             return Result(
                 "UNSUPPORTED", None, (), reason="FEATURE_NOT_SUPPORTED", coverage="UNAVAILABLE"
             )
-        if published.query.coverage_state == "UNAVAILABLE":
-            return Result(
-                "OK",
-                "VERIFICATION_UNAVAILABLE",
-                (),
-                coverage="UNAVAILABLE",
-                reason="CAPTURE_VERIFICATION_UNAVAILABLE",
-            )
         if self.name in {"error", "timeout", "unsupported", "not_run"}:
             return Result(
                 self.name.upper(), None, (), coverage="UNAVAILABLE", reason="INJECTED_CONTROL"

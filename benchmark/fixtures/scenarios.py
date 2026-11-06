@@ -178,7 +178,11 @@ def _case(
         if family == "E7":
             reason = "MISSING_TIME_BASIS"
         if family == "E12":
-            status, reason, projection = "VERIFICATION_UNAVAILABLE", "MIXED_VERSIONS", "UNAVAILABLE"
+            status, reason, projection = (
+                "VERIFICATION_UNAVAILABLE",
+                "PROJECTION_NOT_READY",
+                "UNAVAILABLE",
+            )
     elif variant == "missing":
         status, reason = "NOT_ESTABLISHED", "MISSING_SUPPORT"
         missing_ids = set(slots[-1])
@@ -248,7 +252,6 @@ def _case(
         10,
         2000,
         required,
-        projection,
     )
     accessible = tuple(
         s

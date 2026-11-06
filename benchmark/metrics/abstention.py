@@ -5,12 +5,22 @@ from typing import Any
 
 from benchmark.adapters.contracts import Result
 from benchmark.fixtures.scenarios import Gold
+from benchmark.statistics.calibration import zero_incident_bound
 from norn.contracts.identity import canonical
 
 
 def abstention_score(
-    result: Result, gold: Gold, complete_set: bool | None, partial_set: bool | None = None
+    result: Result,
+    gold: Gold,
+    complete_set: bool | None,
+    partial_set: bool | None = None,
+    slot_coverage: float | None = None,
 ) -> dict[str, Any]:
+    """``slot_coverage`` is the retrieval score's covered/satisfiable-slot fraction.
+
+    Partial utility is that fraction, so a declared unknown (an unsatisfiable slot) never
+    lowers a correct qualified partial.
+    """
     observed = result.disposition == "OK"
     accepted = result.evidence_status in {"SUPPORTED", "PARTIALLY_SUPPORTED"} if observed else None
     answerable = gold.expected_status in {"SUPPORTED", "PARTIALLY_SUPPORTED"}
@@ -41,12 +51,7 @@ def abstention_score(
         "full_answerable": gold.expected_status == "SUPPORTED",
         "partial_answerable": gold.expected_status == "PARTIALLY_SUPPORTED",
         "partial_useful": partial_correct if observed and gold.partial_sets else None,
-        "partial_utility": (
-            sum(bool(set(slot) & {c.source_id for c in result.candidates}) for slot in gold.slots)
-            / len(gold.slots)
-            if partial_correct and gold.slots
-            else 0.0
-        )
+        "partial_utility": (slot_coverage or 0.0 if partial_correct else 0.0)
         if observed and gold.partial_sets
         else None,
         "insufficient_for_full": gold.expected_status != "SUPPORTED",
@@ -66,6 +71,7 @@ def abstention_score(
         else None,
         "privacy_incidents": len(leaks),
         "privacy_observed": observed,
+        "privacy_canaries_present": bool(gold.forbidden_sources or gold.forbidden_canaries),
         "ambiguity_correct": result.evidence_status == "NOT_ESTABLISHED"
         if observed and gold.reason == "AMBIGUOUS"
         else None,
@@ -85,6 +91,7 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     overreach = [r for r in observed if r.get("ambiguity_overreach") is not None]
     reasons = [r for r in observed if r["missing_reason_correct"] is not None]
     accepted = [r for r in observed if r["accepted"]]
+    exposures = sum(1 for r in rows if r["privacy_observed"] and r["privacy_canaries_present"])
     return {
         "planned": len(rows),
         "completed": len(observed),
@@ -134,4 +141,10 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "missing_reason_denominator": len(reasons),
         "privacy_incidents": sum(r["privacy_incidents"] for r in rows),
         "privacy_observation_denominator": sum(r["privacy_observed"] for r in rows),
+        # Only cases that actually carried a forbidden source or canary are exposures to the leak.
+        "privacy_exposure_denominator": exposures,
+        "privacy_incident_upper_bound_95": zero_incident_bound(exposures)
+        if exposures and not any(r["privacy_incidents"] for r in rows)
+        else None,
+        "privacy_bound_scope": "ZERO_OBSERVED_INCIDENTS_ONLY; CASES_NOT_INDEPENDENT_USERS",
     }

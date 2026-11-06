@@ -37,6 +37,8 @@ SPECS = {
     },
     **LEARNED_SPECS,
 }
+OUTAGE_REASON = "BINDING_PROJECTION_NOT_READY"  # engine's own code when no projection was built
+PUBLIC_OUTAGE_REASON = "PROJECTION_NOT_READY"  # the baseline engine path reports this code
 ACTION = re.compile(r"step=(\d{1,2});tool=([\w-]{1,64});result=([\w-]{1,64});at=([^|]{1,80})")
 
 
@@ -150,14 +152,6 @@ class BindingAdapter:
             return Result(
                 "UNSUPPORTED", None, (), reason="FEATURE_NOT_SUPPORTED", coverage="UNAVAILABLE"
             ), {"early": True}
-        if published.query.coverage_state == "UNAVAILABLE":
-            return Result(
-                "OK",
-                "VERIFICATION_UNAVAILABLE",
-                (),
-                coverage="UNAVAILABLE",
-                reason="CAPTURE_VERIFICATION_UNAVAILABLE",
-            ), {"early": True}
         request = interpret(published, "R1")
         start = time.perf_counter_ns()
         packet = self.engine.recall_binding(request, variant, checkpoint).serialize()
@@ -177,6 +171,25 @@ class BindingAdapter:
             require(atom in self.mapping, "SOURCE_MAPPING_MISSING")
             ranking.append(self.mapping[atom])
         failed = packet["status"] == "VERIFICATION_UNAVAILABLE"
+        if packet["reason"] == OUTAGE_REASON:
+            # The engine itself reports that no projection exists. That is a truthful, scoreable
+            # VERIFICATION_UNAVAILABLE answer, not an adapter failure; it is reported under the
+            # benchmark's engine-neutral reason code.
+            result = Result(
+                "OK",
+                "VERIFICATION_UNAVAILABLE",
+                (),
+                coverage=packet["coverage"],
+                reason=PUBLIC_OUTAGE_REASON,
+                missing_fields=tuple(packet["missing_fields"]),
+            )
+            return result, {
+                "packet": packet,
+                "elapsed_ns": elapsed,
+                "ranking_sources": [],
+                "ranking_stage": "BINDING_CANDIDATES",
+                "cache": "NO_PROJECTION",
+            }
         result = Result(
             "TIMEOUT" if "DEADLINE" in packet["reason"] else "ERROR" if failed else "OK",
             None if failed else packet["status"],

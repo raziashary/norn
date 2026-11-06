@@ -89,7 +89,7 @@ def test_result_packet_boundary_rejects_rehashed_claims_before_source_setup(tmp_
 
     from benchmark.adapters.contracts import Result
 
-    public = SimpleNamespace(query=SimpleNamespace(coverage_state="CANONICAL_FALLBACK"))
+    public = SimpleNamespace()
     result = asdict(Result("UNSUPPORTED", None, (), reason="FEATURE_NOT_SUPPORTED"))
     row = {
         "result": result,

@@ -52,7 +52,6 @@ class Query:
     max_candidates: int
     max_evidence_tokens: int
     required_capabilities: tuple[str, ...] = ("source_read",)
-    coverage_state: str = "CANONICAL_FALLBACK"
 
     def __post_init__(self) -> None:
         require(re.fullmatch(r"query_[0-9a-f]{64}", self.query_id) is not None, "INVALID_QUERY_ID")
@@ -60,7 +59,6 @@ class Query:
         require(len(parts) == 3, "INVALID_NAMESPACE")
         Namespace(*parts)
         zone(self.timezone)
-        require(self.coverage_state in {"CANONICAL_FALLBACK", "UNAVAILABLE"})
         require(parse_instant(self.knowledge_at) <= parse_instant(self.evaluation_time))
         require(type(self.text) is str and 0 < len(self.text) <= 16_384)
         require(type(self.max_candidates) is int and 1 <= self.max_candidates <= 1000)

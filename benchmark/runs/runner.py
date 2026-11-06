@@ -10,7 +10,12 @@ from typing import Any
 
 from benchmark.adapters.common import CommonControl, NativeUnavailable, candidate, validate_result
 from benchmark.adapters.contracts import Adapter, ArmSpec, PublicInput, Result
-from benchmark.fixtures.audit import audit_summary, load_judgments, stratified_sample
+from benchmark.fixtures.audit import (
+    audit_summary,
+    load_attestations,
+    load_judgments,
+    stratified_sample,
+)
 from benchmark.fixtures.partitions import authorize_partition, partition
 from benchmark.fixtures.publication import publish
 from benchmark.fixtures.scenarios import Case, gold_payload, scenarios
@@ -80,6 +85,7 @@ def run_controls(
     names: tuple[str, ...] = ("perfect", "empty", "shuffled"),
     sample_only: bool = False,
     judgments_path: Path | None = None,
+    attestation_path: Path | None = None,
     model_root: Path | None = None,
     enable_models: bool = False,
 ) -> dict[str, Any]:
@@ -105,7 +111,8 @@ def run_controls(
         cases = stratified_sample(cases)
     require(len(cases) <= 10_000, "RUN_QUERY_BUDGET")
     judgments = load_judgments(judgments_path) if judgments_path else ()
-    audit = audit_summary(cases, judgments)
+    attested = load_attestations(attestation_path) if attestation_path else frozenset()
+    audit = audit_summary(cases, judgments, attested)
     inputs = {case.query.query_id: publish(case, (world.gold_canary,)) for case in cases}
     artifacts = {
         "evaluator/world.json": write_once(destination / "evaluator/world.json", asdict(world)),
@@ -115,10 +122,14 @@ def run_controls(
         "evaluator/audit.json": write_once(
             destination / "evaluator/audit.json", [asdict(j) for j in judgments]
         ),
+        "evaluator/attested.json": write_once(
+            destination / "evaluator/attested.json", sorted(attested)
+        ),
     }
     for query_id, public in inputs.items():
         path = "published/" + query_id + ".json"
         artifacts[path] = write_once(destination / path, public.payload())
+    outage_free = {c.query.query_id: c.gold.projection_state != "UNAVAILABLE" for c in cases}
     preparations = {}
     if baselines:
         from benchmark.adapters.baseline import prepare
@@ -126,7 +137,12 @@ def run_controls(
         assert model_root is not None
         for query_id, public in inputs.items():
             preparations[query_id] = prepare(
-                public, destination / "stores" / query_id, model_root, enable_models
+                public,
+                destination / "stores" / query_id,
+                model_root,
+                enable_models,
+                # Evaluator-side injected outage; the arm only ever observes the engine's answer.
+                build_projection=outage_free[query_id],
             )
         artifacts["preparations.json"] = write_once(destination / "preparations.json", preparations)
     manifest: dict[str, Any] = {

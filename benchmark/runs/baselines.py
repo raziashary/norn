@@ -7,7 +7,7 @@ from typing import Any
 from benchmark.adapters.baseline import host, interpret
 from benchmark.adapters.contracts import PublicInput, Result
 from benchmark.runs.manifest import load
-from benchmark.statistics.paired import PairedValue, paired_difference
+from benchmark.statistics.paired import PairedValue, adjust_family, paired_difference
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical
 from norn.integration.engine import Engine
@@ -25,14 +25,7 @@ def validate_diagnostics(
     tokenizer: TokenCounter | None,
 ) -> None:
     if not diagnostic:
-        require(
-            result.disposition != "OK"
-            or (
-                published.query.coverage_state == "UNAVAILABLE"
-                and result.evidence_status == "VERIFICATION_UNAVAILABLE"
-            ),
-            "MISSING_BASELINE_DIAGNOSTIC",
-        )
+        require(result.disposition != "OK", "MISSING_BASELINE_DIAGNOSTIC")
         return
     require(tokenizer is not None, "TOKENIZER_UNAVAILABLE")
     assert tokenizer is not None
@@ -134,10 +127,10 @@ def quantiles(values: list[int]) -> dict[str, float | None]:
     }
 
 
-def report(root: Path, model_root: Path) -> dict[str, Any]:
+def report(root: Path, model_root: Path, attestation: Path | None = None) -> dict[str, Any]:
     from benchmark.runs.validate import validate_run
 
-    result = validate_run(root, model_root=model_root)
+    result = validate_run(root, model_root=model_root, attestation=attestation)
     require(result["run_kind"] == "CONVENTIONAL_RETRIEVAL_DEVELOPMENT", "BASELINE_RUN_REQUIRED")
     observations = result["observations"]
     strata: dict[str, Any] = {}
@@ -212,7 +205,7 @@ def report(root: Path, model_root: Path) -> dict[str, Any]:
         **{k: v for k, v in result.items() if k != "observations"},
         "strata": strata,
         "costs": costs,
-        "contrasts": contrasts,
+        "contrasts": adjust_family(contrasts),
         "offline_build_ns": sum(p["offline_ns"] for p in preparations.values()),
         "offline_model_attempts": sum(
             p["projection"]["usage"]["model_calls"] for p in preparations.values()

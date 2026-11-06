@@ -130,3 +130,21 @@ def test_relabeling_smoke_as_calibration_fails_even_after_rehash(tmp_path):
     rewrite_ledger(root, lambda rows: None)
     with pytest.raises(NornError, match="WORLD_PARTITION_LINEAGE_CHANGED"):
         validate_run(root)
+
+
+def test_external_attestation_catches_a_rehashed_self_consistent_ledger(tmp_path):
+    from benchmark.runs.seal import attest, verify
+
+    root = tmp_path / "run"
+    run_controls(root, sample_only=True, names=("perfect",))
+    seal = tmp_path / "seals" / "run.json"
+    value = attest(root, seal)
+    assert verify(root, seal) == {k: v for k, v in value.items() if k != "attestation_digest"}
+    assert validate_run(root, attestation=seal)["observations"]
+    # A latency edit is semantically valid, so run-internal checks cannot notice the rewrite.
+    rewrite_ledger(root, lambda rows: rows[0].__setitem__("elapsed_ns", rows[0]["elapsed_ns"] + 1))
+    assert validate_run(root)["observations"]
+    with pytest.raises(NornError, match="RUN_ATTESTATION_MISMATCH"):
+        validate_run(root, attestation=seal)
+    with pytest.raises(NornError, match="ATTESTATION_INSIDE_RUN"):
+        attest(root, root / "inside.json")

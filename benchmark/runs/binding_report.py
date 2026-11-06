@@ -13,13 +13,14 @@ from benchmark.adapters.common import validate_result
 from benchmark.adapters.r7 import SPECS
 from benchmark.fixtures.binding_cases import ROLE_INDICES, cases
 from benchmark.fixtures.publication import publish, validate_public
+from benchmark.fixtures.scenarios import Gold
 from benchmark.metrics.abstention import abstention_score, aggregate
 from benchmark.metrics.retrieval import retrieval_scores
 from benchmark.runs.baselines import quantiles
 from benchmark.runs.binding import CONFIG, checked, ledger_digest
 from benchmark.runs.manifest import file_digest, load
 from benchmark.runs.validate import gold_from, result_from
-from benchmark.statistics.paired import PairedValue, paired_difference
+from benchmark.statistics.paired import PairedValue, adjust_family, paired_difference
 from norn.contracts.budgets import QueryBudget
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest
@@ -31,7 +32,7 @@ from norn.features.views import derive
 from norn.integration.engine import Engine
 from norn.projection.binding import readback
 from norn.retrieval.assembly import assemble
-from norn.retrieval.contracts import Hit
+from norn.retrieval.binding import expand_ranked_events
 from norn.retrieval.exact import eligible
 from norn.retrieval.rerank import EvidenceTokenizer
 from norn.retrieval.resolve import resolve
@@ -67,6 +68,8 @@ def validate_packet(
     captured: dict[str, Any],
     model: BindingModel | None,
     tokenizer: EvidenceTokenizer,
+    *,
+    gold: Gold | None = None,
 ) -> None:
     diagnostic = row["diagnostic"]
     result = result_from(row["result"])
@@ -87,13 +90,22 @@ def validate_packet(
                 public, result_from(diagnostic["repeated"]), SPECS[row["variant"]], tokenizer
             )
     if not diagnostic or diagnostic.get("early"):
+        require(result.disposition != "OK", "MISSING_BINDING_DIAGNOSTIC")
+        return
+    if not row["projection"]:
+        # Injected outage (no binding projection built): the engine's own packet is the proof.
+        packet = diagnostic["packet"]
         require(
-            result.disposition != "OK"
-            or (
-                public.query.coverage_state == "UNAVAILABLE"
-                and result.evidence_status == "VERIFICATION_UNAVAILABLE"
-            ),
-            "MISSING_BINDING_DIAGNOSTIC",
+            result.disposition == "OK"
+            and result.evidence_status == "VERIFICATION_UNAVAILABLE"
+            and result.reason == "PROJECTION_NOT_READY"
+            and packet["status"] == "VERIFICATION_UNAVAILABLE"
+            and packet["reason"] == "BINDING_PROJECTION_NOT_READY"
+            and not packet["evidence"]
+            and not result.candidates
+            and gold is not None
+            and gold.projection_state == "UNAVAILABLE",
+            "BINDING_OUTAGE_PACKET_CHANGED",
         )
         return
     require(diagnostic["ranking_stage"] == "BINDING_CANDIDATES", "UNOBSERVED_METRIC_STAGE")
@@ -153,12 +165,7 @@ def validate_packet(
             else:
                 scores = matrix @ q
             values = {key: float(v) for key, v in zip(event_keys, scores, strict=True)}
-        expected = tuple(
-            sorted(
-                (Hit(r, values[r.event_id], variant) for r in corpus.records),
-                key=lambda h: (-h.score, h.record.key),
-            )[: request.candidate_limit]
-        )
+        expected = expand_ranked_events(corpus.records, values, variant, request.candidate_limit)
         sources = {s.source_id: s for s in public.sources}
         mapped_rank = list(dict.fromkeys(captured["mapping"][h.record.atom_id] for h in expected))
         if diagnostic["packet"]["status"] != "VERIFICATION_UNAVAILABLE":
@@ -324,7 +331,11 @@ def summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def report(root: Path, model_root: Path) -> dict[str, Any]:
+def report(root: Path, model_root: Path, attestation: Path | None = None) -> dict[str, Any]:
+    if attestation is not None:
+        from benchmark.runs.seal import verify
+
+        verify(root, attestation)
     manifest = checked(root)
     completion = load(root / "binding-completion.json")
     training = load(root / "training.json")
@@ -426,10 +437,14 @@ def report(root: Path, model_root: Path) -> dict[str, Any]:
             model = models.get((row["variant"], row["seed"]))
             result = result_from(row["result"])
             validate_result(public, result, SPECS[row["variant"]], tokenizer)
-            validate_packet(root, row, public, captured, model, tokenizer)
+            validate_packet(root, row, public, captured, model, tokenizer, gold=gold)
             retrieval = retrieval_scores(public, result, SPECS[row["variant"]], gold, tokenizer)
             answer = abstention_score(
-                result, gold, retrieval["complete_set"], retrieval["partial_set"]
+                result,
+                gold,
+                retrieval["complete_set"],
+                retrieval["partial_set"],
+                retrieval["slot_coverage"],
             )
             answer["privacy_incidents"] = sum(
                 marker in canonical(row)
@@ -539,7 +554,7 @@ def report(root: Path, model_root: Path) -> dict[str, Any]:
         "pairs": len(seen),
         "arms": arms,
         "strata": strata,
-        "contrasts": contrasts,
+        "contrasts": adjust_family(contrasts),
         "training": training,
         "environment": manifest["environment"],
         "b5": CONFIG["b5"],

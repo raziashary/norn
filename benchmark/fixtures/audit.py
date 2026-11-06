@@ -33,14 +33,23 @@ def binding(case: Case) -> tuple[str, str]:
     return case.source_digest, digest(canonical(gold_payload(case)).encode())
 
 
-def audit_state(case: Case, judgments: tuple[Judgment, ...]) -> str:
+def audit_state(
+    case: Case, judgments: tuple[Judgment, ...], attested: frozenset[str] = frozenset()
+) -> str:
+    """Review state of one case. Only annotators with an external attestation count as human.
+
+    A judgment's own ``role``/``independent`` fields are declarations; they carry no weight until
+    the same annotator appears in the attestation record (fail closed by default).
+    """
     source_hash, gold_hash = binding(case)
     selected = [j for j in judgments if j.query_id == case.query.query_id]
     require(
         all(j.source_digest == source_hash and j.gold_digest == gold_hash for j in selected),
         "STALE_AUDIT_BINDING",
     )
-    humans = [j for j in selected if j.role == "HUMAN" and j.independent]
+    humans = [
+        j for j in selected if j.role == "HUMAN" and j.independent and j.annotator in attested
+    ]
     require(len({j.annotator for j in humans}) == len(humans), "DUPLICATE_ANNOTATOR")
     if not humans:
         return "PENDING_HUMAN_REVIEW"
@@ -57,8 +66,27 @@ def audit_state(case: Case, judgments: tuple[Judgment, ...]) -> str:
     return "DISPUTED"
 
 
+SAMPLING = "FAMILY_VARIANT_ALL_LANGUAGES_V2"
+PREVIOUS_SAMPLING = "FAMILY_VARIANT_LANGUAGE_ROTATION_V1"
+
+
 def stratified_sample(cases: tuple[Case, ...]) -> tuple[Case, ...]:
-    """Every family/twin, with EN/ID/mixed rotated within each family (42 cases)."""
+    """Every family, twin variant and language without cue masking (126 cases).
+
+    V1 reviewed one rotated language per family/variant, so a wording or translation defect in
+    the other two languages was never seen. V1's 42 cases are a subset of this sample.
+    """
+    selected: dict[tuple[str, str, str], Case] = {}
+    for case in cases:
+        if case.gold.cue_missing_fraction:
+            continue
+        key = case.gold.family, case.gold.variant, case.gold.language
+        selected.setdefault(key, case)
+    return tuple(selected[key] for key in sorted(selected))
+
+
+def previous_sample(cases: tuple[Case, ...]) -> tuple[Case, ...]:
+    """The V1 rotation sample, kept so earlier owner records stay attributable (42 cases)."""
     selected: dict[tuple[str, str], Case] = {}
     for case in cases:
         variant_index = ("positive", "ambiguous", "missing").index(case.gold.variant)
@@ -70,8 +98,19 @@ def stratified_sample(cases: tuple[Case, ...]) -> tuple[Case, ...]:
     return tuple(selected[key] for key in sorted(selected))
 
 
-def write_audit_pack(cases: tuple[Case, ...], destination: Path) -> str:
-    sample = stratified_sample(cases)
+def write_audit_pack(
+    cases: tuple[Case, ...],
+    destination: Path,
+    judgments: tuple[Judgment, ...] = (),
+    attested: frozenset[str] = frozenset(),
+) -> str:
+    """Render the review pack; with ``judgments`` only cases still awaiting review are listed."""
+    sample = tuple(
+        c
+        for c in stratified_sample(cases)
+        if not judgments
+        or audit_state(c, current(c, judgments), attested) == "PENDING_HUMAN_REVIEW"
+    )
     pack = [
         {
             "query": asdict(c.query),
@@ -84,7 +123,7 @@ def write_audit_pack(cases: tuple[Case, ...], destination: Path) -> str:
     ]
     sha = digest(canonical(pack).encode())
     text = [
-        "# P02 stratified label audit",
+        f"# Stratified label audit ({SAMPLING})",
         "",
         "State: PENDING_HUMAN_REVIEW.",
         "These are constructed fixture labels, not independent human judgments.",
@@ -115,6 +154,39 @@ def write_audit_pack(cases: tuple[Case, ...], destination: Path) -> str:
     return sha
 
 
+def current(case: Case, judgments: tuple[Judgment, ...]) -> tuple[Judgment, ...]:
+    """Judgments of ``case`` whose source and gold digests still match; others are stale."""
+    source_hash, gold_hash = binding(case)
+    return tuple(
+        j
+        for j in judgments
+        if j.query_id == case.query.query_id
+        and j.source_digest == source_hash
+        and j.gold_digest == gold_hash
+    )
+
+
+def load_attestations(path: Path) -> frozenset[str]:
+    """Annotators the owner has attested as independent humans (a separate external record)."""
+    require(path.is_file() and path.stat().st_size <= 1_000_000, "AUDIT_RECORD_BUDGET")
+    raw: Any = json.loads(path.read_bytes())
+    require(type(raw) is list and len(raw) <= 1000, "AUDIT_RECORD_SCHEMA")
+    names = []
+    for item in raw:
+        require(
+            type(item) is dict
+            and type(item.get("annotator")) is str
+            and type(item.get("statement")) is str
+            and bool(item["statement"])
+            and type(item.get("authority")) is str
+            and bool(item["authority"]),
+            "AUDIT_ATTESTATION_SCHEMA",
+        )
+        names.append(item["annotator"])
+    require(len(set(names)) == len(names), "DUPLICATE_ATTESTATION")
+    return frozenset(names)
+
+
 def load_judgments(path: Path) -> tuple[Judgment, ...]:
     require(path.is_file() and path.stat().st_size <= 64_000_000, "AUDIT_RECORD_BUDGET")
     raw: Any = json.loads(path.read_bytes())
@@ -127,24 +199,34 @@ def load_judgments(path: Path) -> tuple[Judgment, ...]:
     return tuple(result)
 
 
-def audit_summary(cases: tuple[Case, ...], judgments: tuple[Judgment, ...]) -> dict[str, Any]:
+def audit_summary(
+    cases: tuple[Case, ...],
+    judgments: tuple[Judgment, ...],
+    attested: frozenset[str] = frozenset(),
+) -> dict[str, Any]:
     require(
         {j.query_id for j in judgments} <= {c.query.query_id for c in cases},
         "AUDIT_QUERY_NOT_IN_RUN",
     )
     sample = stratified_sample(cases)
     states: dict[str, int] = {}
+    kept = 0
     for case in cases:
-        state = audit_state(case, judgments)
+        own = current(case, judgments)
+        kept += len(own)
+        state = audit_state(case, own, attested)
         if case in sample:
             states[state] = states.get(state, 0) + 1
     reviewed = sum(states.get(s, 0) for s in ("HUMAN_REVIEWED", "ADJUDICATED"))
+    declared = {j.annotator for j in judgments if j.role == "HUMAN" and j.independent}
     return {
         "sample_size": len(sample),
         "run_cases": len(cases),
         "states": states,
         "reviewed_sample": reviewed,
-        "sampling": "FAMILY_VARIANT_LANGUAGE_ROTATION_V1",
+        "stale_judgments": len(judgments) - kept,
+        "unattested_annotators": sorted(declared - attested),
+        "sampling": SAMPLING,
         "state": "SAMPLE_REVIEWED" if reviewed == len(sample) else "PENDING_OR_DISPUTED",
-        "provenance": "DECLARED_JUDGMENTS; HUMAN_ATTESTATION_REQUIRES_EXTERNAL_RECEIPT",
+        "provenance": "HUMAN_COUNTED_ONLY_WITH_EXTERNAL_ATTESTATION_RECORD",
     }

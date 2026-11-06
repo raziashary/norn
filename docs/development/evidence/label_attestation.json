@@ -1,0 +1,9 @@
+[
+  {
+    "annotator": "project-owner",
+    "statement": "The project owner personally reviewed the 42 hash-bound V1 sample cases recorded in label_judgments.json; this is a human review, not a model or coordinator judgment.",
+    "authority": "Pre-existing owner statement recorded for P02 (RISKS Q09, evidence/label_audit.md); transcribed here on 6 November 2026 under ADR-0025, not re-asked.",
+    "covers_judgments_sha256": "b12fe54b8b4b6835443a837caee4d6107a66cd000c2a805508ca972a9f578a20",
+    "independence_limit": "Declared by the owner, who also directs the project; no external second party has verified it."
+  }
+]

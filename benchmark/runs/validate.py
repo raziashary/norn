@@ -16,7 +16,7 @@ from benchmark.metrics.abstention import abstention_score, aggregate
 from benchmark.metrics.retrieval import retrieval_scores
 from benchmark.runs.manifest import code_digest, file_digest, load
 from benchmark.runs.runner import arm_spec
-from benchmark.statistics.paired import PairedValue, paired_difference
+from benchmark.statistics.paired import PairedValue, adjust_family, paired_difference
 from norn.contracts.errors import NornError, require
 from norn.contracts.identity import canonical, digest
 from norn.embedding.assets import METHODS, MODELS
@@ -42,7 +42,13 @@ def gold_from(raw: dict[str, Any]) -> Gold:
     return Gold(**data)
 
 
-def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any]:
+def validate_run(
+    root: Path, *, model_root: Path | None = None, attestation: Path | None = None
+) -> dict[str, Any]:
+    if attestation is not None:
+        from benchmark.runs.seal import verify
+
+        verify(root, attestation)
     manifest = load(root / "manifest.json")
     completion = load(root / "completion.json")
     baselines = manifest["run_kind"] == "CONVENTIONAL_RETRIEVAL_DEVELOPMENT"
@@ -98,7 +104,12 @@ def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any
         ),
         "PUBLISHED_GENERATOR_LINEAGE_CHANGED",
     )
-    artifact_names = {"evaluator/world.json", "evaluator/gold.json", "evaluator/audit.json"}
+    artifact_names = {
+        "evaluator/world.json",
+        "evaluator/gold.json",
+        "evaluator/audit.json",
+        "evaluator/attested.json",
+    }
     if baselines:
         require(
             canonical(manifest["retrieval_methods"]) == canonical(METHODS),
@@ -127,6 +138,7 @@ def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any
     audit = audit_summary(
         tuple(Case(item.query, item.sources, gold[qid]) for qid, item in public.items()),
         load_judgments(root / "evaluator/audit.json"),
+        frozenset(load(root / "evaluator/attested.json")),
     )
     require(audit == manifest["audit"], "AUDIT_SUMMARY_CHANGED")
     specs = {}
@@ -214,9 +226,20 @@ def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any
                 validate_diagnostics(
                     root, public[qid], result, row.get("baseline_diagnostics"), token_counter
                 )
+                injected = load(root / "preparations.json")[qid]["projection"].get("fault")
+                require(
+                    (injected == "PROJECTION_NOT_BUILT")
+                    == (gold[qid].projection_state == "UNAVAILABLE")
+                    and injected in {None, "PROJECTION_NOT_BUILT"},
+                    "INJECTED_FAULT_CHANGED",
+                )
             retrieval = retrieval_scores(public[qid], result, specs[arm], gold[qid], token_counter)
             abstention = abstention_score(
-                result, gold[qid], retrieval["complete_set"], retrieval["partial_set"]
+                result,
+                gold[qid],
+                retrieval["complete_set"],
+                retrieval["partial_set"],
+                retrieval["slot_coverage"],
             )
             raw = canonical(row)  # Includes actual packet/warm output and trace diagnostics.
             abstention["privacy_incidents"] = sum(
@@ -299,7 +322,7 @@ def validate_run(root: Path, *, model_root: Path | None = None) -> dict[str, Any
         "sealed": False,
         "pairs": len(scores),
         "arms": arms,
-        "contrasts": contrasts,
+        "contrasts": adjust_family(contrasts),
         "observations": scores,
         "research_efficacy": "UNSEALED_DEVELOPMENT_ONLY" if baselines else "NOT_EVALUATED",
         "unsupported_algorithms": "R4-R10 NOT_RUN" if baselines else "R0-R10 NOT_RUN",

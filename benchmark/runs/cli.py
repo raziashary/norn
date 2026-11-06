@@ -5,7 +5,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from benchmark.fixtures.audit import write_audit_pack
+from benchmark.fixtures.audit import load_attestations, load_judgments, write_audit_pack
 from benchmark.fixtures.partitions import partition
 from benchmark.fixtures.scenarios import scenarios
 from benchmark.fixtures.world import build_world
@@ -35,10 +35,20 @@ def parser() -> argparse.ArgumentParser:
     )
     run.add_argument("--sample-only", action="store_true")
     run.add_argument("--judgments", type=Path)
+    run.add_argument("--attestation", type=Path)
     validate = commands.add_parser("validate", help="Reopen every artifact and planned pair")
     validate.add_argument("directory", type=Path)
     validate.add_argument("--report", type=Path)
     validate.add_argument("--model-root", type=Path)
+    validate.add_argument("--attestation", type=Path)
+    seal = commands.add_parser(
+        "seal", help="Write an external attestation of a finished run (outside the run directory)"
+    )
+    seal.add_argument("directory", type=Path)
+    seal.add_argument("--output", type=Path, required=True)
+    verify_seal = commands.add_parser("verify-seal", help="Recompute a run against its attestation")
+    verify_seal.add_argument("directory", type=Path)
+    verify_seal.add_argument("attestation", type=Path)
     baseline = commands.add_parser(
         "run-baselines", help="Explicit real R0-R3 development experiment"
     )
@@ -71,6 +81,8 @@ def parser() -> argparse.ArgumentParser:
     )
     audit.add_argument("destination", type=Path)
     audit.add_argument("--seed", type=int, default=47)
+    audit.add_argument("--judgments", type=Path)
+    audit.add_argument("--attestation", type=Path)
     calibrate = commands.add_parser(
         "calibrate", help="Fit probabilities from a verified calibration run"
     )
@@ -125,6 +137,7 @@ def main(argv: list[str] | None = None) -> int:
                 names=tuple(args.arms),
                 sample_only=args.sample_only,
                 judgments_path=args.judgments,
+                attestation_path=args.attestation,
             )
         elif args.command == "run-baselines":
             result = run_controls(
@@ -148,14 +161,29 @@ def main(argv: list[str] | None = None) -> int:
                 "arms": report["arms"],
             }
         elif args.command == "validate":
-            report = validate_run(args.directory, model_root=args.model_root)
+            report = validate_run(
+                args.directory, model_root=args.model_root, attestation=args.attestation
+            )
             if args.report:
                 write_once(args.report, report)
             result = {key: value for key, value in report.items() if key != "observations"}
+        elif args.command == "seal":
+            from benchmark.runs.seal import attest
+
+            result = attest(args.directory, args.output)
+        elif args.command == "verify-seal":
+            from benchmark.runs.seal import verify
+
+            result = verify(args.directory, args.attestation)
         elif args.command == "audit-pack":
             world = build_world(args.seed, partition(args.seed, "smoke"))
             result = {
-                "pack_digest": write_audit_pack(scenarios(world), args.destination),
+                "pack_digest": write_audit_pack(
+                    scenarios(world),
+                    args.destination,
+                    load_judgments(args.judgments) if args.judgments else (),
+                    load_attestations(args.attestation) if args.attestation else frozenset(),
+                ),
                 "human_review": "PENDING; PACK_IS_NOT_A_JUDGMENT",
             }
         else:

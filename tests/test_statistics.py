@@ -60,3 +60,60 @@ def test_paired_difference_weights_clusters_equally_and_resamples_clusters_not_r
     low, high = report["confidence_interval"]
     # Cluster resampling can draw samples without the winning cluster; row resampling could not.
     assert low == 0 and 0 < high <= 1
+
+
+def test_report_family_is_holm_adjusted_and_descriptive_rows_are_excluded():
+    from benchmark.statistics.paired import adjust_family
+
+    def contrast(left, right):
+        a = tuple(
+            PairedValue(f"q{c}-{i}", f"cluster{c}", None, left[c % len(left)])
+            for c in range(8)
+            for i in range(2)
+        )
+        b = tuple(
+            PairedValue(v.query_id, v.cluster_id, None, right[int(v.cluster_id[7:]) % len(right)])
+            for v in a
+        )
+        return paired_difference(a, b, seed=47, samples=200)
+
+    strong, null = contrast([1], [0]), contrast([1, 0], [0, 1])
+    descriptive = paired_difference(
+        (PairedValue("q", "c", None, 1),), (PairedValue("q", "c", None, 0),), seed=47
+    )
+    assert 0 < strong["bootstrap_p_two_sided"] < 0.05
+    assert null["bootstrap_p_two_sided"] > 0.5 and "bootstrap_p_two_sided" not in descriptive
+    family = adjust_family({"strong": strong, "null": null, "small": descriptive})
+    assert family["strong"]["multiplicity"]["family_size"] == 2
+    # Two tests: the strongest p is doubled, never reported unadjusted as the headline.
+    expected = min(1.0, 2 * strong["bootstrap_p_two_sided"])
+    assert family["strong"]["multiplicity"]["holm_adjusted_p"] == pytest.approx(expected)
+    assert family["small"]["multiplicity"] == {
+        "method": "HOLM",
+        "family_size": 2,
+        "holm_adjusted_p": None,
+        "excluded": True,
+    }
+
+
+def test_privacy_bound_is_reported_only_for_zero_observed_incidents_over_real_exposures():
+    from dataclasses import replace
+
+    from benchmark.adapters.contracts import Result
+    from benchmark.fixtures.partitions import partition
+    from benchmark.fixtures.scenarios import scenarios
+    from benchmark.fixtures.world import build_world
+    from benchmark.metrics.abstention import abstention_score, aggregate
+
+    cases = scenarios(build_world(47, partition(47, "smoke")))
+    private = next(c for c in cases if c.gold.family == "E10")
+    plain = next(c for c in cases if c.gold.forbidden_canaries == () and c.gold.family == "E1")
+    clean = abstention_score(Result("OK", "NOT_ESTABLISHED", ()), private.gold, None)
+    unexposed = abstention_score(Result("OK", "NOT_ESTABLISHED", ()), plain.gold, None)
+    report = aggregate([clean, clean, unexposed])
+    assert report["privacy_exposure_denominator"] == 2
+    assert report["privacy_incident_upper_bound_95"] == pytest.approx(zero_incident_bound(2))
+    leaked = replace(Result("OK", "NOT_ESTABLISHED", ()), reason=private.gold.forbidden_canaries[0])
+    dirty = aggregate([abstention_score(leaked, private.gold, None), clean])
+    assert dirty["privacy_incidents"] == 1 and dirty["privacy_incident_upper_bound_95"] is None
+    assert aggregate([unexposed])["privacy_incident_upper_bound_95"] is None

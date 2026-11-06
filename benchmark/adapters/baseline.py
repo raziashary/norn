@@ -42,7 +42,20 @@ def host(published: PublicInput) -> HostIdentity:
     return HostIdentity(Namespace(*published.query.namespace.split("/")), published.query.principal)
 
 
-def prepare(published: PublicInput, root: Path, model_root: Path, enabled: bool) -> dict[str, Any]:
+def prepare(
+    published: PublicInput,
+    root: Path,
+    model_root: Path,
+    enabled: bool,
+    *,
+    build_projection: bool = True,
+) -> dict[str, Any]:
+    """Build the canonical store and, unless the harness injects an outage, its projections.
+
+    ``build_projection=False`` is an environment fault set by the harness from evaluator-side
+    state; it is never part of the published query. The arm then meets a store with no usable
+    projection and the engine itself reports ``PROJECTION_NOT_READY``.
+    """
     require(enabled, "LOCAL_MODELS_NOT_ENABLED")
     require(not root.exists(), "BASELINE_STORE_EXISTS")
     start = time.perf_counter_ns()
@@ -82,7 +95,11 @@ def prepare(published: PublicInput, root: Path, model_root: Path, enabled: bool)
                 )
             )
             mapping[receipt["atom_ids"][0]] = source.source_id
-        projection = engine.project()
+        projection = (
+            engine.project()
+            if build_projection
+            else {"manifests": {}, "security_epoch": None, "fault": "PROJECTION_NOT_BUILT"}
+        )
     return {
         "offline_ns": time.perf_counter_ns() - start,
         "projection": projection,
@@ -164,14 +181,6 @@ class Baseline:
         if not set(published.query.required_capabilities) <= set(self.spec.capabilities):
             return Result(
                 "UNSUPPORTED", None, (), coverage="UNAVAILABLE", reason="FEATURE_NOT_SUPPORTED"
-            )
-        if published.query.coverage_state == "UNAVAILABLE":
-            return Result(
-                "OK",
-                "VERIFICATION_UNAVAILABLE",
-                (),
-                coverage="UNAVAILABLE",
-                reason="CAPTURE_VERIFICATION_UNAVAILABLE",
             )
         query = interpret(published, self.spec.arm_id)
         started = time.perf_counter_ns()

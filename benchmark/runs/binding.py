@@ -316,6 +316,12 @@ def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
             for qid in manifest["planned"][role]:
                 public = validate_public(load(root / "published" / role / (qid + ".json")))
                 captured = load(root / "captures" / role / (qid + ".json"))
+                # Evaluator-side injected outage: the binding projection is never built, and the
+                # arm only observes what the engine answers.
+                outage = (
+                    load(root / "evaluator" / role / (qid + ".json"))["projection_state"]
+                    == "UNAVAILABLE"
+                )
                 with Engine(
                     root / "stores" / role / qid,
                     host(public),
@@ -335,8 +341,12 @@ def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
                         project_budget = QueryBudget(600_000)
                         failure_stage = "PROJECT"
                         try:
-                            projection = engine.project_binding(
-                                variant, checkpoint_path, budget=project_budget
+                            projection = (
+                                {}
+                                if outage
+                                else engine.project_binding(
+                                    variant, checkpoint_path, budget=project_budget
+                                )
                             )
                             project_elapsed_ns = time.perf_counter_ns() - tick
                             failure_stage = "FIRST_RECALL"

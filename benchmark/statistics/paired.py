@@ -87,7 +87,11 @@ def paired_difference(
             )
         )
     draws.sort()
+    # Two-sided percentile-bootstrap p-value with the +1 correction, so it is never exactly 0.
+    low = sum(d <= 0 for d in draws) + 1
+    high = sum(d >= 0 for d in draws) + 1
     result.update(
+        bootstrap_p_two_sided=min(1.0, 2 * min(low, high) / (samples + 1)),
         state="EXPLORATORY_CLUSTER_BOOTSTRAP",
         samples=samples,
         bootstrap_seed=seed,
@@ -95,6 +99,30 @@ def paired_difference(
         confidence_level=0.95,
         power="NOT_ESTABLISHED",
     )
+    return result
+
+
+def adjust_family(contrasts: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Holm-adjust every bootstrapped contrast of one report; descriptive ones are excluded.
+
+    The family is exactly the contrasts in the report, so a reader sees the multiplicity that
+    produced each unadjusted interval. Adjustment never turns a descriptive row into a test.
+    """
+    tested = {
+        k: v["bootstrap_p_two_sided"] for k, v in contrasts.items() if "bootstrap_p_two_sided" in v
+    }
+    adjusted = holm(tested) if tested else {}
+    result = {}
+    for name, value in contrasts.items():
+        result[name] = {
+            **value,
+            "multiplicity": {
+                "method": "HOLM",
+                "family_size": len(tested),
+                "holm_adjusted_p": adjusted.get(name),
+                "excluded": name not in tested,
+            },
+        }
     return result
 
 

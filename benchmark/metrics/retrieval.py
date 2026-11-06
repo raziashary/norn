@@ -43,12 +43,14 @@ def retrieval_scores(
         if slots - covered:
             dcg += 1 / math.log2(rank + 1)
             covered.update(slots)
-    ideal = sum(
-        1 / math.log2(i + 1)
-        for i in range(1, min(len(gold.slots), published.query.max_candidates) + 1)
-    )
     available = frozenset(s.source_id for s in published.sources)
     scores = evidence_scores(ids, gold, available)
+    # The ideal ranking can only place slots that some published source satisfies; an
+    # unsatisfiable slot (a qualified partial's declared unknown) cannot lower a perfect score.
+    ideal = sum(
+        1 / math.log2(i + 1)
+        for i in range(1, min(scores["slot_denominator"], published.query.max_candidates) + 1)
+    )
     source_index = {s.source_id: s for s in published.sources}
     events = {source_index[item].event_id for item in ids}
     identity = None
@@ -64,6 +66,7 @@ def retrieval_scores(
         "unique_events": len(events),
         "retrieval_recall": recall,
         "retrieval_precision": precision,
+        "ndcg_denominator": "SATISFIABLE_SLOTS",
         "mrr": rr if relevant else None,
         "ndcg": dcg / ideal if relevant and ideal else None,
         "success": bool(set(ids) & relevant) if relevant else None,

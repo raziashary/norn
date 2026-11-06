@@ -25,7 +25,7 @@ def test_actual_cli_run_reopen_report_and_corrupt_manifest(tmp_path):
     assert report["arms"]["perfect"]["complete_set_itt"] == 1
     assert report["arms"]["empty"]["complete_set_itt"] == 0
     assert report["arms"]["perfect"]["qualified_partial_accuracy"] == 1
-    assert report["arms"]["perfect"]["partial_answer_usefulness"] == 0.5
+    assert report["arms"]["perfect"]["partial_answer_usefulness"] == 1
     partial = next(
         r
         for r in report["observations"]
@@ -86,6 +86,6 @@ def test_cli_calibration_partition_guard_and_audit_pack(tmp_path):
     assert audit.returncode == 0, audit.stderr
     assert (
         json.loads(audit.stdout)["pack_digest"]
-        == "ae3dd3091f60b15124ab3a6cae517c9ecb8a696575f2503de2c93372a6afbb9b"
+        == "432d4aa5dd7c1b86d9aeab24c680d7def53d2d727b46b9b09eb0a27d57b8215a"
     )
-    assert pack.read_text(encoding="utf-8").count("## E") == 42
+    assert pack.read_text(encoding="utf-8").count("## E") == 126

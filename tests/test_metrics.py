@@ -77,11 +77,21 @@ def test_qualified_partial_returns_supported_subset_and_explicit_unknowns():
     score = retrieval_scores(public, result, arm_spec("perfect"), case.gold)
     assert score["complete_set"] is None and score["partial_set"] is True
     assert score["slot_coverage"] == 1 and score["unsatisfiable_slots"] == 1
-    answer = abstention_score(result, case.gold, score["complete_set"], score["partial_set"])
+    # A perfect qualified partial is not penalised for the slot it correctly declares unknown.
+    assert score["ndcg"] == 1
+    answer = abstention_score(
+        result, case.gold, score["complete_set"], score["partial_set"], score["slot_coverage"]
+    )
     assert answer["correct_supported"] is True
     report = aggregate([answer])
     assert report["selective_risk"] == 0 and report["qualified_partial_accuracy"] == 1
-    assert report["partial_answer_usefulness"] == 0.5
+    assert report["partial_answer_usefulness"] == 1
+    # Negative control: a correct status with no covered slot earns no utility.
+    empty = replace(result, candidates=())
+    empty_score = retrieval_scores(public, empty, arm_spec("perfect"), case.gold)
+    assert empty_score["slot_coverage"] == 0
+    useless = abstention_score(empty, case.gold, None, True, empty_score["slot_coverage"])
+    assert useless["partial_utility"] == 0
     overclaim = replace(result, evidence_status="SUPPORTED", missing_fields=())
     wrong = abstention_score(overclaim, case.gold, score["complete_set"], score["partial_set"])
     assert wrong["false_answer"] is True and wrong["correct_supported"] is False
