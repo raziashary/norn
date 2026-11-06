@@ -12,6 +12,7 @@ from norn.contracts.errors import require
 from norn.embedding.binding import BindingModel
 from norn.embedding.losses import (
     MAX_TRIPLES,
+    TERMS,
     Combined,
     Decoder,
     ObjectiveWeights,
@@ -22,7 +23,7 @@ from norn.embedding.losses import (
     separation_term,
     sparsity_term,
 )
-from norn.embedding.numerics import MAX_ARRAY_BYTES, Array, contrastive
+from norn.embedding.numerics import MAX_ARRAY_BYTES, Array, contrastive, effective_rank
 from norn.telemetry.resources import memory
 
 
@@ -169,12 +170,6 @@ def _fit(
     }
 
 
-def _code_rank(codes: Array) -> float:
-    singular = np.linalg.svd(codes, compute_uv=False)
-    probabilities = singular / max(float(singular.sum()), 1e-12)
-    return float(np.exp(-np.sum(probabilities * np.log(np.maximum(probabilities, 1e-12)))))
-
-
 def train(
     model: BindingModel,
     batches: tuple[TrainingBatch, ...],
@@ -224,7 +219,7 @@ def train(
         "backbone": "FROZEN",
         "nonzero_gradient_steps": fit["nonzero_steps"],
         "parameter_delta_l2": fit["delta"],
-        "sample_code_effective_rank": _code_rank(codes),
+        "sample_code_effective_rank": effective_rank(codes),
         "sample_code_count": len(codes),
         "process_memory_before": fit["process_before"],
         "process_memory_after": memory(),
@@ -250,6 +245,52 @@ class FactorialBatch(TrainingBatch):
             and bool(((self.triples >= 0) & (self.triples < m)).all()),
             "FACTORIAL_TRIPLES_INVALID",
         )
+
+
+@dataclass(frozen=True)
+class Schedule:
+    """Objective weights by update: ``phases`` are ``(first update, weights)`` in order.
+
+    A warm start (for example retrieval first, then every term) is a different treatment from the
+    fixed arm, so its exposure is always recorded in the receipt.
+    """
+
+    phases: tuple[tuple[int, ObjectiveWeights], ...]
+
+    def __post_init__(self) -> None:
+        starts = [start for start, _ in self.phases]
+        require(
+            bool(self.phases)
+            and starts[0] == 1
+            and all(type(s) is int for s in starts)
+            and all(b > a for a, b in zip(starts, starts[1:], strict=False))
+            and all(w.trained for _, w in self.phases),
+            "SCHEDULE_INVALID",
+        )
+
+    def at(self, update: int) -> ObjectiveWeights:
+        current = self.phases[0][1]
+        for start, weights in self.phases:
+            if update >= start:
+                current = weights
+        return current
+
+    def active(self) -> tuple[str, ...]:
+        names = {name for _, w in self.phases for name in w.active()}
+        return tuple(n for n in TERMS if n in names)
+
+    def exposure(self, updates: int) -> dict[str, int]:
+        require(updates >= self.phases[-1][0], "SCHEDULE_INVALID")
+        return {
+            name: sum(1 for u in range(1, updates + 1) if getattr(self.at(u), name) > 0)
+            for name in self.active()
+        }
+
+    def describe(self) -> list[dict[str, Any]]:
+        return [{"from_update": s, "weights": dict(w.__dict__)} for s, w in self.phases]
+
+
+Observer = Callable[[int, BindingModel, Decoder, FactorialBatch, dict[str, float]], None]
 
 
 def _terms(
@@ -334,7 +375,7 @@ def train_arm(
     model: BindingModel,
     decoder: Decoder,
     batches: tuple[FactorialBatch, ...],
-    weights: ObjectiveWeights,
+    weights: ObjectiveWeights | Schedule,
     *,
     seed: int,
     updates: int = 200,
@@ -343,10 +384,19 @@ def train_arm(
     learning_rate: float = 0.003,
     temperature: float = 0.1,
     margin: float = 0.2,
+    observer: Observer | None = None,
     now: Callable[[], float] = time.monotonic,
 ) -> dict[str, Any]:
-    """Train one loss-factorial arm with the same optimiser, batches and budget as ``train``."""
-    require(weights.trained, "OBJECTIVE_EMPTY")
+    """Train one loss-factorial arm with the same optimiser, batches and budget as ``train``.
+
+    ``observer`` is called before each update with read-only state and must not change it.
+    """
+    if isinstance(weights, Schedule):
+        schedule = weights
+    else:
+        require(weights.trained, "OBJECTIVE_EMPTY")
+        schedule = Schedule(((1, weights),))
+    union = ObjectiveWeights(**dict.fromkeys(schedule.active(), 1.0))
     bound = _envelope(
         batches,
         model.parameter_bytes + decoder.weights.nbytes + decoder.bias.nbytes,
@@ -356,8 +406,9 @@ def train_arm(
         learning_rate=learning_rate,
     )
     reference = reference_scales(
-        model, decoder, batches, weights, temperature=temperature, margin=margin
+        model, decoder, batches, union, temperature=temperature, margin=margin
     )
+    counter = {"update": 0}
     parameters = {
         **model.parameters,
         "decoder.weights": decoder.weights,
@@ -365,8 +416,17 @@ def train_arm(
     }
 
     def step(batch: Any) -> tuple[float, dict[str, Array], dict[str, float]]:
+        counter["update"] += 1
+        if observer is not None:
+            observer(counter["update"], model, decoder, batch, reference)
         combined, grads = factorial_objective(
-            model, decoder, batch, weights, reference, temperature=temperature, margin=margin
+            model,
+            decoder,
+            batch,
+            schedule.at(counter["update"]),
+            reference,
+            temperature=temperature,
+            margin=margin,
         )
         return combined.value, grads, {n: t.value for n, t in combined.parts.items()}
 
@@ -391,7 +451,9 @@ def train_arm(
         "losses": fit["losses"],
         "terms": fit["parts"],
         "reference": reference,
-        "weights": dict(weights.__dict__),
+        "weights": dict(schedule.phases[-1][1].__dict__),
+        "schedule": schedule.describe(),
+        "exposure": schedule.exposure(updates),
         "elapsed_seconds": fit["elapsed"],
         "parameters": model.parameter_count,
         "decoder_parameters": decoder.weights.size + decoder.bias.size,
@@ -399,7 +461,7 @@ def train_arm(
         "backbone": "FROZEN",
         "nonzero_gradient_steps": fit["nonzero_steps"],
         "parameter_delta_l2": fit["delta"],
-        "sample_code_effective_rank": _code_rank(codes),
+        "sample_code_effective_rank": effective_rank(codes),
         "sample_code_count": len(codes),
         "process_memory_before": fit["process_before"],
         "process_memory_after": memory(),

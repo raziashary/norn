@@ -59,3 +59,10 @@ def contrastive(
     )
     derivative = (softmax(all_score) - softmax(pos_score)) / (len(q) * temperature)
     return float(loss), derivative @ m, derivative.T @ q
+
+
+def effective_rank(codes: Array) -> float:
+    """``exp`` of the entropy of the normalised singular values (1 for one direction)."""
+    singular = np.linalg.svd(codes, compute_uv=False)
+    probabilities = singular / max(float(singular.sum()), 1e-12)
+    return float(np.exp(-np.sum(probabilities * np.log(np.maximum(probabilities, 1e-12)))))

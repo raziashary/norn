@@ -181,6 +181,26 @@ def test_smoke_run_binds_lineage_reloads_every_checkpoint_and_reads_no_heldout_r
         lf.ARMS
     )  # T2/T3/T6 are reported, not dropped
     assert result["selection"].startswith("NONE") and result["held_out"].startswith("NOT_READ")
+    # T04 consumer: the diagnostics re-train T7 under a read-only observer and must reproduce T03.
+    from benchmark.runs import loss_diagnostics
+
+    out = tmp_path / "diagnostics.json"
+    loss_diagnostics.run(root, out, wall_cap_seconds=600)
+    diagnostics = json.loads(out.read_text(encoding="utf-8"))
+    assert diagnostics["scope"].startswith("TRAIN_ROLE_DIAGNOSTICS")
+    assert diagnostics["source_manifest_digest"] == result["manifest_digest"]
+    for seed in lf.CONFIG["seeds"]:
+        row = diagnostics["seeds"][str(seed)]
+        assert row["t7_reproduces_t03_losses"] is True
+        assert row["warm_start"]["exposure"] == {
+            "retrieval": 16,
+            "reconstruction": 8,
+            "separation": 8,
+        }
+        assert set(row["checkpoint_codes"]) == set(lf.TRAINED_ARMS)
+        assert {"reconstruction|retrieval", "retrieval|separation"} <= set(
+            row["initial"]["conflict"]
+        )
     # A one-character change to a checkpoint is caught before any score is read.
     target = root / training["jobs"][0]["path"]
     target.write_bytes(target.read_bytes().replace(b"FROZEN", b"FROZEX", 1))

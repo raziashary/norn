@@ -89,6 +89,15 @@ def parser() -> argparse.ArgumentParser:
             factorial.add_argument("--smoke", action="store_true")
         if operation == "report":
             factorial.add_argument("--output", type=Path, required=True)
+    diagnostics = commands.add_parser(
+        "factorial-diagnostics", help="Explicit P05 gradient-conflict and collapse diagnostics"
+    )
+    diagnostics.add_argument("directory", type=Path)
+    diagnostics.add_argument("--output", type=Path, required=True)
+    diagnostics.add_argument("--wall-cap-seconds", type=float, required=True)
+    for toy in ("toy-support", "toy-cues"):
+        toy_parser = commands.add_parser(toy, help="Explicit P05 toy-study reproduction")
+        toy_parser.add_argument("--output", type=Path, required=True)
     audit = commands.add_parser(
         "audit-pack", help="Render the smoke-tier stratified human review pack"
     )
@@ -141,6 +150,20 @@ def main(argv: list[str] | None = None) -> int:
                     "report_digest": write_once(output, report),
                     "arms": report["arms"],
                 }
+        elif args.command == "toy-support":
+            from benchmark.runs import toy_support
+
+            result = toy_support.run(args.output)
+        elif args.command == "toy-cues":
+            from benchmark.runs import toy_cues
+
+            result = toy_cues.run(args.output)
+        elif args.command == "factorial-diagnostics":
+            from benchmark.runs import loss_diagnostics
+
+            result = loss_diagnostics.run(
+                args.directory, args.output, wall_cap_seconds=args.wall_cap_seconds
+            )
         elif args.command.startswith("factorial-"):
             from benchmark.runs import loss_factorial
 
