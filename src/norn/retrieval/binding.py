@@ -13,12 +13,33 @@ from norn.embedding.feature_encoder import FeatureEncoder
 from norn.embedding.numerics import array
 from norn.projection import binding as projection
 from norn.retrieval import exact
-from norn.retrieval.contracts import Hit, RecallRequest
+from norn.retrieval.contracts import Hit, RecallRequest, Record
 from norn.retrieval.service import RecallView, assemble_hits
 from norn.telemetry.query import trace
 
 if TYPE_CHECKING:
     from norn.integration.engine import Engine
+
+
+def expand_ranked_events(
+    records: tuple[Record, ...], scores: dict[str, float], variant: str, limit: int
+) -> tuple[Hit, ...]:
+    """Rank memories (events) first, keep ``limit`` of them, then expand to their atoms.
+
+    The candidate limit counts events: one event with many atoms cannot fill the list and push
+    every other event out. Atoms of an event keep key order; later stages bound the evidence.
+    """
+    by_event: dict[str, list[Record]] = {}
+    for record in records:
+        by_event.setdefault(record.event_id, []).append(record)
+    order = sorted(
+        by_event, key=lambda event: (-scores[event], min(r.key for r in by_event[event]))
+    )
+    return tuple(
+        Hit(record, scores[event], variant)
+        for event in order[:limit]
+        for record in sorted(by_event[event], key=lambda r: r.key)
+    )
 
 
 def recall(
@@ -82,12 +103,7 @@ def recall(
                 else:
                     values = vectors @ q
                 scores = {key: float(v) for key, v in zip(event_keys, values, strict=True)}
-            ranked = tuple(
-                sorted(
-                    (Hit(r, scores[r.event_id], variant) for r in corpus.records),
-                    key=lambda h: (-h.score, h.record.key),
-                )[: request.candidate_limit]
-            )
+            ranked = expand_ranked_events(corpus.records, scores, variant, request.candidate_limit)
             stages.update(binding_events=len(event_keys), candidates=len(ranked))
             data, verified = assemble_hits(
                 engine, request, ranked, snapshot, epoch, budget, stages, complete=corpus.complete

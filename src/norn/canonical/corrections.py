@@ -165,11 +165,20 @@ def append_relation(registry: Registry, request: CorrectionRequest, new_atom: st
 def retract(
     registry: Registry, atom_id: str, valid_from: datetime, valid_to: datetime | None, reason: str
 ) -> int:
+    """Withdraw an atom: its own producer may retract it; anyone else needs ADMIN."""
     valid_interval(valid_from, valid_to)
     label(reason)
     with registry.db.transaction() as connection:
         registry.access.check("WRITE")
         registry.source_for_atom(atom_id)
+        producer = connection.execute(
+            "SELECT e.producer FROM atoms a JOIN events e ON a.ns=e.ns AND a.event_id=e.id "
+            "WHERE a.ns=? AND a.id=?",
+            (registry.ns, atom_id),
+        ).fetchone()
+        require(producer is not None, "NOT_AUTHORIZED_OR_NOT_FOUND")
+        if producer[0] != registry.access.host.principal:
+            registry.access.check("ADMIN")
         _bounded(
             connection,
             "SELECT count(*) FROM assertion_events WHERE ns=? AND atom_id=?",

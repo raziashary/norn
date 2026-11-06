@@ -65,3 +65,43 @@ def test_masks_envelopes_and_multi_positive_are_real_controls():
         objective(BindingModel("B4"), b)
     with pytest.raises(NornError, match="TRAINING_ENVELOPE"):
         train(BindingModel("B3"), (batch(),), seed=0)
+
+
+def test_candidate_limit_counts_events_so_one_large_event_cannot_crowd_out_the_rest():
+    from dataclasses import replace
+
+    from norn.retrieval.binding import expand_ranked_events
+    from norn.retrieval.contracts import Record
+
+    base = Record(
+        "ns",
+        "event-a",
+        "atom-0",
+        "s",
+        ("a",),
+        "p",
+        '"v"',
+        "{}",
+        "USER_REPORTED",
+        "UNVERIFIED",
+        "ACTIVE",
+        "CURRENT",
+        "{}",
+        "src",
+        "v" * 8,
+        0,
+        4,
+        "d" * 8,
+        "text",
+        1,
+    )
+    big = [replace(base, atom_id=f"big-{i}", event_id="big") for i in range(12)]
+    small = [replace(base, atom_id=f"small-{i}", event_id=f"small-{i}") for i in range(3)]
+    scores = {"big": 0.9, "small-0": 0.8, "small-1": 0.7, "small-2": 0.6}
+    ranked = expand_ranked_events(tuple(big + small), scores, "B3", 3)
+    events = list(dict.fromkeys(h.record.event_id for h in ranked))
+    assert events == ["big", "small-0", "small-1"]
+    assert sum(h.record.event_id == "big" for h in ranked) == 12
+    # Negative control: the old atom-level cut at the same limit would have kept only "big".
+    atom_level = sorted((h for h in ranked), key=lambda h: (-h.score, h.record.key))[:3]
+    assert {h.record.event_id for h in atom_level} == {"big"}

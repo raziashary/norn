@@ -3,6 +3,7 @@
 import os
 import re
 import stat
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
@@ -38,6 +39,34 @@ class SourceSpan:
         )
 
 
+STAGING_PREFIX = ".pending-"
+STAGING_MAX_AGE_SECONDS = 3600
+
+
+def span_of(content: bytes, version: str, start: int, end: int) -> SourceSpan:
+    """Validate a UTF-8-aligned span of ``content`` (the bytes named by ``version``)."""
+    require(
+        type(start) is int and type(end) is int and 0 <= start < end <= len(content),
+        "INVALID_SPAN",
+    )
+    try:
+        content[:start].decode("utf-8")
+        piece = content[start:end]
+        piece.decode("utf-8")
+    except UnicodeDecodeError:
+        raise NornError("INVALID_UTF8_BOUNDARY") from None
+    return SourceSpan(version, start, end, digest(piece))
+
+
+@dataclass(frozen=True)
+class StagedSource:
+    """Durable but unpublished bytes: invisible to readers until ``SourceStore.publish``."""
+
+    version: str
+    path: Path
+    content: bytes
+
+
 class SourceStore:
     def __init__(self, root: Path):
         safe_path(root)
@@ -51,7 +80,8 @@ class SourceStore:
         safe_path(path)
         return path
 
-    def put(self, content: bytes) -> str:
+    def stage(self, content: bytes) -> StagedSource:
+        """Validate and durably stage bytes without publishing them under their content address."""
         require(
             type(content) is bytes and 0 < len(content) <= MAX_SOURCE_BYTES, "INVALID_SOURCE_SIZE"
         )
@@ -60,21 +90,51 @@ class SourceStore:
         except UnicodeDecodeError:
             raise NornError("INVALID_ENCODING") from None
         version = digest(content)
-        target = self._path(version)
-        temporary = self.root / (".pending-" + uuid4().hex)
+        self._path(version)
+        temporary = self.root / (STAGING_PREFIX + uuid4().hex)
         try:
             with temporary.open("xb") as stream:
                 stream.write(content)
                 stream.flush()
                 os.fsync(stream.fileno())
-            try:
-                os.link(temporary, target)
-            except FileExistsError:
-                pass
-        finally:
+        except BaseException:
             temporary.unlink(missing_ok=True)
-        require(self.read(version) == content, "SOURCE_INTEGRITY")
-        return version
+            raise
+        return StagedSource(version, temporary, content)
+
+    def publish(self, staged: StagedSource) -> str:
+        """Atomically expose staged bytes under their digest (idempotent) and verify readback."""
+        try:
+            os.link(staged.path, self._path(staged.version))
+        except FileExistsError:
+            pass
+        require(self.read(staged.version) == staged.content, "SOURCE_INTEGRITY")
+        return staged.version
+
+    def discard(self, staged: StagedSource) -> None:
+        staged.path.unlink(missing_ok=True)
+
+    def put(self, content: bytes) -> str:
+        staged = self.stage(content)
+        try:
+            return self.publish(staged)
+        finally:
+            self.discard(staged)
+
+    def sweep_staging(self, max_age_seconds: int = STAGING_MAX_AGE_SECONDS) -> int:
+        """Remove staging files abandoned by a crash; fresh ones belong to a live writer."""
+        removed = 0
+        cutoff = time.time() - max_age_seconds
+        for entry in self.root.iterdir():
+            if (
+                entry.name.startswith(STAGING_PREFIX)
+                and entry.is_file()
+                and not entry.is_symlink()
+                and entry.stat().st_mtime < cutoff
+            ):
+                entry.unlink(missing_ok=True)
+                removed += 1
+        return removed
 
     def read(self, version: str) -> bytes:
         path = self._path(version)
@@ -92,18 +152,7 @@ class SourceStore:
         return content
 
     def span(self, version: str, start: int, end: int) -> SourceSpan:
-        content = self.read(version)
-        require(
-            type(start) is int and type(end) is int and 0 <= start < end <= len(content),
-            "INVALID_SPAN",
-        )
-        try:
-            content[:start].decode("utf-8")
-            piece = content[start:end]
-            piece.decode("utf-8")
-        except UnicodeDecodeError:
-            raise NornError("INVALID_UTF8_BOUNDARY") from None
-        return SourceSpan(version, start, end, digest(piece))
+        return span_of(self.read(version), version, start, end)
 
     def resolve(self, span: SourceSpan) -> bytes:
         actual = self.span(span.version_id, span.start, span.end)

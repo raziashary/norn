@@ -7,7 +7,7 @@ provenance alone never establishes semantic entailment or normative approval.
 
 from dataclasses import dataclass
 
-from norn.canonical.sources import SourceSpan, SourceStore
+from norn.canonical.sources import SourceSpan, span_of
 from norn.contracts.errors import require
 from norn.contracts.evidence import AssertionStatus, EpistemicState, TaggedValue
 from norn.contracts.identity import canonical, label
@@ -77,14 +77,15 @@ class ExtractedAtom:
 
 
 def extract(
-    store: SourceStore, version: str, fixtures: tuple[FixtureAtom, ...]
+    content: bytes, version: str, fixtures: tuple[FixtureAtom, ...]
 ) -> tuple[ExtractedAtom, ...]:
+    """Anchor fixtures in staged ``content`` (the bytes named by ``version``)."""
     require(type(fixtures) is tuple and len(fixtures) <= 64, "ATOM_BUDGET")
     result = []
     for fixture in fixtures:
         require(isinstance(fixture, FixtureAtom))
-        span = store.span(version, fixture.start, fixture.end)
-        text = store.resolve(span).decode()
+        span = span_of(content, version, fixture.start, fixture.end)
+        text = content[span.start : span.end].decode()
         value = fixture.value
         if value.tag in {"TEXT", "INTEGER", "DECIMAL"}:
             require(str(value.value) in text, "UNANCHORED_VALUE")

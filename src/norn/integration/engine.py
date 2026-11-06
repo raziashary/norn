@@ -22,6 +22,10 @@ from norn.retrieval.contracts import RecallRequest
 from norn.retrieval.rerank import EvidenceTokenizer
 from norn.retrieval.service import RecallView
 
+# Origins that assert something about the world. HYPOTHESIS, MODEL_INFERENCE and aggregates may be
+# recorded and cited but never establish support or conflict by themselves.
+ASSERTING_ORIGINS = frozenset({"DIRECT_OBSERVATION", "USER_REPORTED", "DOCUMENT_ASSERTION"})
+
 
 class EvidenceView:
     """Serialization is a second current-authorization boundary, even after assembly."""
@@ -192,7 +196,13 @@ class Engine:
                         superseded = True
                     elif edge["from_id"] == row["id"] and not active:
                         window = "FUTURE" if valid < edge["valid_from"] else "HISTORICAL"
-                elif edge["relation_type"] == "CONTRADICTS" and active:
+                elif (
+                    edge["relation_type"] == "CONTRADICTS"
+                    and active
+                    and edge["epistemic"] in ASSERTING_ORIGINS
+                ):
+                    # A hypothesis or model inference may be recorded as disagreeing, but it is
+                    # not evidence and cannot put an observation into CONFLICT (invariant I2).
                     contradictions.append(edge["id"])
             # Fixed precedence, never relationship-id order: a replaced or out-of-window atom is
             # not also in live conflict, and a retracted atom cannot become a conflict.
@@ -257,7 +267,7 @@ class Engine:
             for a in result
             if a["assertion_status"] == "ACTIVE"
             and a["applicability"] == "CURRENT"
-            and a["origin"] in {"DIRECT_OBSERVATION", "USER_REPORTED", "DOCUMENT_ASSERTION"}
+            and a["origin"] in ASSERTING_ORIGINS
         ]
         outcome = "CONFLICT" if conflicts else ("SUPPORTED" if active_atoms else "NOT_ESTABLISHED")
         data = {

@@ -132,3 +132,43 @@ def test_writes_cannot_push_an_atom_past_the_limit_that_makes_it_unreadable(engi
         retract(engine.registry, atom, TUESDAY + timedelta(minutes=999), None, "withdrawn")
     # The refusal leaves the event readable; the old behaviour made it fail permanently.
     assert engine.read(first["event_id"], clock()).serialize()["atoms"]
+
+
+def test_a_hypothesis_cannot_put_an_observation_into_conflict(engine):
+    from norn.contracts.evidence import Epistemic, EpistemicState
+
+    first = engine.write(request())
+    engine.write(
+        request("guess", place="ZoneC", origin=EpistemicState(Epistemic.HYPOTHESIS)),
+        correction=correction(first["atom_ids"][0], "CONTRADICTS"),
+    )
+    atom = engine.read(first["event_id"], clock()).serialize()["atoms"][0]
+    assert atom["applicability"] == "CURRENT"
+    # Positive control: the same dispute from an observation does create the conflict.
+    engine.write(
+        request("report", place="ZoneD"),
+        correction=correction(first["atom_ids"][0], "CONTRADICTS"),
+    )
+    atom = engine.read(first["event_id"], clock()).serialize()["atoms"][0]
+    assert atom["applicability"] == "CONFLICT"
+
+
+def test_only_the_producer_or_an_admin_can_retract(engine, tmp_path):
+    from conftest import HOST
+
+    from norn.governance.access import HostIdentity
+    from norn.integration.engine import Engine
+
+    receipt = engine.write(request())
+    other = HostIdentity(HOST.namespace, "writer")
+    engine.access.grant("writer", "WRITE")
+    engine.access.grant("writer", "READ")
+    with Engine(engine.root, other) as peer:
+        with pytest.raises(NornError, match="NOT_AUTHORIZED"):
+            retract(peer.registry, receipt["atom_ids"][0], TUESDAY, None, "withdrawn")
+    engine.access.grant("writer", "ADMIN")
+    with Engine(engine.root, other) as peer:
+        retract(peer.registry, receipt["atom_ids"][0], TUESDAY, None, "withdrawn")
+    # The producer itself needs no extra grant.
+    mine = engine.write(request("mine", place="ZoneB"))
+    retract(engine.registry, mine["atom_ids"][0], TUESDAY, None, "withdrawn")

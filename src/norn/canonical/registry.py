@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, cast
 from norn.canonical.database import Database
 from norn.canonical.identity import entity_identity, event_identity
 from norn.canonical.outbox import allocate, publish
-from norn.canonical.sources import SourceStore
+from norn.canonical.sources import SourceStore, StagedSource
 from norn.contracts.errors import require
 from norn.contracts.identity import canonical, digest, label, stable_id
 from norn.contracts.time import TimeValue, aware, stamp
@@ -99,8 +99,26 @@ class Registry:
             canonical([request.payload(), correction.payload() if correction else None]).encode()
         )
         event_id = event_identity(self.access.host.namespace, request.producer, request.occurrence)
-        version = self.sources.put(request.content)
-        extracted = extract(self.sources, version, request.atoms)
+        # Stage, validate and write SQL first; the blob is published under its digest only after
+        # every statement succeeded, so a rejected ingest leaves no unreachable source behind.
+        self.sources.sweep_staging()
+        staged = self.sources.stage(request.content)
+        try:
+            self._ingest_staged(request, correction, staged, event_id, payload_digest)
+        finally:
+            self.sources.discard(staged)
+        return self.receipt(event_id)
+
+    def _ingest_staged(
+        self,
+        request: WriteRequest,
+        correction: CorrectionRequest | None,
+        staged: StagedSource,
+        event_id: str,
+        payload_digest: str,
+    ) -> None:
+        version = staged.version
+        extracted = extract(staged.content, version, request.atoms)
         now = self.db.now()
         with self.db.transaction() as connection:
             self.access.check("WRITE")
@@ -118,7 +136,7 @@ class Registry:
                 ).fetchone()
                 require(existing is None, "OCCURRENCE_EXISTS_USE_ADDITIONAL_EVIDENCE")
                 seq = allocate(connection, self.ns)
-                self._source(connection, version, request.producer, now)
+                self._source(connection, version, len(staged.content), request.producer, now)
                 connection.execute("INSERT INTO objects VALUES(?,?,'event')", (self.ns, event_id))
                 connection.execute(
                     "INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,1)",
@@ -168,9 +186,12 @@ class Registry:
                     require(len(atom_ids) == 1, "CORRECTION_REQUIRES_ONE_ATOM")
                     relation_ids.append(append_relation(self, correction, atom_ids[0], seq))
                 publish(connection, self.ns, seq, "INGEST", [event_id, *atom_ids, *relation_ids])
-        return self.receipt(event_id)
+            # Last statement before COMMIT: SQL never references a blob that is not published.
+            self.sources.publish(staged)
 
-    def _source(self, connection: sqlite3.Connection, version: str, producer: str, now: str) -> str:
+    def _source(
+        self, connection: sqlite3.Connection, version: str, length: int, producer: str, now: str
+    ) -> str:
         source_id = stable_id("source", self.ns, version)
         connection.execute(
             "INSERT OR IGNORE INTO objects VALUES(?,?,'source')", (self.ns, source_id)
@@ -188,7 +209,7 @@ class Registry:
                 version,
                 source_id,
                 version,
-                len(self.sources.read(version)),
+                length,
                 version,
                 self.access.host.principal,
                 now,
