@@ -1724,7 +1724,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T01 — Build multi-positive pairs and screened negatives
 
 - [ ] **P05-T01**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `benchmark/fixtures/training_pairs.py`, `tests/test_training_pairs.py`.
 - **Depends:** P04-T09.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1734,7 +1734,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Valid alternative cannot be false negative; held-out labels cannot enter training.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_training_pairs.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-001 (`7301482`, 11 tests, real train role 178 pairs/98 skipped); card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t02"></a>
@@ -1742,7 +1742,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T02 — Implement retrieval reconstruction separation objectives
 
 - [ ] **P05-T02**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/losses.py`, `tests/test_losses.py`; reuse and extend `src/norn/embedding/numerics.py` (`contrastive` already implements the multi-positive form), do not duplicate it.
 - **Depends:** P05-T01.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1752,7 +1752,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Invalid temperature, zero/missing target and collapse-only regularization fail.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_losses.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-001 (`8ce7325`, 13 tests); card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t03"></a>
@@ -1760,7 +1760,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T03 — Train controlled T0 to T7 and checkpoint lineage
 
 - [ ] **P05-T03**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `src/norn/embedding/training.py` (owns `TrainingBatch`, `objective`, `train` and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (`VARIANTS`, `LEARNED`, `shapes()`), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `tests/test_training_manifest.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
 - **Depends:** P05-T02.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1770,7 +1770,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** T2/T3/T6 query alignment failures not excluded; lowest incomparable loss sum cannot select winner.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_training_manifest.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-001 (`f307d19`, `9c841b7`): T0–T7 trained and reloaded on the train role, 21 checkpoints, 0 failures; **held-out dev retrieval is not run** (needs the ADR-0027 Q-D answer), so the card stays IN_PROGRESS.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t04"></a>
@@ -1797,10 +1797,10 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T05**
 - **State:** PLANNED.
-- **Files:** `benchmark/runs/toy_support.py`, `tests/test_toy_support.py`.
+- **Files:** `benchmark/runs/toy_support.py`, `tests/test_toy_support.py`, declared output `docs/development/evidence/p05_toy_expected.json` (transcribed from blueprint 10.3 before any reproduction code existed).
 - **Depends:** P05-T04.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
-- **Change:** Reproduce seed20261019/order/d2048/k41,205/rho0,.3,.7,.9 and declared output before multi-seed extension.
+- **Change:** Reproduce seed20261019/order/d2048/k41,205/rho0,.3,.7,.9 and declared output before multi-seed extension. **Pinned before code (2026-11-07):** NumPy 2.5.4 (`default_rng`, `standard_normal`, PCG64); `Y = rho*X + sqrt(1-rho^2)*eps`; top-k by `argpartition` on the signed values; overlap = mean over 1,200 pairs of shared indices / k. The blueprint gives the generator order only as a sketch, so exactly three orderings are declared and **all three are reported**: V1 `k` outer, `rho` inner, a fresh `X` then `eps` of shape (1200, 2048) per cell from one stream; V2 `rho` outer, `k` inner, otherwise as V1; V3 one `X` and `eps` per `rho` (`rho` outer) shared by both `k`. Tolerance: exact reproduction means every cell within 0.00005 of the declared value (4-decimal rounding). Otherwise the result is reported as NOT_EXACT_REPRODUCTION with per-cell deviations and, separately, whether each cell lies within 3 simulation standard errors; the declared numbers are never edited and no further ordering is tried after the three.
 - **Consumer:** Report consumes exact saved simulation output and scope warning.
 - **Positive proof:** Independent supports approximate k/d and correlated supports follow joint-tail expectation.
 - **Negative proof:** Support overlap not cosine/Recall@K; failed reproduction remains visible.
@@ -1815,10 +1815,10 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T06**
 - **State:** PLANNED.
-- **Files:** `benchmark/runs/toy_cues.py`, `tests/test_toy_cues.py`.
+- **Files:** `benchmark/runs/toy_cues.py`, `tests/test_toy_cues.py`, declared output `docs/development/evidence/p05_toy_expected.json`.
 - **Depends:** P05-T05.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
-- **Change:** Reproduce seed73319/3000trials/competitorrho.9/cuerho.20,.35,.60 with strict tie rule.
+- **Change:** Reproduce seed73319/3000trials/competitorrho.9/cuerho.20,.35,.60 with strict tie rule. **Pinned before code (2026-11-07):** NumPy 2.5.4; targets `T = standard_normal((3000, 2048))`, competitor `C = 0.9*T + sqrt(1-0.81)*E` with `E` the next `standard_normal((3000, 2048))`, query `Q = rho_q*T + sqrt(1-rho_q^2)*N` with a fresh `N` per `rho_q` in the order 0.20, 0.35, 0.60 from the same stream (V1); dense choice = higher cosine to `Q`; sparse choice = larger `|top-k(Q) ∩ top-k(memory)|` for `k` = 41 and 205 by `argpartition` on signed values; equal overlap is a tie and is never credited; a dense exact cosine tie also counts as a tie. Variant V2 draws `N` for all three `rho_q` before any use but is otherwise identical; both are reported. Tolerance: exact reproduction means every declared proportion within 0.0005; otherwise NOT_EXACT_REPRODUCTION with deviations and a 3-binomial-standard-error consistency statement; declared numbers are never edited.
 - **Consumer:** Separation report reads dense/sparse correct/tie/error counts.
 - **Positive proof:** Saved output separates ties and declares information-retention mismatch.
 - **Negative proof:** Ties not credited; toy cannot establish real trained-language benefit.
