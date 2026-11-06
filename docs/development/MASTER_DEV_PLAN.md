@@ -876,6 +876,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Entry:** P00-T06 plus affected ADR owner answers and implementation mandate.
 - **Exit:** Installed local synthetic write/reopen/read/correction/revocation works with canonical provenance and atomic outbox; no external backends required.
 - **State:** DONE.
+- **Evidence pointer:** Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim. Task cards below inherit it.
 
 <a id="p01-t01"></a>
 
@@ -891,7 +892,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Wheel/import/capability smoke works without optional model/backend assets.
 - **Negative proof:** No pending owner answer becomes approval; absent optional component cannot trigger downloads or provider calls.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_package.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_package.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -909,7 +910,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Observation/report/hypothesis/retraction round-trip preserve original source, scope and independent states.
 - **Negative proof:** Malformed IDs, unknown tags/schema, nonfinite values and forged authority reject before writes.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_contracts.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_contracts.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -927,7 +928,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Late arrival/correction replays distinguish event time and knowledge time; yesterday uses query zone.
 - **Negative proof:** READY hypothesis never becomes verified; ambiguous DST/date-only time is not silently precise.
 - **Gate:** G-TEMPORAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_temporal.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_temporal.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -945,7 +946,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Repeat bytes reuse content handle; full/range reads recover identical bytes after reopen.
 - **Negative proof:** Corruption, missing blob, invalid span/UTF8 and path/symlink escape cannot yield usable evidence.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sources.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sources.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -963,7 +964,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Same words at two times remain distinct; repeated delivery has one stable event/journal effect.
 - **Negative proof:** Same key with changed payload rejects; same-name different-tenant entities cannot merge by similarity.
 - **Gate:** G-IDENTITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_identity.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_identity.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -981,7 +982,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Allowed synthetic principal succeeds; revoked permission fails on reopened reader.
 - **Negative proof:** Forged identity in memory, stale grant cache and private ID cannot leak text or existence.
 - **Gate:** G-ACL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_access.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_access.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -999,7 +1000,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Fresh schema and populated upgrade/restore preserve history with verified backups.
 - **Negative proof:** Unknown foreign store refuses mutation; interrupted upgrade cannot report READY; destructive tests use disposable state.
 - **Gate:** G-CONTRACT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_schema.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_schema.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1017,7 +1018,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Racing identical deliveries create one effect; source/atoms/journal read back after reopen.
 - **Negative proof:** Rollback/crash leaves no partial canonical set; pending projections never advertised searchable; no provider call under write lock.
 - **Gate:** G-INGEST. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ingest.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ingest.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1035,7 +1036,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Known exact spans produce typed atoms whose source hashes and offsets re-resolve.
 - **Negative proof:** Absent action, ambiguous entity and causal speculation remain missing/unresolved/hypothesis; extraction cannot approve sources.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_extraction.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_extraction.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1053,7 +1054,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Current corrected value and prior knowledge-at value are both recoverable under current access.
 - **Negative proof:** Wrong scope, supersession cycle, blanket latest-wins and read-time factual mutation reject.
 - **Gate:** G-TEMPORAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_corrections.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_corrections.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1071,7 +1072,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Deleted source is denied even while derived purge stays pending.
 - **Negative proof:** Old snapshot, unavailable graph/cache and missing parameter policy cannot justify serving or claiming complete erasure.
 - **Gate:** G-DELETION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_deletion.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_deletion.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1089,7 +1090,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Two episodes, repeated delivery, correction and revoke work after restart with owning stack checks.
 - **Negative proof:** Read cannot mutate facts or load credentials; typed failure and no dangling owned process/listener required.
 - **Gate:** G-INGEST. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_foundation_cli.py`. Actual P01 commands and isolated resource profile: E-P01-001/E-P01-002 and Local foundation in development README. No MEASURE claim.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_foundation_cli.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P01-003 final closeout; 63 tests, stack/build/docs controls, matching installed wheel and full-blueprint Luna Medium end review/resolution PASS. Earlier failures/artifacts retained in E-P01-001/002. Scope is synthetic local canonical behavior; later gate obligations remain open.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1103,6 +1104,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Entry:** P01-T12.
 - **Exit:** Paired runner/scorers pass perfect empty shuffled and corrupt-manifest controls; published input never exposes hidden truth.
 - **State:** DONE.
+- **Evidence pointer:** Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement. Task cards below inherit it.
 
 <a id="p02-t01"></a>
 
@@ -1118,7 +1120,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Same seed/config yields same digest and tier-specific seeds separate entity families.
 - **Negative proof:** World/gold import into runtime or publishing generator metadata as evidence fails custody.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_world.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_world.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1136,7 +1138,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Parser roundtrip preserves time, identity and quantities under source digests.
 - **Negative proof:** No hidden answer, slot, stratum or oracle edge can enter published names/text/metadata.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_render.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_render.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1154,7 +1156,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Each family has hand-checkable positive and near-twin negative including rare exceptions and EN/ID cues.
 - **Negative proof:** No forced sole positive for underspecified cue; hypothesis twin cannot be gold verified cause.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_scenarios.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_scenarios.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1172,7 +1174,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** No prohibited entity/scenario overlap; strata/cluster adequacy or limitations reported.
 - **Negative proof:** Random paraphrase split or threshold tuning on locked labels invalidates study.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_partitions.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_partitions.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1190,7 +1192,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-check challenge cases and independent reviewers resolve disputed evidence sets.
 - **Negative proof:** Coordinator/model agreement cannot be called independent human truth; changed source invalidates audit binding.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_label_audit.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_label_audit.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1208,7 +1210,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Evaluator-only canary labels are absent from exported corpus and candidate model input.
 - **Negative proof:** Deliberately leaked required slot in metadata/file/graph/prompt must fail actual validation.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_leakage.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_leakage.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1226,7 +1228,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Perfect/extractive controls obey same scope and evidence budget; native input differences disclosed.
 - **Negative proof:** Unsupported feature not replaced silently; no hidden-world or foreign checkout imports.
 - **Gate:** G-REUSE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_adapter_contracts.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_adapter_contracts.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1244,7 +1246,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Paired replay includes failed/timeout/unsupported observations and complete planned pair accounting.
 - **Negative proof:** Dropped row, changed hash, hidden model fallback and best-of-N selection invalidate run.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_runner.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_runner.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1262,7 +1264,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-calculated complete/partial/redundant evidence and answerable/unanswerable twins match expected.
 - **Negative proof:** Text similarity alone cannot earn identity credit; no citable denominator yields unavailable not fake perfect/zero.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_metrics.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_metrics.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1280,7 +1282,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Seeded clustered examples reproduce estimates/denominators and known calibration controls.
 - **Negative proof:** Unpaired cases, insufficient clusters and zero observed leaks cannot produce universal guarantee or fabricated CI.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_statistics.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_statistics.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1298,7 +1300,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Perfect covers support, empty abstains as applicable, shuffled loses identity score.
 - **Negative proof:** Corrupt manifest, missing ledger and stage-mislabeled score fail CLI; failures remain visible.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_benchmark_cli.py`. Actual commands and disposable synthetic resource names: E-P02-003 and Synthetic benchmark harness in development README. No efficacy measurement.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_benchmark_cli.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P02-003 final closeout;97 tests/stack/build,1,620 paired control observations,405 installed-wheel observations, calibration lineage/corruption controls and sole Luna Medium end-review resolution PASS. Human sample42 reviewed and source/gold bound;50 installed package files match source. No scientific efficacy or later integration is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1312,6 +1314,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Entry:** P02-T11.
 - **Exit:** Real R0-R3 paths measured under equal published inputs; local source/ACL/time/snapshot/budget gates and installed consumer smoke pass.
 - **State:** DONE.
+- **Evidence pointer:** Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md. Task cards below inherit it.
 - **Exit proof:** E-P03-003; all12 cards, real R0–R3 equal-input measurement, phase-local source/ACL/time/snapshot/budget controls and fresh installed consumer verified. Scientific superiority remains INCONCLUSIVE. The later P04 mandate is separately recorded in ADR-0020; P05+ remain outside the current mandate.
 
 <a id="p03-t01"></a>
@@ -1328,7 +1331,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Actor/date and exact event read recover correct episode after reopen.
 - **Negative proof:** Unknown structured ID cannot substitute similar ID; private flood cannot starve allowed results.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_exact.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_exact.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1346,7 +1349,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Rare code and lexical cue read correct original evidence.
 - **Negative proof:** Empty punctuation, unindexed source and language limits give honest coverage not exhaustive absence.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_lexical.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_lexical.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1356,7 +1359,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [x] **P03-T03**
 - **State:** DONE.
-- **Files:** `src/norn/embedding/baseline.py`, `src/norn/embedding/assets.py`, `src/norn/retrieval/dense.py`, `benchmark/adapters/r1.py`, `tests/test_dense.py`.
+- **Files:** `src/norn/embedding/baseline.py` (the operator control command moved to `src/norn/embedding/controls.py`), `src/norn/embedding/assets.py`, `src/norn/retrieval/dense.py`, `benchmark/adapters/r1.py`, `tests/test_dense.py`.
 - **Depends:** P03-T02.
 - **Source:** Read pipeline evidence verification and abstention; Storage design; Retrieval comparator families; [design](#read-flow).
 - **Change:** After approval pin query/document methods, tokenizer, dimension, metric and normalization; retain exhaustive control.
@@ -1364,7 +1367,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Reloaded pinned local vectors reproduce exact source-ID nearest neighbors.
 - **Negative proof:** Missing assets/disabled provider, wrong dimension/revision, zero/nonfinite vectors cannot produce fake embedding.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_dense.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_dense.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1382,7 +1385,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** ANN recall/latency/memory curve records actual configuration and readback.
 - **Negative proof:** Changed encoder/corpus invalidates comparison; HNSW graph is not associative completion.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ann.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_ann.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1400,7 +1403,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-ranked RRF and actual union match expected IDs and scores.
 - **Negative proof:** Duplicate channel votes and same-text distinct-event collapse are rejected.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_fusion.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_fusion.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1418,7 +1421,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Actual local model reranks frozen pool and tokenizer checks final budget.
 - **Negative proof:** Extra hidden candidates/context/generator strength cannot be attributed to architecture; language limitations disclosed.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_rerank.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_rerank.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1436,7 +1439,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Ranked candidate resolves original bytes and attributed origin after reopen.
 - **Negative proof:** Index payload poisoning, revoked source, corrupt locator and wrong geometry never enter evidence.
 - **Gate:** G-SOURCE. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_resolve.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_resolve.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1454,7 +1457,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Complete/partial/conflict/insufficient/outage controls yield distinct expected outputs.
 - **Negative proof:** Citation existence not entailment; denied-source existence not leaked; always-refuse loses answerable coverage.
 - **Gate:** G-ABSTENTION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sufficiency.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_sufficiency.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1472,7 +1475,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Crash/replay converges stable projection identity and honest pending/ready coverage.
 - **Negative proof:** Counts alone, mixed model, missing required index and stale tombstone cannot publish false READY.
 - **Gate:** G-SNAPSHOT. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_snapshots.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_snapshots.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1490,7 +1493,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Normal/exhausted/canceled recalls return truthful envelopes and close handles.
 - **Negative proof:** Timeout cannot claim full absence; private/credential canaries absent in trace and error outputs.
 - **Gate:** G-BUDGET. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_query_budgets.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_query_budgets.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1508,7 +1511,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Full per-family report reproduces normalized scores and separates retrieval from generation error.
 - **Negative proof:** Final packet cannot be called unobserved retrieval@20; unequal clock/principal/hash/token budgets invalidate pairing.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_baseline_report.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_baseline_report.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1526,7 +1529,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Fresh installed client returns exact source, historical scope and honest missing-capability statuses.
 - **Negative proof:** Mock/helper score cannot replace actual model/index proof; task-owned ports/processes must be clean.
 - **Gate:** G-RETRIEVAL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_recall_cli.py`. Actual commands, source/model/artifact identities and limits: E-P03-003 and evidence/baselines.md.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_recall_cli.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P03-003;131 tests,540 paired development observations,444 ANN measurements,80-file installed parity, actual all-arm/model/cancel source consumers and sole end-review resolution PASS. Scientific outcome INCONCLUSIVE; synthetic field-support scope only.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1540,6 +1543,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Entry:** P03-T12.
 - **Exit:** B0-B4 matched comparison and B5 eligibility documented; simpler fusion retained when learned binding lacks benefit.
 - **State:** DONE.
+- **Evidence pointer:** Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005. Task cards below inherit it.
 - **Exit proof:** E-P04-005; all9cards, final source-matched4,140-condition B0–B4/matched-single comparison, installed source/native consumers, eight corruption controls and sole end review resolved. Scientific outcome INCONCLUSIVE; no incremental decomposition/attention benefit established, B5 explicitly unsupported. ADR-0022 preserves simpler controls and a qualified cost challenger without operational promotion or P05 authority.
 
 <a id="p04-t01"></a>
@@ -1556,7 +1560,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Event/time/action views re-resolve to source/version and stable occurrence.
 - **Negative proof:** Missing action is NOT_APPLICABLE; tool success not invented real-world reward.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_features.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_features.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; source/occurrence/time/action ordering and absent-action controls pass through persisted public Engine/installed CLI. No source reward inference; sole source/artifact review resolved.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1574,7 +1578,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Missing facets stay masked and all view references match source hashes.
 - **Negative proof:** Filled zero cannot masquerade as observed emotion; salience cannot set ACL/expiry.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_feature_masks.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_feature_masks.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; exact semantic/source versions, masked S0/observed-zero refusal, present-facet consumption and selective/full operator receipts verified. Final study and installed reader consume these actual views.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1592,7 +1596,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Partial time/action cue gains are measured with same evidence budget.
 - **Negative proof:** Extra backbone capacity/candidate pool cannot be hidden as decomposition benefit.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_late_fusion.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_late_fusion.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; hand RRF/dedup and actual R7/B1 public source lookup, schema4 backup/restore/interruptedREADY/replay, correction/stale/revoke/deny and copied-checkpoint pending selectors verified.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1610,7 +1614,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Hand-computed weighted similarity and serialization stable.
 - **Negative proof:** Dimension/scale domination, reordered facets and wrong revision fail.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_concatenate.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_concatenate.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; weighted normalized/missing-facet/384-coordinate controls, persisted geometry/rank readback and installed B2 source consumer verified.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1628,7 +1632,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Verified small-pair training plus held-out cue lookup exercises both encoders.
 - **Negative proof:** Untrained fusion cannot claim alignment; latent similarity never replaces UUID/time/permission filtering.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_binding.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_binding.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; three B3 seeds run200 actual updates, checked query/memory gradients and nonzero deltas, bounded immutable checkpoint readback/corruption and installed held-out source lookup. S3 matches adapter capacity within1%.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1646,7 +1650,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Missing-facet and partial-cue fixtures produce finite aligned shapes.
 - **Negative proof:** Attention alone not supervision; no denied text or hidden gold enters representation.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_attention.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_attention.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; typed/masked attention invariance and parameter-owner gradient controls, three200-update B4 seeds, persisted trained query/memory lookup and matched S4 capacity. Attention efficacy remains INCONCLUSIVE.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1664,7 +1668,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Disabled B5 FEATURE_NOT_SUPPORTED; enabled branch maps samples to canonical IDs and logs steps/uncertainty.
 - **Negative proof:** Ordinary masking is not generative diffusion; sampled latent cannot become source fact.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_denoising_contract.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_denoising_contract.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005; installed public project and recall both return FEATURE_NOT_SUPPORTED for B5 without model load. No separate generative hypothesis/compute is approved; no diffusion/generation implementation or result is claimed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1682,7 +1686,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Report target margins, right/wrong episode, cue degradation, failures and total bytes/compute.
 - **Negative proof:** Identical facet signal cannot claim novelty by naming; development result not locked efficacy.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_binding_report.py`. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_binding_report.py`. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** E-P04-005/evidence/binding.md; final0034,140conditions (4,050OK/90UNSUPPORTED), all14categories, disjoint development roles, same-source/capacity/conditional/cue/cost tables, reopened source/geometry/packets and eight intended rejection controls verified. Scientific outcome INCONCLUSIVE.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1700,7 +1704,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Positive proof:** Decision links frozen dev data, regression limits and raw evidence, and demonstrates that a negative P04 outcome still permits the predeclared P05 controls without claiming an alignment win.
 - **Negative proof:** Negative study closes investigation without marking learned binding proven.
 - **Gate:** G-BINDING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
-- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: documentation CLI and source-grounded review. Exact executed CLI/config/resource bindings and complete final-source outputs/review are in E-P04-005.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: documentation CLI and source-grounded review. Phase evidence: see the phase header's **Evidence pointer**.
 - **Evidence:** ADR-0022/E-P04-005; final003 source/artifact/installed proof and sole end-review resolution support the preliminary INCONCLUSIVE handoff. Preserve B0/S3 and qualified B3 cost challenger, no B4 operational promotion; P05 sequencing remains eligible but unmandated.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
@@ -1711,7 +1715,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Blueprint stage:** Stage 1.
 - **Design:** [technical contract](#learning).
 - **Source headings:** Training objectives; Pattern separation theory and experiments; Primary selection criterion.
-- **Entry:** P04-T09 as sequencing/decision-record handoff only; T0-T7 and sparse controls are predeclared Stage1 research and remain eligible after a negative preliminary binding result.
+- **Entry:** P04-T09 as sequencing/decision-record handoff only; T0-T7 and sparse controls are predeclared Stage1 research and remain eligible after a negative preliminary binding result. Mandate and conditions: ADR-0026 (all nine cards after the pre-P05 cleanup in E-FIX-002; frozen pinned E5-small plus small heads; local CPU with a wall-time cap in the receipt before each study; hierarchical reduced sweep; R09 margins proposed by main and approved by the owner before they are frozen; reviewers Claude Haiku 5.5 high effort). Development-role reuse and exploratory status: ADR-0027.
 - **Exit:** T0-T7 and sparse controls fairly evaluated; toy reproduction separate from real recall; outcome and regression limits explicit.
 - **State:** PLANNED.
 
@@ -1739,7 +1743,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T02**
 - **State:** PLANNED.
-- **Files:** `src/norn/embedding/losses.py`, `tests/test_losses.py`.
+- **Files:** `src/norn/embedding/losses.py`, `tests/test_losses.py`; reuse and extend `src/norn/embedding/numerics.py` (`contrastive` already implements the multi-positive form), do not duplicate it.
 - **Depends:** P05-T01.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Multi-positive contrastive, masked scaled reconstruction and identity-margin separation with finite checked params.
@@ -1757,7 +1761,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T03**
 - **State:** PLANNED.
-- **Files:** `src/norn/embedding/train.py`, `benchmark/runs/loss_factorial.py`, `tests/test_training_manifest.py`.
+- **Files:** `src/norn/embedding/training.py` (owns `TrainingBatch`, `objective`, `train` and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (`VARIANTS`, `LEARNED`, `shapes()`), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `tests/test_training_manifest.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
 - **Depends:** P05-T02.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Run each combination with matched backbone/data/updates/budget and multiple seeds; bind checkpoint/data/config hashes.
@@ -1775,7 +1779,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T04**
 - **State:** PLANNED.
-- **Files:** `src/norn/embedding/diagnostics.py`, `tests/test_diagnostics.py`.
+- **Files:** `src/norn/embedding/diagnostics.py`, `tests/test_diagnostics.py`; per-objective gradients need `training.objective` to return each objective term separately (today it returns only the contrastive gradient), so that refactor is part of this card.
 - **Depends:** P05-T03.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Record objective norms/cosines, effective rank/norm distribution and optional warm-start schedule as distinct treatment.
@@ -1829,7 +1833,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T07**
 - **State:** PLANNED.
-- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`.
+- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Dimensions other than 384 and any cap change need the owner answer in ADR-0027 (Q-A) before this card runs.
 - **Depends:** P05-T06.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Development dimension/sparsity/margin/projection and semantic/episode fusion sweep at matched bytes and exhaustive control.
@@ -1847,7 +1851,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T08**
 - **State:** PLANNED.
-- **Files:** `benchmark/metrics/identity.py`, `tests/test_partial_cues.py`.
+- **Files:** `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). A language-held-out claim needs the split decided in ADR-0027 (Q-B); otherwise the card claims paraphrase and unseen-identity transfer only.
 - **Depends:** P05-T07.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Score discrimination only with sufficient cue and safe ambiguity otherwise; include paraphrase and unseen identity/language.

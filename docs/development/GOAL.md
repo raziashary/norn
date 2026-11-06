@@ -1,10 +1,10 @@
 # Norn goal and acceptance
 
-Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05 is mandated in full (nine cards, after the cleanup) by ADR-0026; P06+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Audit repair — 6 November 2026
 
-P00–P04 task states are unchanged. An audit found and the owner asked to repair a wall-clock dependency and related defects (ADR-0024, E-FIX-001). Frozen P03/P04 digests no longer equal current source; their scientific outcomes stay INCONCLUSIVE and scoped to those sources. Open owner decisions: ADR-0025.
+P00–P04 task states are unchanged. An audit found and the owner asked to repair a wall-clock dependency and related defects (ADR-0024, E-FIX-001). Frozen P03/P04 digests no longer equal current source; their scientific outcomes stay INCONCLUSIVE and scoped to those sources. The owner answered ADR-0025 on 6 November and set the P05 mandate in ADR-0026; the executed cleanup, B4 retraining and bounded re-runs are in E-FIX-002 (R0–R3 `p05-pre-r-002` at `f3be68a6…`, binding `p05-pre-b-001` at `b9389357…`, both INCONCLUSIVE and sealed).
 
 ## Current documentation mandate
 
@@ -66,7 +66,7 @@ Owner GO21 October2026 authorizes all eleven P02 tasks; P01 baseline4618156. Req
 
 ## P03 acceptance — verified
 
-Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04 is now separately mandated below; P05+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023).
+Owner GO authorizes all12 cards. Required proof: pre-window exact eligibility, actual versioned lexical R0, pinned real encoder/exhaustive R1 and separate ANN approximation, canonical RRF R2, real fixed reranker/token-bound R3, exact source revalidation and five-status/partial sufficiency independent of gold, durable readback/snapshots with backup-first schema3, one query budget/cancellation/redacted trace owner, reopened paired development report and fresh installed recall/correction/revoke smoke. ADR-0017 resolves model/dependency/schema choices. All outcomes DONE with E-P03-003:131 tests,540 paired observations,444 ANN measurements, fresh installed all-arm/native source consumers and sole end review resolved. Superiority remains INCONCLUSIVE, broader semantic/agent/production guarantees absent; P04 is now separately mandated below; P05 is mandated in full (nine cards, after the cleanup) by ADR-0026; P06+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023).
 
 ## P04 acceptance — verified
 

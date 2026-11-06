@@ -1,5 +1,34 @@
 # Architecture and research decision log
 
+## ADR-0027 — Review findings, recorded deviations and P05 start conditions
+
+- **Status:** PROPOSED by main on 7 November 2026; the "My answer" field is empty. Nothing below is an owner approval. The items marked Q-A to Q-G are the only ones that block a card; everything else is disclosure.
+- **Question:** Which departures from the literal ADR-0025 answers happened while executing them, which findings of the two Haiku 5.5 high-effort reviews (P05 start adversary, pre-P05 end reviewer) need an owner decision, and what may P05 start before those answers?
+- **Why:** The reviews read the full blueprint and the repository and found places where the executed work differs from the owner's wording or where P05 would silently inherit a limit. AGENTS.md requires departures and reinterpretations to be visible, not folded into a green summary.
+- **Options:** Record and continue with disclosed limits (chosen for items A1-A7); ask the owner before the affected card (Q-A to Q-G); revert the executed work (rejected, no defect found that needs it).
+- **Recommendation / decision:**
+  - **A. Departures recorded (code kept, wording corrected in RISKS/EVIDENCE):**
+    1. Item 1: the immutable P03/P04 ledgers were not re-scored. Their inputs no longer pass `benchmark/fixtures/publication.py` (the public query lost `coverage_state`), so old values stay labelled history and the new metrics apply to `p05-pre-r-002` and `p05-pre-b-001`.
+    2. Item 2: the fixture tag `public-v1` was reused. Query IDs are unchanged while the published inputs differ (preparation `input_digest` differs per query), so "same 540 pairs" means the same pair IDs, not the same inputs. Compare runs by input digest, never by query ID alone. A tag bump would also invalidate `-002` and `-001`; it is left to the first P05 re-publication.
+    3. Item 4: S4 was verified, not re-shaped. `shapes()` is unchanged and the capacity ratio of S4 to B4 is within 1% (test); the repair is the forward/backward placement of the type embedding (binding REVISION v2).
+    4. Item 6: the source blob is linked as the last statement before COMMIT, not after it. Reason: a crash after COMMIT would leave canonical rows pointing at a missing source (data loss); a failure between the link and COMMIT leaves only an unreferenced digest-named blob (storage leak, no loss). Residual: `sweep_staging` reclaims only `.pending-*` names, so such a blob stays until the P12 reference reconciliation. R24 now says so.
+    5. Item 8: ledger and chain digests are bound by an external attestation file written after the run (a manifest is written before the run and cannot hold them). `validate_run` verifies it only when `--attestation` is passed, and a test asserts the default path still accepts a rewritten ledger; every evidence citation in E-FIX-002 passed the attestation. Mandatory enforcement is Q-F.
+    6. The library training envelope now accepts any `0 <= seed < 2**32`; the study seeds 11, 29, 47 are pinned in `benchmark/runs/binding.py` CONFIG and checkpoints record them.
+    7. `request_id` was removed from the CLI write JSON as part of the approved dead-code removal. The strict field check now rejects payloads that still send it (`INVALID_FIELDS`); this is a visible CLI contract break.
+  - **B. Open questions (no default is applied):**
+    - **Q-A (blocks P05-T07):** may binding dimensions above 384, the 2,000,000-byte parameter budget, the 1,048,576-byte checkpoint cap and the 384-coordinate serving cap (ADR-0021) change for the dimension sweep? Recommendation: keep 384 for P05-T01 to T06 and run the sweep at 384 with a stated limit unless the owner raises the caps.
+    - **Q-B (blocks the language claim in T08):** every role contains en, id and mixed cases, so unseen-language transfer is untestable. Recommendation: claim paraphrase and unseen-identity transfer only, or add a language-held-out split by owner decision.
+    - **Q-C (affects how P05 outcomes are labelled):** the development tune and evaluation roles are 14 clusters each and were already reported in P04. Recommendation: label every P05 outcome development-exploratory with that reuse disclosed; before margins are frozen, generate a larger development pool (`partition()` supports up to 100 clusters per family) whose evaluation role is unreported.
+    - **Q-D (blocks the first tune-role run):** R09 margins and endpoints are still UNSET. Per ADR-0026 main proposes them and the owner approves before they are frozen. Recommendation: main writes the proposal after P05-T02 and before any tune-role run; without approval P05 may report only exploratory contrasts.
+    - **Q-E:** `engine.py` sets CONFLICT whenever an asserting CONTRADICTS edge exists, even when the contradicted endpoint is a HYPOTHESIS. Should a non-asserting endpoint set the query outcome? ADR-0025 item 3 constrains only the contradicting source.
+    - **Q-F:** should `validate_run` require an attestation for any run cited as evidence, or should the digests move into a post-run manifest section?
+    - **Q-G:** candidate expansion is bounded by events (`candidate_limit`) but every atom of each kept event is resolved under a time-only checkpoint (worst case about 64,000 atoms). Add an explicit expanded-hit cap that fails closed before P06 graph work (R30)?
+  - **C. What may start now:** P05-T01 (pair building from the train role only), T02, T03 on the 384-d existing shapes, T04; T05 and T06 once the generator procedure, NumPy version (2.5.4 per ADR-0017), tolerance and expected-output file are pinned in the card before code. No tune-role run before Q-D; T07 waits for Q-A. Findings about stale mandate and reviewer wording are already corrected.
+- **What affects what:** P05-T01 to T09, G-LEARNING/G-SEPARATION/G-RESEARCH wording, R09/R24/R26/R30, `benchmark/fixtures/partitions.py` custody, any later reuse of `p05-pre-*` numbers.
+- **My answer (editable):**
+- **Authority:** Main's proposal following the two reviews on 7 November 2026; ADR-0025/0026 remain the owner's words.
+- **Verification:** Each A item cites the code or test that shows it (registry.py publish call, validate.py attestation branch, tests/test_runner.py rewrite test, training.py envelope, cli.py parse_write); reviewer findings were checked against the cited files before being recorded.
+
 ## ADR-0026 — P05 mandate, cleanup order, reviewer model and standing rules
 
 - **Status:** ACCEPTED by owner on 6 November 2026.
@@ -10,11 +39,11 @@
 - **What affects what:** AGENTS.md reviewer rule and MDP execution contract, P05 cards T01-T09, G-LEARNING/G-RESEARCH, R09 margins, ADR-0007 compute and model choices, every later consumer of the retained code or simpler winner.
 - **My answer (editable):** Owner answers of 6 November 2026 as stated above. GPT OSS 120B was the owner's choice after being asked which allowed Groq model; Qwen 3.8 27B and GPT OSS 20B are not authorized for this mandate.
 - **Authority:** Owner question-tool answers, 6 November 2026; ADR-0007/0010/0020/0022/0024/0025.
-- **Verification:** Each step records exact commands, hashes, exit, readback and limits in EVIDENCE_LOG; the reviewer brief follows AGENTS.md self-contained, read-only, credential-free rules; P05 closes only with the sole end review resolved.
+- **Verification:** Steps 1–5 are recorded in E-FIX-002 (commands, caps, digests, exits, old-versus-new comparison); step 6 documentation and the reviews follow. Each step records exact commands, hashes, exit, readback and limits in EVIDENCE_LOG; the reviewer brief follows AGENTS.md self-contained, read-only, credential-free rules; P05 closes only with the sole end review resolved.
 
 ## ADR-0025 — Audit findings escalated for owner decision
 
-- **Status:** ACCEPTED by owner on 6 November 2026 (answers below); execution is tracked in E-FIX-002 and later receipts. An item stays open in RISKS until its proof is recorded.
+- **Status:** ACCEPTED by owner on 6 November 2026 (answers below); executed in E-FIX-002 with the departures from the literal answers recorded in ADR-0027 section A (items 1–8 and 10; item 9 is measured first in P11). RISKS R19–R31 carry the per-item disposition; installed-wheel proof of migration 005 remains for the next wheel build.
 - **Question:** Which audit findings change a metric definition, trained architecture, security semantics, stored schema or published evidence, and so need an owner answer before repair?
 - **Why:** The 6 November 2026 five-reader audit (E-FIX-001) found defects whose repair would alter reported numbers, require retraining or add a schema migration. AGENTS.md reserves shipped-contract, schema and scientific-claim changes for the owner.
 - **Options / recommendation (one line each):**
@@ -42,7 +71,7 @@
   10. Bounded local CPU R0-R3 re-run on the repaired source as a new version-scoped run beside the preserved ones, and a bounded re-run of the P04 binding comparison on the corrected B4 and candidate unit (owner follow-up answer). Local pinned models only, no network, no Groq.
   Further owner answers in the same session: remove Python-only dead code (unused enums and `request_id` plumbing) but keep schema and the identity/lineage APIs with named owning phases; close all QA test gaps (collected model-gated wrappers, rerank/r2/ann tests, computed smoke output, specific error matches, deterministic cancel test); dedupe documentation and fix `check_docs.py` lint while keeping history; fix all three audit/statistics findings (sample every twin under a new pack version, require an attestation receipt for human independence, wire Holm and zero-incident bounds); fix all minor retrieval findings including tokenizer, vector validation and OpenMP (R0/R1 numbers change and fall under item 10); fix all engine edge cases with support recording time in migration 005.
 - **Authority:** Owner answers above, 6 November 2026. Each execution step still follows AGENTS.md proof, review and publication rules.
-- **Verification:** Each item cites a file and a read or hand calculation in E-FIX-001; items 1, 2 and 8 were confirmed by reading the producing and consuming code, items 4–5 and 9 are single-reader static claims.
+- **Verification:** Each item cites a file and a read or hand calculation in E-FIX-001; items 1, 2 and 8 were confirmed by reading the producing and consuming code, items 4–5 and 9 are single-reader static claims. Execution proof (E-FIX-002): 207 tests, Ruff and strict mypy clean; item 4 by a control test and retraining (B4 headline identical to P04-003; S4 capacity ratio verified, not re-shaped); item 8 by sealed and verified attestations for P03-005, P04-003, `p05-pre-r-002` and `p05-pre-b-001`, which prove digest consistency when the attestation is supplied, not mandatory enforcement (ADR-0027 Q-F); item 10 by those two runs.
 
 ## ADR-0024 — Audit repair: host-owned recording clock and verified defect fixes
 
@@ -73,6 +102,7 @@
 **Timing interpretation correction, 22 October:** Static cache metadata incorrectly describes empty-projection first recalls as resident. Existing002 records identify 12 cold starts; first timings mix cold/warm, and rare starts can disappear from per-arm p99. Scoring/ranking do not read the label. E-P04-005 and evidence/binding.md preserve the erratum and exact observed boundaries. Main records the known annotation defect without changing the frozen003 runtime; its own completed immutable ledger independently confirms12 cold first queries, with its own exact timing ranges recorded in E-P04-005. The sole end reviewer confirmed interpretation can be corrected without a new model run. No performance promotion depends on the false annotation.
 
 - **Status:** PRELIMINARY_INCONCLUSIVE; P04 investigation complete, final003/artifact/installed proof and sole end review resolved. This is the preliminary within-Stage1 research interpretation under accepted ADR-0020, not a new owner answer or efficacy promotion.
+- **Revisit after the B4 fix (7 November 2026, E-FIX-002):** the owner asked to revisit this interpretation once B4 was repaired. Retraining B3/B4/S3/S4 on the repaired B4 left the comparison unchanged (all four 141/153 complete-set; B3−S3 and B4−S4 0.000 with intervals [0, 0]; B3/B4−B1 +0.103 with an interval including zero), so the interpretation stands: no decomposition or attention benefit is established and the outcome stays INCONCLUSIVE. Only B4 conditional margins moved, and they are not answer or capacity claims.
 - **Question:** Does the observed pilot justify added functional decomposition or attention, and which controls should the Stage1 handoff preserve?
 - **Why:** Blueprint “Primary selection criterion,” “Proposed acceptance criteria” and Stage1 require resource-normalized evidence and the simpler winner. Learned alignment alone is not evidence that biological naming or extra facets caused a gain.
 - **Options:** Promote the most elaborate arm from a positive training curve; retain simpler controls and qualified challengers using actual held-out retrieval, answer errors and costs.

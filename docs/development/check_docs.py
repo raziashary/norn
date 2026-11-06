@@ -7,30 +7,65 @@ Full blueprint fidelity and scientific validity require independent human review
 from __future__ import annotations
 
 import argparse
-from collections import Counter
-from dataclasses import dataclass
-from pathlib import Path
 import re
 import shutil
 import tempfile
+from collections import Counter
+from dataclasses import dataclass
+from pathlib import Path
 from urllib.parse import unquote
 
-
 REQUIRED = {
-    "README.md", "MASTER_DEV_PLAN.md", "GOAL.md", "PROJECT_MEMORY.md",
-    "PROJECT_MAP.md", "PROGRESS.md", "READINESS_MATRIX.md", "ADR_LOG.md",
-    "TESTING_GATES.md", "REQUIREMENTS_TRACEABILITY.md", "RESEARCH_PROTOCOL.md",
-    "RISKS_AND_OPEN_QUESTIONS.md", "PROJECT_LEARNING.md", "EVIDENCE_LOG.md",
+    "README.md",
+    "MASTER_DEV_PLAN.md",
+    "GOAL.md",
+    "PROJECT_MEMORY.md",
+    "PROJECT_MAP.md",
+    "PROGRESS.md",
+    "READINESS_MATRIX.md",
+    "ADR_LOG.md",
+    "TESTING_GATES.md",
+    "REQUIREMENTS_TRACEABILITY.md",
+    "RESEARCH_PROTOCOL.md",
+    "RISKS_AND_OPEN_QUESTIONS.md",
+    "PROJECT_LEARNING.md",
+    "EVIDENCE_LOG.md",
 }
 DESIGN_ANCHORS = {
-    "execution-contract", "scope", "reference-reuse", "architecture", "contracts",
-    "canonical-schema", "derived-schema", "identity-time", "write-flow", "read-flow",
-    "binding", "learning", "graph-algorithms", "optional-mechanisms", "operations",
-    "evaluation", "security", "worked-scenarios", "phase-plan", "atomic-register",
+    "execution-contract",
+    "scope",
+    "reference-reuse",
+    "architecture",
+    "contracts",
+    "canonical-schema",
+    "derived-schema",
+    "identity-time",
+    "write-flow",
+    "read-flow",
+    "binding",
+    "learning",
+    "graph-algorithms",
+    "optional-mechanisms",
+    "operations",
+    "evaluation",
+    "security",
+    "worked-scenarios",
+    "phase-plan",
+    "atomic-register",
 }
 TASK_FIELDS = {
-    "State", "Files", "Depends", "Source", "Change", "Consumer", "Positive proof",
-    "Negative proof", "Gate", "Commands", "Evidence", "Completion",
+    "State",
+    "Files",
+    "Depends",
+    "Source",
+    "Change",
+    "Consumer",
+    "Positive proof",
+    "Negative proof",
+    "Gate",
+    "Commands",
+    "Evidence",
+    "Completion",
 }
 TASK_STATES = {"PLANNED", "IN_PROGRESS", "BLOCKED", "DONE", "DEFERRED"}
 GATE_STATES = {"NOT_RUN", "PARTIAL", "PASS", "FAIL", "BLOCKED"}
@@ -81,10 +116,18 @@ def anchors(text: str) -> set[str]:
 
 def expected_requirements() -> set[str]:
     values = {f"SEC{i:02d}" for i in range(1, 28)}
-    for prefix, start, stop in (("I", 1, 11), ("H", 1, 11), ("E", 1, 15),
-                                ("B", 0, 6), ("T", 0, 8), ("G", 0, 8),
-                                ("S", 0, 3), ("C", 0, 4), ("R", 0, 11),
-                                ("ST", 0, 7)):
+    for prefix, start, stop in (
+        ("I", 1, 11),
+        ("H", 1, 11),
+        ("E", 1, 15),
+        ("B", 0, 6),
+        ("T", 0, 8),
+        ("G", 0, 8),
+        ("S", 0, 3),
+        ("C", 0, 4),
+        ("R", 0, 11),
+        ("ST", 0, 7),
+    ):
         values.update(f"{prefix}{i}" for i in range(start, stop))
     values.update(f"REV{i:02d}" for i in range(1, 15))
     values.update(f"OQ{i:02d}" for i in range(1, 13))
@@ -145,8 +188,10 @@ def validate(root: Path) -> CheckResult:
         errors.append("duplicate-task: " + ", ".join(duplicates))
     if not matches:
         errors.append("missing-tasks: no atomic register")
-    bodies = {m[1]: mdp[m.end():matches[i+1].start() if i+1 < len(matches) else len(mdp)]
-              for i, m in enumerate(matches)}
+    bodies = {
+        m[1]: mdp[m.end() : matches[i + 1].start() if i + 1 < len(matches) else len(mdp)]
+        for i, m in enumerate(matches)
+    }
     gate_text = texts.get(root / "TESTING_GATES.md", "")
     gate_matches = list(re.finditer(r"^## (G-[A-Z]+) — (.+)$", gate_text, re.M))
     gate_ids = [m[1] for m in gate_matches]
@@ -155,7 +200,9 @@ def validate(root: Path) -> CheckResult:
     gate_states: dict[str, str] = {}
     gate_tasks: dict[str, set[str]] = {}
     for i, m in enumerate(gate_matches):
-        body = gate_text[m.end():gate_matches[i+1].start() if i+1 < len(gate_matches) else len(gate_text)]
+        body = gate_text[
+            m.end() : gate_matches[i + 1].start() if i + 1 < len(gate_matches) else len(gate_text)
+        ]
         state = field(body, "State").rstrip(".")
         gate_states[m[1]] = state
         if state not in GATE_STATES:
@@ -194,7 +241,9 @@ def validate(root: Path) -> CheckResult:
             for filename in files:
                 if not (root.parent.parent / filename).is_file():
                     errors.append(f"missing-done-file: {tid} {filename}")
-        if state == "DEFERRED" and not all(word in body.lower() for word in ("reason", "owner", "destination")):
+        if state == "DEFERRED" and not all(
+            word in body.lower() for word in ("reason", "owner", "destination")
+        ):
             errors.append(f"unowned-deferral: {tid}")
     remaining = {tid: set(dependencies.get(tid, set())) & set(ids) for tid in ids}
     ready = [tid for tid, deps in remaining.items() if not deps]
@@ -248,8 +297,11 @@ def validate(root: Path) -> CheckResult:
     for pid in phase_ids:
         tasks = [t for t in ids if t.startswith(pid + "-")]
         match = re.search(rf"^\| {pid} \| (\d+) \| (\d+) \| (\d+) \|", progress, re.M)
-        expected = (len(tasks), sum(states.get(t) == "DONE" for t in tasks),
-                    sum(states.get(t) == "DEFERRED" for t in tasks))
+        expected = (
+            len(tasks),
+            sum(states.get(t) == "DONE" for t in tasks),
+            sum(states.get(t) == "DEFERRED" for t in tasks),
+        )
         if not match or tuple(map(int, match.groups())) != expected:
             errors.append(f"stale-progress-count: {pid} expected {expected}")
     total = re.search(r"Total atomic tasks: (\d+)\. Total completed: (\d+)\.", progress)
@@ -268,8 +320,14 @@ def validate(root: Path) -> CheckResult:
             if line.startswith("| ") and "Development suite" not in line:
                 if re.search(r"\|\s*(?:PASS|VERIFIED|DONE|IMPLEMENTED)\s*\|", line):
                     errors.append("false-runtime-readiness: absent source")
-    return CheckResult(tuple(errors), len(ids), sum(v == "DONE" for v in states.values()),
-                       len(gate_ids), len(trace_ids), len(texts))
+    return CheckResult(
+        tuple(errors),
+        len(ids),
+        sum(v == "DONE" for v in states.values()),
+        len(gate_ids),
+        len(trace_ids),
+        len(texts),
+    )
 
 
 def completion_without_evidence(text: str) -> str:
@@ -277,11 +335,12 @@ def completion_without_evidence(text: str) -> str:
     cards = list(re.finditer(r"^### P\d{2}-T\d{2} — .+$", text, re.M))
     for index, card in enumerate(cards):
         end = cards[index + 1].start() if index + 1 < len(cards) else len(text)
-        body = text[card.end():end]
+        body = text[card.end() : end]
         if field(body, "State").rstrip(".") == "DONE":
-            changed = re.sub(r"^- \*\*Evidence:\*\*.*$", "- **Evidence:** NOT_RUN.",
-                             body, count=1, flags=re.M)
-            return text[:card.end()] + changed + text[end:]
+            changed = re.sub(
+                r"^- \*\*Evidence:\*\*.*$", "- **Evidence:** NOT_RUN.", body, count=1, flags=re.M
+            )
+            return text[: card.end()] + changed + text[end:]
     raise ValueError("self-test needs a completed baseline card")
 
 
@@ -294,17 +353,72 @@ def self_test(root: Path) -> int:
     cases = [
         ("missing document", "missing-document", "README.md", None),
         ("missing local target", "broken-link", "README.md", lambda s: s + "\n[bad](absent.md)\n"),
-        ("missing anchor", "broken-anchor", "README.md", lambda s: s + "\n[bad](MASTER_DEV_PLAN.md#absent)\n"),
-        ("duplicate task", "duplicate-task", "MASTER_DEV_PLAN.md", lambda s: s + "\n### P00-T01 — Duplicate\n"),
-        ("missing consumer", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Consumer:\*\*.*\n", "", s, count=1, flags=re.M)),
-        ("missing negative proof", "missing-task-field", "MASTER_DEV_PLAN.md", lambda s: re.sub(r"^- \*\*Negative proof:\*\*.*\n", "", s, count=1, flags=re.M)),
+        (
+            "missing anchor",
+            "broken-anchor",
+            "README.md",
+            lambda s: s + "\n[bad](MASTER_DEV_PLAN.md#absent)\n",
+        ),
+        (
+            "duplicate task",
+            "duplicate-task",
+            "MASTER_DEV_PLAN.md",
+            lambda s: s + "\n### P00-T01 — Duplicate\n",
+        ),
+        (
+            "missing consumer",
+            "missing-task-field",
+            "MASTER_DEV_PLAN.md",
+            lambda s: re.sub(r"^- \*\*Consumer:\*\*.*\n", "", s, count=1, flags=re.M),
+        ),
+        (
+            "missing negative proof",
+            "missing-task-field",
+            "MASTER_DEV_PLAN.md",
+            lambda s: re.sub(r"^- \*\*Negative proof:\*\*.*\n", "", s, count=1, flags=re.M),
+        ),
         ("false completed task", "false-done", "MASTER_DEV_PLAN.md", completion_without_evidence),
-        ("undefined dependency", "undefined-dependency", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P99-T99.", 1)),
-        ("cyclic dependency", "dependency-cycle", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P00-T02.", 1)),
-        ("undefined gate", "undefined-gate", "MASTER_DEV_PLAN.md", lambda s: s.replace("- **Gate:** G-DOC.", "- **Gate:** G-NOSUCH.", 1)),
-        ("missing coverage", "missing-coverage", "REQUIREMENTS_TRACEABILITY.md", lambda s: re.sub(r"^\| SEC01 .*\n", "", s, flags=re.M)),
-        ("stale count", "stale-progress-count", "PROGRESS.md", lambda s: s.replace("| P00 | 6 |", "| P00 | 600 |", 1)),
-        ("false runtime", "false-runtime-gate", "TESTING_GATES.md", lambda s: re.sub(r"(## (?!G-DOC)G-[^\n]*\n\n- \*\*State:\*\*) (?:NOT_RUN|PARTIAL|FAIL|BLOCKED)", r"\1 PASS", s, count=1)),
+        (
+            "undefined dependency",
+            "undefined-dependency",
+            "MASTER_DEV_PLAN.md",
+            lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P99-T99.", 1),
+        ),
+        (
+            "cyclic dependency",
+            "dependency-cycle",
+            "MASTER_DEV_PLAN.md",
+            lambda s: s.replace("- **Depends:** NONE.", "- **Depends:** P00-T02.", 1),
+        ),
+        (
+            "undefined gate",
+            "undefined-gate",
+            "MASTER_DEV_PLAN.md",
+            lambda s: s.replace("- **Gate:** G-DOC.", "- **Gate:** G-NOSUCH.", 1),
+        ),
+        (
+            "missing coverage",
+            "missing-coverage",
+            "REQUIREMENTS_TRACEABILITY.md",
+            lambda s: re.sub(r"^\| SEC01 .*\n", "", s, flags=re.M),
+        ),
+        (
+            "stale count",
+            "stale-progress-count",
+            "PROGRESS.md",
+            lambda s: s.replace("| P00 | 6 |", "| P00 | 600 |", 1),
+        ),
+        (
+            "false runtime",
+            "false-runtime-gate",
+            "TESTING_GATES.md",
+            lambda s: re.sub(
+                r"(## (?!G-DOC)G-[^\n]*\n\n- \*\*State:\*\*) (?:NOT_RUN|PARTIAL|FAIL|BLOCKED)",
+                r"\1 PASS",
+                s,
+                count=1,
+            ),
+        ),
         ("unknown ADR", "undefined-adr", "GOAL.md", lambda s: s + "\nADR-9999\n"),
         ("duplicate authority", "single-authority", "PROJECT_MEMORY.md", "DUPLICATE"),
     ]
@@ -321,8 +435,11 @@ def self_test(root: Path) -> int:
             for directory in ("src", "benchmark", "tests"):
                 source = root.parent.parent / directory
                 if source.is_dir():
-                    shutil.copytree(source, copied.parent.parent / directory,
-                                    ignore=shutil.ignore_patterns("__pycache__"))
+                    shutil.copytree(
+                        source,
+                        copied.parent.parent / directory,
+                        ignore=shutil.ignore_patterns("__pycache__"),
+                    )
             for filename_root in ("pyproject.toml", "uv.lock"):
                 source = root.parent.parent / filename_root
                 if source.is_file():
@@ -353,7 +470,7 @@ def self_test(root: Path) -> int:
                 failed += 1
             else:
                 print(f"PASS rejects {name} ({category})")
-    print(f"Self-tests: {len(cases)-failed}/{len(cases)} intended rejection controls")
+    print(f"Self-tests: {len(cases) - failed}/{len(cases)} intended rejection controls")
     return int(bool(failed))
 
 
@@ -369,8 +486,10 @@ def main() -> int:
         print("\n".join(result.errors))
         print(f"FAIL: {len(result.errors)} documentation errors")
         return 1
-    print(f"PASS: {result.files} Markdown files; {result.tasks} atomic tasks "
-          f"({result.done} DONE); {result.gates} gates; {result.requirements} coverage rows")
+    print(
+        f"PASS: {result.files} Markdown files; {result.tasks} atomic tasks "
+        f"({result.done} DONE); {result.gates} gates; {result.requirements} coverage rows"
+    )
     print("Structural evidence only; runtime and scientific validity require their owning proof.")
     return 0
 

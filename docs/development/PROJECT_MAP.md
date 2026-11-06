@@ -1,6 +1,6 @@
 # Norn project map
 
-Updated 22 October 2026 (Asia/Bangkok). P01–P04 are implemented and verified locally; final P04 proof is E-P04-005 with scientific outcome INCONCLUSIVE. P04 adds source-backed views, trained frozen-E5 binding, schema4 and opt-in public consumers. P05+ remain proposals; current scoped main publication is approved in ADR-0023.
+Updated 7 November 2026 (Asia/Bangkok). P01–P04 are implemented and verified locally; final P04 proof is E-P04-005 with scientific outcome INCONCLUSIVE, re-measured in E-FIX-002. P04 adds source-backed views, trained frozen-E5 binding (revision v2 after the B4 fix), schema4 and opt-in public consumers; the pre-P05 cleanup adds schema5 (`005_indexes_support_time.sql`), lexical tokenizer v2, `embedding/controls.py` (operator model checks, split from `baseline.py`) and `benchmark/runs/seal.py` (external run attestation). P05+ remain proposals; current scoped main publication is approved in ADR-0023.
 
 ## Actual repository
 

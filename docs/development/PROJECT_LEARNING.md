@@ -135,3 +135,11 @@ The exact channel returned the first N records of a filtered scope in canonical 
 ## L023 — Independent readers are leads; the claims that survived were checked in code
 
 Five bounded readers (three haiku, two sonnet) returned about 100 findings in 1.2k-word reports. Main re-read the code for the load-bearing ones (clock, exact ordering, E12 exposure, call budget, timeout denominators, barrier fail-open, uncollected CLI test) and recorded the rest as unverified in ADR-0025. The reader that audited docs also confirmed that every headline count reconciled, which the suite alone had not: it counted 158 collected tests and 157 passing. Future method: reproduce a headline claim by running it before reading about it; a green record is a claim until re-executed on a later day. E-FIX-001.
+
+## L024 — Run every reader on a run with every disposition before a long study
+
+The first bounded re-run was also the first with an injected projection outage. `baseline-report` and the ANN diagnostic both assumed every preparation has a build receipt and failed on the six outage queries after 57 minutes of compute. Because `benchmark/` is inside the code digest, fixing the readers invalidated validation of that run and R0–R3 had to be repeated (another 56 minutes). Future method: before a long study, run its validate, report, ANN and standalone readers once on a tiny run that contains each fault class (outage, unsupported, empty, timeout), then freeze the digest. E-FIX-002, R29.
+
+## L025 — A fix that makes a quantity mean what it says may leave the headline untouched
+
+B4's type embedding shared its gradient with the bias, so the capacity-matched control was mis-sized. Repairing it moved B4's conditional margins (drop-context 0.827 to 0.645) and left every retrieval outcome, contrast and interval identical, while the tokenizer and eligibility repairs moved only R0 (complete-set 0.837 to 0.857, one case of 49, the two changes not separated). Neither result favours a mechanism: the repaired B4 earns no claim over B3 and the lexical baseline is not behind the dense and fused arms. Future method: record the pre/post comparison at every level (headline, contrast, conditional diagnostic) and report no effect as the result when that is what the numbers show. E-FIX-002.
