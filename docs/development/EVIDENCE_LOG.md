@@ -1,5 +1,11 @@
 # Evidence log
 
+## E-P05-003 — P05 T03 held-out tune scoring: first attempt interrupted by the owner (7 November 2026)
+
+- Scope: `norn-benchmark heldout-prepare` then `heldout-score --role tune` on `.norn/p05-t03-heldout-001`, frozen source commit `e47bf6f` (run code digest `eb7486da6b121c60ca239f1fed94353b1e3fbb2b8a1f9751257611276cad2ca6`), caps recorded before start in `.norn/p05-heldout-command.json` (prepare 900 s, tune 9,000 s, evaluation 3,600 s), BLAS threads set to 1 as in the P04 source run. Q-D approved as written by the owner earlier the same day.
+- Outcome: **stopped on purpose at 1,354 of 3,036 tune rows** (about 45%, roughly 0.9 rows/s, so about 33 more minutes were needed) because the owner had to shut the machine down. No error occurred. The partial ledger has no completion file, nothing from it was scored or read, no arm was selected, and the evaluation role was not touched. The scoring loop has no resume, so the next attempt uses a fresh run directory; this directory is kept as the record of the interrupted attempt. All owned processes were stopped and verified gone; no port was used.
+- Consequence: P05-T03's held-out half is still NOT_RUN. Validation of the runner before this attempt: ruff, strict mypy (111 files), 274 tests, and a real-engine smoke (2 queries per role).
+
 ## E-P05-002 — P05 T04–T06: gradient-conflict/collapse diagnostics and the two toy reproductions (7 November 2026)
 
 - Scope: P05-T04 (`src/norn/embedding/diagnostics.py`, `Schedule`/observer in `train_arm`, `benchmark/runs/loss_diagnostics.py`), P05-T05 (`benchmark/runs/toy_support.py`), P05-T06 (`benchmark/runs/toy_cues.py`). Train role and synthetic Gaussians only; no held-out role, Groq, network or `.env`. Nothing pushed. Commit `8ca3037`; all three formal runs used frozen source `a653250696de9ff7106fb3432cae1420091d63d26255ab93565ca48896d5a07e` (checked equal in the three outputs) with caps recorded before start in `.norn/p05-t04-06-command.json`.
