@@ -1,6 +1,6 @@
-# P05 R09 margin and endpoint proposal (PROPOSED — owner approval required)
+# P05 R09 margin and endpoint proposal (APPROVED as written by the owner on 7 November 2026; frozen)
 
-Status: **PROPOSED, not approved.** Written 2026-11-07 by main under ADR-0026 ("main proposes, owner approves, then freeze") and ADR-0027 Q-D. Nothing here is frozen. No tune-role or evaluation-role score has been read for P05; the only held-out information used is the already-published P04 development report (`p05-pre-b-001`, 14 clusters per role), which is a pilot for variance, not a preview of any P05 arm.
+Status: **APPROVED AS WRITTEN** by the owner (question-tool answer "Approve as written", 7 November 2026) under ADR-0026 ("main proposes, owner approves, then freeze") and ADR-0027 Q-D; frozen from that answer. Sections 2–4 below are the approved text; section 7 only operationalises it (no value changed) and was written before any tune-role read. No tune-role or evaluation-role score has been read for P05; the only held-out information used is the already-published P04 development report (`p05-pre-b-001`, 14 clusters per role), which is a pilot for variance, not a preview of any P05 arm.
 
 ## 1. What this unlocks
 
@@ -44,3 +44,14 @@ No threshold for T07 (dimension/sparsity) or T08 is set here; those inherit thes
 ## 6. Decision requested
 
 Approve, amend, or reject sections 2–4 (ADR-0027 Q-D), and say whether option (a), (b) or (c) of section 4 applies (ADR-0027 Q-C).
+
+## 7. Operational definitions frozen with the approval (no value above changed)
+
+Written before any tune- or evaluation-role score of any P05 arm was read; implemented in `benchmark/runs/loss_heldout.py` `CONFIG` (a changed value fails the run's `HELDOUT_CONFIG_CHANGED` check).
+
+* **Arms and conditions.** T0 is the engine's frozen E5 single-feature condition (binding variant B0, no checkpoint). T1–T7 are the 21 checkpoints of `p05-t03-001` (B3 shape, seeds 11/29/47). Tune scores T0 and all 21; evaluation scores only T0, T1 and the arm selected on tune (three seeds each for the trained arms), once.
+* **Per-query values (0 or 1), each over a denominator fixed by the evaluator labels and so identical across arms:** C1/C2 `identity` = `episode_top1` is true over `identity_applicable` queries (a non-OK result counts 0 and is counted separately); C3 `complete` = `complete_set` is true over full-answerable queries with `cue_missing_fraction == 0` and cue variant `positive` (the field has no value called "paraphrase"; `positive` is the same-episode cue form, an interpretation recorded here); C4 `false_answer` over the evaluator's insufficient-for-full queries (unobserved counts 0: no answer was accepted); C5 `false_abstention` over answerable queries (unobserved counts 1: intent-to-treat).
+* **Estimator.** Equal cluster-mean paired difference with the existing cluster/seed bootstrap (seed 47, 1,000 samples, 95% percentile interval); the untrained T0 row is repeated for each trained seed so pairing is balanced. Holm adjustment over the contrasts actually computed is reported beside each; the benefit and regression verdicts use the interval and point conditions of section 3 as written, and the Holm p-value is reported, not added as a further condition.
+* **Selection.** The arm with the highest tune C1 point estimate versus T0 (seeds pooled, equal cluster weights); a tie goes to the earlier arm number. Raw loss values never select. If the selected arm is T1, C2–C5 are not defined and only C1 is reported.
+* **Verdict labels.** `T0_RETAINED_NO_ARM_CLEARS_C1`; `T1_RETAINED_SELECTED_DOES_NOT_CLEAR_C2`; `MARGINS_MET_DEVELOPMENT_EXPLORATORY`; `BENEFIT_BUT_REGRESSION_NOT_EXCLUDED`. Every verdict carries the scope `DEVELOPMENT_EXPLORATORY_ADR_0027_Q_C_OPTION_A`.
+* **Q-C.** The approval did not choose among options (a), (b) and (c) of section 4. Every result is labelled development-exploratory, the conservative label under all three options; ADR-0027 Q-C stays open and a larger pool (b) or Δ = 0.10 (c) can still be requested later. The evaluation role was already reported in P04 and the recommended larger pool was not generated before freezing: this is disclosed, not hidden.

@@ -95,6 +95,24 @@ def parser() -> argparse.ArgumentParser:
     diagnostics.add_argument("directory", type=Path)
     diagnostics.add_argument("--output", type=Path, required=True)
     diagnostics.add_argument("--wall-cap-seconds", type=float, required=True)
+    for operation in ("prepare", "score", "select", "report"):
+        heldout = commands.add_parser(
+            "heldout-" + operation, help="Explicit P05 held-out development retrieval " + operation
+        )
+        heldout.add_argument("directory", type=Path)
+        if operation == "prepare":
+            heldout.add_argument("--factorial", type=Path, required=True)
+            heldout.add_argument("--source", type=Path, required=True)
+            heldout.add_argument("--smoke", action="store_true")
+        else:
+            heldout.add_argument("--model-root", type=Path, required=True)
+        if operation in ("prepare", "score"):
+            heldout.add_argument("--wall-cap-seconds", type=float, required=True)
+        if operation == "score":
+            heldout.add_argument("--role", choices=("tune", "evaluation"), required=True)
+            heldout.add_argument("--enable-models", action="store_true")
+        if operation == "report":
+            heldout.add_argument("--output", type=Path, required=True)
     for toy in ("toy-support", "toy-cues"):
         toy_parser = commands.add_parser(toy, help="Explicit P05 toy-study reproduction")
         toy_parser.add_argument("--output", type=Path, required=True)
@@ -158,6 +176,35 @@ def main(argv: list[str] | None = None) -> int:
             from benchmark.runs import toy_cues
 
             result = toy_cues.run(args.output)
+        elif args.command.startswith("heldout-"):
+            from benchmark.runs import loss_heldout
+
+            operation = args.command.removeprefix("heldout-")
+            if operation == "prepare":
+                result = loss_heldout.prepare(
+                    args.directory,
+                    args.factorial,
+                    args.source,
+                    wall_cap_seconds=args.wall_cap_seconds,
+                    smoke=args.smoke,
+                )
+            elif operation == "score":
+                result = loss_heldout.score(
+                    args.directory,
+                    args.model_root,
+                    args.role,
+                    enabled=args.enable_models,
+                    wall_cap_seconds=args.wall_cap_seconds,
+                )
+            elif operation == "select":
+                result = loss_heldout.select(args.directory, args.model_root)
+            else:
+                value = loss_heldout.report(args.directory, args.model_root)
+                result = {
+                    "report_digest": write_once(args.output, value),
+                    "selected": value["selected"],
+                    "verdict": value["verdict"],
+                }
         elif args.command == "factorial-diagnostics":
             from benchmark.runs import loss_diagnostics
 

@@ -1761,7 +1761,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T03**
 - **State:** IN_PROGRESS.
-- **Files:** `src/norn/embedding/training.py` (owns `TrainingBatch`, `objective`, `train` and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (`VARIANTS`, `LEARNED`, `shapes()`), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `tests/test_training_manifest.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
+- **Files:** `src/norn/embedding/training.py` (owns `TrainingBatch`, `objective`, `train` and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (`VARIANTS`, `LEARNED`, `shapes()`), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `benchmark/runs/loss_heldout.py` (held-out dev retrieval through `score_conditions`, the shared engine scoring loop in `benchmark/runs/binding.py`), `tests/test_training_manifest.py`, `tests/test_loss_heldout.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
 - **Depends:** P05-T02.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Run each combination with matched backbone/data/updates/budget and multiple seeds; bind checkpoint/data/config hashes.

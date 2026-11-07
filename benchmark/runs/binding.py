@@ -4,7 +4,7 @@ import hashlib
 import json
 import os
 import time
-from dataclasses import asdict
+from dataclasses import asdict, dataclass, field
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any, cast
@@ -286,34 +286,40 @@ def train_run(root: Path) -> dict[str, Any]:
     return {"trained_jobs": len(jobs), "elapsed_seconds": value["elapsed_seconds"]}
 
 
-def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
-    require(enabled, "LOCAL_MODELS_NOT_ENABLED")
-    manifest = checked(root)
-    training = load(root / "training.json")
-    require(training["code_digest"] == manifest["code_digest"], "BINDING_TRAINING_CODE_MISMATCH")
-    jobs = training["jobs"]
-    require(len(jobs) == 12, "BINDING_TRAINING_JOBS_MISSING")
-    require(
-        {(j["variant"], j["seed"]) for j in jobs}
-        == {(v, s) for v in LEARNED for s in CONFIG["seeds"]},
-        "BINDING_TRAINING_JOBS_MISSING",
-    )
-    for job in jobs:
-        require(
-            job["path"] == f"checkpoints/{job['variant']}-{job['seed']}.json",
-            "UNSAFE_CHECKPOINT_PATH",
-        )
-        require(file_digest(root / job["path"]) == job["sha256"], "CHECKPOINT_SOURCE_CHANGED")
-    conditions = [(v, None, None) for v in ("B0", "B1", "B2")]
-    conditions.extend((j["variant"], j["seed"], root / j["path"]) for j in jobs)
-    ledger = root / "binding-ledger.jsonl"
-    require(not ledger.exists(), "BINDING_LEDGER_EXISTS")
+@dataclass(frozen=True)
+class Condition:
+    """One engine-scored arm: the binding variant, its training seed and checkpoint (if any).
+
+    ``extra`` is merged into the ledger row so a caller can label arms that share a variant.
+    """
+
+    variant: str
+    seed: int | None
+    checkpoint: Path | None
+    extra: dict[str, Any] = field(default_factory=dict)
+
+
+def score_conditions(
+    root: Path,
+    manifest: dict[str, Any],
+    model_root: Path,
+    queries: dict[str, list[str]],
+    conditions: list[Condition],
+    ledger: Path,
+    *,
+    deadline: float | None = None,
+) -> tuple[list[list[Any]], dict[str, int], str]:
+    """Project and recall every condition for every planned query into a hash-chained ledger.
+
+    ``deadline`` is a ``time.monotonic()`` instant checked after each query; rows already
+    written stay in the ledger, so a stop is visible rather than a silent partial result.
+    """
     chain = file_digest(root / "manifest.json")
     counts: dict[str, int] = {}
-    planned = []
+    planned: list[list[Any]] = []
     with ledger.open("xb") as stream:
-        for role in ("tune", "evaluation"):
-            for qid in manifest["planned"][role]:
+        for role, query_ids in queries.items():
+            for qid in query_ids:
                 public = validate_public(load(root / "published" / role / (qid + ".json")))
                 captured = load(root / "captures" / role / (qid + ".json"))
                 # Evaluator-side injected outage: the binding projection is never built, and the
@@ -332,8 +338,13 @@ def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
                     # Deterministic rotation balances the first resident-model exposure.
                     shift = int(qid[-8:], 16) % len(conditions)
                     ordered = conditions[shift:] + conditions[:shift]
-                    for variant, seed, checkpoint_path in ordered:
-                        planned.append([role, qid, variant, seed])
+                    for condition in ordered:
+                        variant, seed, checkpoint_path = (
+                            condition.variant,
+                            condition.seed,
+                            condition.checkpoint,
+                        )
+                        planned.append([role, qid, variant, seed, *condition.extra.values()])
                         tick = time.perf_counter_ns()
                         projection: dict[str, Any] = {}
                         diagnostic: dict[str, Any] = {}
@@ -379,6 +390,7 @@ def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
                             "project_elapsed_ns": project_elapsed_ns,
                             "project_attempt_usage": project_budget.usage(),
                             "failure_stage": failure_stage,
+                            **condition.extra,
                             "previous_digest": chain,
                         }
                         chain = digest(canonical(row).encode())
@@ -390,6 +402,42 @@ def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
                     code_digest() == manifest["code_digest"], "BINDING_SOURCE_CHANGED_DURING_EVAL"
                 )
                 print(canonical({"stage": "evaluated", "role": role, "query": qid}), flush=True)
+                require(
+                    deadline is None or time.monotonic() < deadline, "SCORING_WALL_CAP_EXCEEDED"
+                )
+    return planned, counts, chain
+
+
+def evaluate(root: Path, model_root: Path, *, enabled: bool) -> dict[str, Any]:
+    require(enabled, "LOCAL_MODELS_NOT_ENABLED")
+    manifest = checked(root)
+    training = load(root / "training.json")
+    require(training["code_digest"] == manifest["code_digest"], "BINDING_TRAINING_CODE_MISMATCH")
+    jobs = training["jobs"]
+    require(len(jobs) == 12, "BINDING_TRAINING_JOBS_MISSING")
+    require(
+        {(j["variant"], j["seed"]) for j in jobs}
+        == {(v, s) for v in LEARNED for s in CONFIG["seeds"]},
+        "BINDING_TRAINING_JOBS_MISSING",
+    )
+    for job in jobs:
+        require(
+            job["path"] == f"checkpoints/{job['variant']}-{job['seed']}.json",
+            "UNSAFE_CHECKPOINT_PATH",
+        )
+        require(file_digest(root / job["path"]) == job["sha256"], "CHECKPOINT_SOURCE_CHANGED")
+    conditions = [Condition(v, None, None) for v in ("B0", "B1", "B2")]
+    conditions.extend(Condition(j["variant"], j["seed"], root / j["path"]) for j in jobs)
+    ledger = root / "binding-ledger.jsonl"
+    require(not ledger.exists(), "BINDING_LEDGER_EXISTS")
+    planned, counts, chain = score_conditions(
+        root,
+        manifest,
+        model_root,
+        {role: manifest["planned"][role] for role in ("tune", "evaluation")},
+        conditions,
+        ledger,
+    )
     completion = {
         "planned": planned,
         "counts": counts,

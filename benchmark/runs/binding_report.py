@@ -331,6 +331,80 @@ def summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def observe(
+    root: Path,
+    row: dict[str, Any],
+    model: BindingModel | None,
+    tokenizer: EvidenceTokenizer,
+) -> dict[str, Any]:
+    """Revalidate one ledger row against its reopened sources and score it."""
+    public = validate_public(load(root / "published" / row["role"] / (row["query"] + ".json")))
+    gold = gold_from(load(root / "evaluator" / row["role"] / (row["query"] + ".json")))
+    captured = load(root / "captures" / row["role"] / (row["query"] + ".json"))
+    result = result_from(row["result"])
+    validate_result(public, result, SPECS[row["variant"]], tokenizer)
+    validate_packet(root, row, public, captured, model, tokenizer, gold=gold)
+    retrieval = retrieval_scores(public, result, SPECS[row["variant"]], gold, tokenizer)
+    answer = abstention_score(
+        result,
+        gold,
+        retrieval["complete_set"],
+        retrieval["partial_set"],
+        retrieval["slot_coverage"],
+    )
+    answer["privacy_incidents"] = sum(
+        marker in canonical(row) for marker in (*gold.forbidden_sources, *gold.forbidden_canaries)
+    )
+    diagnostic = row["diagnostic"]
+    ranks = diagnostic.get("ranking_sources", [])
+    positive = set().union(*(set(s) for s in gold.acceptable_sets))
+    top1 = (bool(ranks) and ranks[0] in positive) if gold.expected_status == "SUPPORTED" else None
+    source_events = {s.source_id: s.event_id for s in public.sources}
+    identity_applicable = gold.expected_status == "SUPPORTED" and bool(gold.relevant_events)
+    episode_top1 = (
+        bool(ranks) and source_events[ranks[0]] in gold.relevant_events
+        if identity_applicable and result.disposition == "OK"
+        else None
+    )
+    return {
+        "role": row["role"],
+        "query": row["query"],
+        "variant": row["variant"],
+        "seed": row["seed"],
+        "family": gold.family,
+        "cluster": gold.cluster,
+        "language": gold.language,
+        "cue_variant": gold.variant,
+        "cue_missing_fraction": gold.cue_missing_fraction,
+        "disposition": result.disposition,
+        "complete_set": retrieval["complete_set"],
+        "answer": answer,
+        "top1": top1,
+        "episode_top1": episode_top1,
+        "identity_applicable": identity_applicable,
+        "wrong_episode": retrieval.get("wrong_episode") if result.candidates else None,
+        "candidate_limit": public.query.max_candidates,
+        "eligible_events": len(captured["memories"]),
+        "repeat_unchanged": diagnostic.get("repeat_unchanged"),
+        "project_ns": row["project_elapsed_ns"],
+        "repeated_usage": diagnostic.get("repeated_diagnostic", {})
+        .get("packet", {})
+        .get("trace", {})
+        .get("usage", {}),
+        "resources": diagnostic.get("packet", {}).get("resource_observation", {}),
+        "conditional": conditional(
+            captured, gold, row["variant"], model, public.query.max_candidates
+        )
+        if row["role"] == "evaluation"
+        else {},
+        "first_ns": diagnostic.get("elapsed_ns"),
+        "repeated_ns": diagnostic.get("repeated_diagnostic", {}).get("elapsed_ns"),
+        "project_usage": row["project_attempt_usage"],
+        "failure_stage": row["failure_stage"],
+        "query_usage": diagnostic.get("packet", {}).get("trace", {}).get("usage", {}),
+    }
+
+
 def report(root: Path, model_root: Path, attestation: Path | None = None) -> dict[str, Any]:
     if attestation is not None:
         from benchmark.runs.seal import verify
@@ -429,82 +503,9 @@ def report(root: Path, model_root: Path, attestation: Path | None = None) -> dic
             key = (row["role"], row["query"], row["variant"], row["seed"])
             require(key in expected and key not in seen, "UNPLANNED_OR_DUPLICATE_BINDING_PAIR")
             seen.add(key)
-            public = validate_public(
-                load(root / "published" / row["role"] / (row["query"] + ".json"))
-            )
-            gold = gold_from(load(root / "evaluator" / row["role"] / (row["query"] + ".json")))
-            captured = load(root / "captures" / row["role"] / (row["query"] + ".json"))
-            model = models.get((row["variant"], row["seed"]))
-            result = result_from(row["result"])
-            validate_result(public, result, SPECS[row["variant"]], tokenizer)
-            validate_packet(root, row, public, captured, model, tokenizer, gold=gold)
-            retrieval = retrieval_scores(public, result, SPECS[row["variant"]], gold, tokenizer)
-            answer = abstention_score(
-                result,
-                gold,
-                retrieval["complete_set"],
-                retrieval["partial_set"],
-                retrieval["slot_coverage"],
-            )
-            answer["privacy_incidents"] = sum(
-                marker in canonical(row)
-                for marker in (*gold.forbidden_sources, *gold.forbidden_canaries)
-            )
-            diagnostic = row["diagnostic"]
-            ranks = diagnostic.get("ranking_sources", [])
-            positive = set().union(*(set(s) for s in gold.acceptable_sets))
-            top1 = (
-                (bool(ranks) and ranks[0] in positive)
-                if gold.expected_status == "SUPPORTED"
-                else None
-            )
-            source_events = {s.source_id: s.event_id for s in public.sources}
-            identity_applicable = gold.expected_status == "SUPPORTED" and bool(gold.relevant_events)
-            episode_top1 = (
-                bool(ranks) and source_events[ranks[0]] in gold.relevant_events
-                if identity_applicable and result.disposition == "OK"
-                else None
-            )
-            observations.append(
-                {
-                    "role": row["role"],
-                    "query": row["query"],
-                    "variant": row["variant"],
-                    "seed": row["seed"],
-                    "family": gold.family,
-                    "cluster": gold.cluster,
-                    "language": gold.language,
-                    "cue_variant": gold.variant,
-                    "cue_missing_fraction": gold.cue_missing_fraction,
-                    "disposition": result.disposition,
-                    "complete_set": retrieval["complete_set"],
-                    "answer": answer,
-                    "top1": top1,
-                    "episode_top1": episode_top1,
-                    "identity_applicable": identity_applicable,
-                    "wrong_episode": retrieval.get("wrong_episode") if result.candidates else None,
-                    "candidate_limit": public.query.max_candidates,
-                    "eligible_events": len(captured["memories"]),
-                    "repeat_unchanged": diagnostic.get("repeat_unchanged"),
-                    "project_ns": row["project_elapsed_ns"],
-                    "repeated_usage": diagnostic.get("repeated_diagnostic", {})
-                    .get("packet", {})
-                    .get("trace", {})
-                    .get("usage", {}),
-                    "resources": diagnostic.get("packet", {}).get("resource_observation", {}),
-                    "conditional": conditional(
-                        captured, gold, row["variant"], model, public.query.max_candidates
-                    )
-                    if row["role"] == "evaluation"
-                    else {},
-                    "first_ns": diagnostic.get("elapsed_ns"),
-                    "repeated_ns": diagnostic.get("repeated_diagnostic", {}).get("elapsed_ns"),
-                    "project_usage": row["project_attempt_usage"],
-                    "failure_stage": row["failure_stage"],
-                    "query_usage": diagnostic.get("packet", {}).get("trace", {}).get("usage", {}),
-                }
-            )
-            disposition_counts[result.disposition] += 1
+            observation = observe(root, row, models.get((row["variant"], row["seed"])), tokenizer)
+            observations.append(observation)
+            disposition_counts[observation["disposition"]] += 1
     require(
         seen == expected
         and chain == completion["last_digest"]
