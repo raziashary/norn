@@ -178,6 +178,52 @@ def test_summary_reports_every_arm_with_applicable_denominators():
     assert summary["T5"]["episode_top1_not_observed"] == 0
 
 
+def _tiny_run(root):
+    """A manifest-bound run with one tune and one evaluation artifact and no checkpoints."""
+    canonical, file_digest = lh.canonical, lh.file_digest
+    artifacts = {}
+    for role in lh.ROLES:
+        name = f"evaluator/{role}/q.json"
+        (root / name).parent.mkdir(parents=True)
+        (root / name).write_text(f'{{"role": "{role}"}}', encoding="utf-8")
+        artifacts[name] = file_digest(root / name)
+    manifest = {
+        "schema": 1,
+        "kind": "P05_LOSS_HELDOUT",
+        "sealed": False,
+        "smoke": False,
+        "code_digest": lh.code_digest(),
+        "config": json.loads(canonical(lh.CONFIG)),
+        "environment": lh.environment(),
+        "artifacts": artifacts,
+        "checkpoints": {},
+    }
+    (root / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    return artifacts
+
+
+def test_tune_phase_check_never_opens_the_evaluation_role_files(tmp_path):
+    artifacts = _tiny_run(tmp_path)
+    assert lh.checked(tmp_path, "tune") and lh.checked(tmp_path)
+    # Positive control: changing a tune artifact fails every check.
+    tune_file = tmp_path / "evaluator/tune/q.json"
+    tune_file.write_text('{"role": "tampered"}', encoding="utf-8")
+    for role in ("tune", None):
+        with pytest.raises(NornError, match="HELDOUT_ARTIFACT_CHANGED"):
+            lh.checked(tmp_path, role)
+    tune_file.write_text('{"role": "tune"}', encoding="utf-8")
+    assert lh.checked(tmp_path, "tune")
+    # Custody control: an evaluation artifact that is missing entirely cannot fail a tune check,
+    # so tune-phase work does not read evaluation-role bytes; the full check still refuses it.
+    (tmp_path / "evaluator/evaluation/q.json").unlink()
+    assert "evaluator/evaluation/q.json" in artifacts
+    assert lh.checked(tmp_path, "tune")
+    with pytest.raises(NornError):
+        lh.checked(tmp_path, "evaluation")
+    with pytest.raises(NornError, match="HELDOUT_ROLE"):
+        lh.checked(tmp_path, "calibration")
+
+
 @pytest.mark.skipif(
     not (FACTORIAL / "training.json").exists()
     or not (SOURCE / "manifest.json").exists()

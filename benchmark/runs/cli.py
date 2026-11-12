@@ -17,6 +17,17 @@ from norn.contracts.errors import NornError, require
 from norn.contracts.identity import canonical
 
 
+def _evidence_status(directory: Path, attestation: Path | None, development_only: bool) -> str:
+    """ADR-0027 Q-F for the held-out and factorial run kinds: attest, or label development-only."""
+    from benchmark.runs.seal import verify
+    from benchmark.runs.validate import require_attestation
+
+    status = require_attestation(attestation, development_only)
+    if attestation is not None:
+        verify(directory, attestation)
+    return status
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     commands = result.add_subparsers(dest="command", required=True)
@@ -94,6 +105,8 @@ def parser() -> argparse.ArgumentParser:
             factorial.add_argument("--smoke", action="store_true")
         if operation == "report":
             factorial.add_argument("--output", type=Path, required=True)
+            factorial.add_argument("--attestation", type=Path)
+            factorial.add_argument("--development-only", action="store_true")
     diagnostics = commands.add_parser(
         "factorial-diagnostics", help="Explicit P05 gradient-conflict and collapse diagnostics"
     )
@@ -118,6 +131,8 @@ def parser() -> argparse.ArgumentParser:
             heldout.add_argument("--enable-models", action="store_true")
         if operation == "report":
             heldout.add_argument("--output", type=Path, required=True)
+            heldout.add_argument("--attestation", type=Path)
+            heldout.add_argument("--development-only", action="store_true")
     separation = commands.add_parser(
         "separation-sweep", help="Explicit P05-T07 offline sparse/dense code sweep (tune role only)"
     )
@@ -224,7 +239,9 @@ def main(argv: list[str] | None = None) -> int:
             elif operation == "select":
                 result = loss_heldout.select(args.directory, args.model_root)
             else:
+                status = _evidence_status(args.directory, args.attestation, args.development_only)
                 value = loss_heldout.report(args.directory, args.model_root)
+                value["evidence_status"] = status
                 result = {
                     "report_digest": write_once(args.output, value),
                     "selected": value["selected"],
@@ -263,9 +280,15 @@ def main(argv: list[str] | None = None) -> int:
             if operation in ("train", "run"):
                 result = loss_factorial.train_run(args.directory)
             if operation in ("report", "run"):
+                status = (
+                    _evidence_status(args.directory, args.attestation, args.development_only)
+                    if operation == "report"
+                    else "DEVELOPMENT_ONLY_NOT_CITABLE"
+                )
                 value = loss_factorial.report(
                     args.directory, args.model_root, enabled=args.enable_models
                 )
+                value["evidence_status"] = status
                 output = args.output if operation == "report" else args.directory / "report.json"
                 result = {
                     "scope": value["scope"],

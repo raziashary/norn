@@ -128,15 +128,45 @@ class Engine:
     ) -> dict[str, Any]:
         return self.registry.ingest(request, correction=correction)
 
-    def _both_assert(self, ns: str, row: sqlite3.Row, edge: sqlite3.Row) -> bool:
-        """Whether both endpoints of a relationship are asserting-origin atoms."""
+    def _status(self, ns: str, atom: sqlite3.Row, snapshot: int, known: str, valid: str) -> str:
+        """The atom's assertion status at the query's snapshot, knowledge time and valid time."""
+        status: str = atom["initial_status"]
+        controls = self.db.connection.execute(
+            "SELECT * FROM assertion_events WHERE ns=? AND atom_id=? AND recorded_seq<=? "
+            "AND recorded_at<=? ORDER BY recorded_seq LIMIT 257",
+            (ns, atom["id"], snapshot, known),
+        ).fetchall()
+        require(len(controls) <= corrections.MAX_CONTROLS, "CONTROL_BUDGET")
+        for control in controls:
+            if contains(control["valid_from"], control["valid_to"], valid):
+                status = control["status"]
+        return status
+
+    def _both_assert(
+        self,
+        ns: str,
+        row: sqlite3.Row,
+        edge: sqlite3.Row,
+        snapshot: int,
+        known: str,
+        valid: str,
+    ) -> bool:
+        """Whether both endpoints are asserting-origin atoms that are ACTIVE in this query.
+
+        A retracted counterpart keeps its origin but is not evidence, so it cannot put the other
+        atom into CONFLICT (blueprint section 4, ADR-0027 Q-E).
+        """
         if row["origin"] not in ASSERTING_ORIGINS:
             return False
         other = edge["from_id"] if edge["to_id"] == row["id"] else edge["to_id"]
         found = self.db.connection.execute(
-            "SELECT origin FROM atoms WHERE ns=? AND id=?", (ns, other)
+            "SELECT id, origin, initial_status FROM atoms WHERE ns=? AND id=?", (ns, other)
         ).fetchone()
-        return found is not None and found["origin"] in ASSERTING_ORIGINS
+        return (
+            found is not None
+            and found["origin"] in ASSERTING_ORIGINS
+            and self._status(ns, found, snapshot, known, valid) == "ACTIVE"
+        )
 
     def read(self, event_id: str, clock: QueryClock) -> EvidenceView:
         event = self.registry.event_row(event_id)
@@ -172,16 +202,7 @@ class Engine:
             if row["object_ref"] is not None:
                 self.access.check("READ", row["object_ref"])
                 checked.append(row["object_ref"])
-            status = row["initial_status"]
-            controls = self.db.connection.execute(
-                "SELECT * FROM assertion_events WHERE ns=? AND atom_id=? AND recorded_seq<=? "
-                "AND recorded_at<=? ORDER BY recorded_seq LIMIT 257",
-                (ns, row["id"], snapshot, known),
-            ).fetchall()
-            require(len(controls) <= corrections.MAX_CONTROLS, "CONTROL_BUDGET")
-            for control in controls:
-                if contains(control["valid_from"], control["valid_to"], valid):
-                    status = control["status"]
+            status = self._status(ns, row, snapshot, known, valid)
             applicable = "CURRENT" if status == "ACTIVE" else "UNKNOWN"
             superseded = False
             window: str | None = None
@@ -211,7 +232,7 @@ class Engine:
                     edge["relation_type"] == "CONTRADICTS"
                     and active
                     and edge["epistemic"] in ASSERTING_ORIGINS
-                    and self._both_assert(ns, row, edge)
+                    and self._both_assert(ns, row, edge, snapshot, known, valid)
                 ):
                     # A hypothesis or model inference may be recorded as disagreeing, but it is
                     # not evidence: it cannot put an observation into CONFLICT, and a

@@ -273,7 +273,14 @@ def prepare(
     }
 
 
-def checked(root: Path) -> dict[str, Any]:
+def checked(root: Path, role: str | None = None) -> dict[str, Any]:
+    """Verify the run's manifest; ``role="tune"`` leaves the evaluation-role files unopened.
+
+    Scoring and selecting on tune must not depend on the evaluation role's files, so a tune-phase
+    check hashes only the tune artifacts and the checkpoints; every other check hashes both roles.
+    """
+    require(role in (None, *ROLES), "HELDOUT_ROLE")
+    scope = (role,) if role == "tune" else ROLES
     manifest = load(root / "manifest.json")
     require(
         manifest.get("schema") == 1
@@ -287,6 +294,9 @@ def checked(root: Path) -> dict[str, Any]:
     require(manifest["environment"] == environment(), "HELDOUT_ENVIRONMENT_CHANGED")
     for name, sha in manifest["artifacts"].items():
         require(not Path(name).anchor and ".." not in Path(name).parts, "UNSAFE_ARTIFACT_PATH")
+        require(len(Path(name).parts) >= 3, "UNSAFE_ARTIFACT_PATH")
+        if Path(name).parts[1] not in scope:
+            continue
         require(file_digest(root / name) == sha, "HELDOUT_ARTIFACT_CHANGED")
     for key, sha in manifest["checkpoints"].items():
         arm, seed = key.split("/")
@@ -314,7 +324,7 @@ def score(
 ) -> dict[str, Any]:
     require(enabled, "LOCAL_MODELS_NOT_ENABLED")
     require(0 < wall_cap_seconds <= 14_400, "HELDOUT_WALL_CAP")
-    manifest = checked(root)
+    manifest = checked(root, role)
     ledger, completion = root / f"ledger-{role}.jsonl", root / f"completion-{role}.json"
     require(not ledger.exists() and not completion.exists(), "HELDOUT_ROLE_ALREADY_SCORED")
     if role == "evaluation":
@@ -351,7 +361,7 @@ def score(
 
 def observations(root: Path, model_root: Path, role: str) -> list[dict[str, Any]]:
     """Re-open every ledger row of one role against its sources and score it."""
-    manifest = checked(root)
+    manifest = checked(root, role)
     done = load(root / f"completion-{role}.json")
     ledger = root / f"ledger-{role}.jsonl"
     require(

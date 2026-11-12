@@ -100,6 +100,78 @@ def test_report_numbers_match_the_recorded_held_out_report():
         assert f"| {arm} | {positive}/{entry['identity']['applicable']} = " in TEXT
 
 
+SEPARATION = REPO / ".norn" / "p05-t07-separation-004.json"
+CUES = REPO / ".norn" / "p05-t08-partial-cues-002.json"
+
+
+@pytest.mark.skipif(not SEPARATION.exists(), reason="needs the local T07 sweep report")
+def test_section_four_sweep_numbers_match_the_recorded_t07_report():
+    recorded = json.loads(SEPARATION.read_text(encoding="utf-8"))
+    assert len(recorded["cells"]) == 1858 and "1,858 cells" in TEXT
+
+    def pooled(family, geometry, mode, percent):
+        rows = [
+            r
+            for r in recorded["summary"]
+            if (r["arm"], r["scope"], r["family"], r["geometry_kind"], r["mode"], r["percent"])
+            == ("T0", "pooled", family, geometry, mode, percent)
+        ]
+        assert len(rows) == 1
+        return rows[0]["top1_strict_mean"]
+
+    sparse = [pooled("sparse", "native", "weighted", p) for p in (1, 2, 5, 10)]
+    dense = [pooled("matched_dense", "gaussian", "weighted", p) for p in (1, 2, 5, 10)]
+    binary = [pooled("sparse", "native", "binary", p) for p in (1, 2, 5, 10)]
+    matched_binary = [pooled("matched_dense", "gaussian", "binary", p) for p in (1, 2, 5, 10)]
+    for series in (sparse, dense, binary, matched_binary):
+        assert " / ".join(f"{v:.3f}" for v in series) in TEXT
+    full = pooled("sparse", "native", "weighted", 100)
+    assert f"{full:.3f} for full dense" in TEXT
+    # The sparse-versus-dense comparison is "not consistently better": the sign changes.
+    signs = {s > d for s, d in zip(sparse, dense, strict=True)}
+    assert signs == {True, False}
+    assert "Not consistently" in TEXT
+
+
+@pytest.mark.skipif(not CUES.exists(), reason="needs the local T08 partial-cues report")
+def test_section_five_cue_numbers_match_the_recorded_t08_report():
+    recorded = json.loads(CUES.read_text(encoding="utf-8"))
+    assert len(recorded["cells"]) == 44
+    t0 = next(c for c in recorded["cells"] if c["arm"] == "T0")
+    assert f"{t0['eligible']['ambiguity_gap']['auroc']:.3f}" in TEXT
+    assert recorded["classes"] == {"insufficient": 86, "other": 1, "sufficient": 51}
+    assert "51 sufficient, 86 insufficient-cue, 1 other" in TEXT
+
+
+def test_review_disclosures_are_in_the_report_and_the_adr():
+    adr = ADR.read_text(encoding="utf-8").split("## ADR-0028", 1)[1].split("\n## ADR-", 1)[0]
+    for needle in (
+        "random initialisation",
+        "max_candidates",
+        "mixed-language",
+        "full-grid",
+        "Q-H",
+        "Q-I",
+    ):
+        assert needle in adr
+    for needle in ("random initialisation", "`max_candidates` 10", "mixed-language", "R39"):
+        assert needle in TEXT
+    assert "| R39 |" in RISKS.read_text(encoding="utf-8")
+
+
+@pytest.mark.skipif(
+    not (REPO / ".norn" / "p05-t03-heldout-002").exists(), reason="needs the local held-out run"
+)
+def test_committed_attestations_verify_the_actual_runs():
+    from benchmark.runs.seal import verify
+
+    folder = DEVELOPMENT / "evidence" / "attestations"
+    held = verify(REPO / ".norn" / "p05-t03-heldout-002", folder / "p05-t03-heldout-002.json")
+    assert held["kind"] == "heldout" and held["manifest_digest"].startswith("c2a3f834")
+    factorial = verify(REPO / ".norn" / "p05-t03-001", folder / "p05-t03-001-factorial.json")
+    assert factorial["kind"] == "factorial"
+
+
 @pytest.mark.skipif(not TRAINING.exists(), reason="needs the local factorial run")
 def test_per_seed_table_matches_the_recorded_training_receipts():
     training = json.loads(TRAINING.read_text(encoding="utf-8"))

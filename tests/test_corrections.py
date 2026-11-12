@@ -124,6 +124,23 @@ def test_retracted_atom_is_not_reported_as_a_live_conflict(engine):
     assert atom["applicability"] == "UNKNOWN"
 
 
+def test_a_retracted_counterpart_cannot_put_the_disputing_event_into_conflict(engine):
+    first = engine.write(request())
+    dispute = engine.write(
+        request("dispute", place="ZoneC"),
+        correction=correction(first["atom_ids"][0], "CONTRADICTS"),
+    )
+    # Positive control: while both atoms are active the dispute event is a live conflict.
+    assert engine.read(dispute["event_id"], clock()).serialize()["outcome"] == "CONFLICT"
+    retract(engine.registry, first["atom_ids"][0], TUESDAY, None, "withdrawn")
+    view = engine.read(dispute["event_id"], clock()).serialize()
+    assert view["outcome"] == "SUPPORTED"
+    assert view["atoms"][0]["applicability"] == "CURRENT"
+    # The history is preserved: the earlier snapshot still reads the conflict.
+    earlier = engine.read(dispute["event_id"], clock(dispute["commit_seq"])).serialize()
+    assert earlier["outcome"] == "CONFLICT"
+
+
 def test_writes_cannot_push_an_atom_past_the_limit_that_makes_it_unreadable(engine):
     first = engine.write(request())
     atom = first["atom_ids"][0]
