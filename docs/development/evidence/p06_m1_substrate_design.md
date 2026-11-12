@@ -1,6 +1,6 @@
 # P06 stage M1 substrate design (P06-T14)
 
-Status: **DESIGN FOR OWNER DECISION on section 2 (per-object ACL); sections 3 to 8 are M1 decisions inside the ADR-0029 mandate and need no further approval unless the owner objects.** Authority: ADR-0029 (owner answers of 13 November 2026: staged mandate, migration and identity, noisy renderings, new fixture version, margins, seeds, per-object ACL now, compute and publication), ADR-0028, ADR-0027 Q-G. Nothing here is implemented; no P06 code, data or measurement has run. Facts below were read from the current source on 13 November 2026 and the start-adversary review of the same day.
+Status: **Section 2 (per-object ACL) was decided by the owner on 13 November 2026 (D1 to D4, all as recommended, recorded in ADR-0029); sections 3 to 8 are M1 decisions inside the ADR-0029 mandate and need no further approval unless the owner objects.** Authority: ADR-0029 (owner answers of 13 November 2026: staged mandate, migration and identity, noisy renderings, new fixture version, margins, seeds, per-object ACL now, compute and publication), ADR-0028, ADR-0027 Q-G. Nothing here is implemented; no P06 code, data or measurement has run. Facts below were read from the current source on 13 November 2026 and the start-adversary review of the same day.
 
 ## 1. What exists today (verified in source)
 

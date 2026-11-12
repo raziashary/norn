@@ -1917,8 +1917,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T14 — Record the M1 substrate design and obtain the per-object ACL decision
 
-- [ ] **P06-T14**
-- **State:** IN_PROGRESS.
+- [x] **P06-T14**
+- **State:** DONE.
 - **Files:** `docs/development/evidence/p06_m1_substrate_design.md`, `docs/development/ADR_LOG.md`.
 - **Depends:** P05-T09.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
@@ -1928,7 +1928,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** No ACL, schema or fixture code is written before the owner answers D1 to D4; a design claim without a source reference is not accepted.
 - **Gate:** G-ACL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: documentation CLI and source-grounded review. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** `docs/development/evidence/p06_m1_substrate_design.md` drafted 13 November 2026 from the current source; the owner decision on section 2 (D1 to D4) is pending; card closes when it is recorded.
+- **Evidence:** `docs/development/evidence/p06_m1_substrate_design.md` (commit e9f10a7, grounded in the current source and the start-adversary review) and the owner's D1 to D4 answers of 13 November 2026 recorded in ADR-0029; documentation CLI PASS. Design only: no ACL, schema or fixture code exists yet.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t15"></a>
