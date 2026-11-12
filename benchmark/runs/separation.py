@@ -7,9 +7,13 @@ manifest digests. The evaluation role is never opened. Two scopes are reported f
 - ``eligible``: the events the engine's scope and time filters left for that query (the pool in its
   capture), the same candidates the real reader ranks.
 - ``pooled``: every captured tune-role event ranked for every query, a geometry stress that ignores
-  per-query eligibility and is not a retrieval claim. An event is one captured memory (the same
-  public episode is rendered with slightly different features in different captures, so events are
-  keyed per capture and the episode id decides which are gold).
+  per-query eligibility and is not a retrieval claim.
+
+An event is one captured memory. The same public episode is captured many times, often with
+identical and sometimes slightly different features, so identity is scored per episode: an
+episode's score is its best event score, a tie counts only between distinct episodes, and the
+episode id decides which are gold. (A first run scored events and let copies of one episode tie
+with themselves; it is kept as a superseded record.)
 
 Every cell is reported; nothing is selected and no threshold applies (R09 left T07 margins
 unapproved, so the sweep is descriptive).
@@ -18,6 +22,7 @@ unapproved, so the sweep is descriptive).
 import json
 import time
 from collections import Counter, defaultdict
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
@@ -38,7 +43,7 @@ SEEDS = (11, 29, 47)
 FUSION_WEIGHTS = (0.25, 0.5, 0.75)
 SCOPES = ("eligible", "pooled")
 CONFIG: dict[str, Any] = {
-    "revision": "separation-sweep-v1",
+    "revision": "separation-sweep-v2-episode-level",
     "status": "DEVELOPMENT_DESCRIPTIVE_NO_THRESHOLD_NO_SELECTION",
     "role": ROLE,
     "dimension": separation.DIMENSION,
@@ -70,7 +75,7 @@ class Query:
 class Inputs:
     queries: tuple[Query, ...]
     events: tuple[str, ...]
-    episodes: tuple[str, ...]
+    episodes: tuple[str, ...]  # parallel to events: the public episode each event renders
     single: Array
     facets: Array
     mask: Array
@@ -173,27 +178,40 @@ def source_codes(inputs: Inputs, name: str) -> tuple[Array, Array]:
     return model.forward(queries, query=True)[0], model.forward(inputs.facets, inputs.mask)[0]
 
 
+def _episode_scores(inputs: Inputs, row: Array, members: Sequence[int]) -> dict[str, float]:
+    """Best event score per public episode: copies of one episode must not tie with themselves."""
+    best: dict[str, float] = {}
+    for j in members:
+        episode = inputs.episodes[j]
+        best[episode] = max(best.get(episode, float("-inf")), float(row[j]))
+    return best
+
+
+def _members(inputs: Inputs, query: Query, scope: str) -> Sequence[int]:
+    return query.pool if scope == "eligible" else range(len(inputs.events))
+
+
 def _outcomes(
-    inputs: Inputs, scores: Array, scope: str, labels: dict[str, frozenset[int]] | None = None
+    inputs: Inputs, scores: Array, scope: str, labels: dict[str, frozenset[str]] | None = None
 ) -> list[dict[str, Any]]:
     outcomes = []
     for i, query in enumerate(inputs.queries):
-        members = query.pool if scope == "eligible" else range(len(inputs.events))
-        gold = (
-            labels[query.query_id]
-            if labels is not None
-            else frozenset(j for j in members if inputs.episodes[j] in query.relevant)
-        )
-        outcomes.append(
-            identity.ranking_outcome(
-                [float(scores[i, j]) for j in members], [j in gold for j in members]
-            )
-        )
+        best = _episode_scores(inputs, scores[i], _members(inputs, query, scope))
+        gold = labels[query.query_id] if labels is not None else query.relevant
+        outcomes.append(identity.ranking_outcome(list(best.values()), [e in gold for e in best]))
     return outcomes
 
 
+def _episode_top(inputs: Inputs, row: Array) -> str | None:
+    """The single best pooled episode, or None when two distinct episodes tie at the top."""
+    best = _episode_scores(inputs, row, range(len(inputs.events)))
+    top = max(best.values())
+    leaders = [e for e, v in best.items() if v >= top - identity.TIE]
+    return leaders[0] if len(leaders) == 1 else None
+
+
 def _scope_result(
-    inputs: Inputs, scores: Array, scope: str, dense_top: list[int | None] | None
+    inputs: Inputs, scores: Array, scope: str, dense_top: list[str | None] | None
 ) -> dict[str, Any]:
     outcomes = _outcomes(inputs, scores, scope)
     result: dict[str, Any] = {
@@ -206,24 +224,18 @@ def _scope_result(
         ),
     }
     if dense_top is not None and scope == "pooled":
-        top = [_strict_top(scores[i]) for i in range(len(inputs.queries))]
+        top = [_episode_top(inputs, scores[i]) for i in range(len(inputs.queries))]
         result["agreement_with_dense"] = sum(
             1 for a, b in zip(top, dense_top, strict=True) if a is not None and a == b
         ) / len(top)
     return result
 
 
-def _strict_top(row: Array) -> int | None:
-    best = float(row.max())
-    leaders = np.flatnonzero(row >= best - identity.TIE)
-    return int(leaders[0]) if len(leaders) == 1 else None
-
-
 def _cell(
     inputs: Inputs,
     qs: Array,
     es: Array,
-    dense_top: list[int | None] | None,
+    dense_top: list[str | None] | None,
     meta: dict[str, Any],
     index_seconds: float,
 ) -> dict[str, Any]:
@@ -234,7 +246,9 @@ def _cell(
     cell["index_bytes_pooled"] = meta["bytes_per_event"] * len(inputs.events)
     cell["index_ms_pooled"] = index_seconds * 1000
     cell["query_ms_pooled_all"] = query_seconds * 1000
-    cell["collisions_pooled"] = identity.collision_pairs(es)
+    # Collisions are between distinct episodes: one representative event per episode.
+    first = list({e: i for i, e in reversed(list(enumerate(inputs.episodes)))}.values())
+    cell["collisions_pooled"] = identity.collision_pairs(es[sorted(first)])
     for scope in SCOPES:
         cell[scope] = _scope_result(inputs, scores, scope, dense_top)
     return cell
@@ -251,7 +265,7 @@ def sweep(inputs: Inputs, *, wall_cap_seconds: float) -> list[dict[str, Any]]:
     for name in CONFIG["sources"]:
         q_dense, e_dense = source_codes(inputs, name)
         dense_scores = q_dense @ e_dense.T
-        dense_top = [_strict_top(dense_scores[i]) for i in range(len(inputs.queries))]
+        dense_top = [_episode_top(inputs, dense_scores[i]) for i in range(len(inputs.queries))]
         for geometry in CONFIG["geometries"]:
             basis = None if geometry == "native" else bases[int(geometry.split("-")[1])]
             q_geo = q_dense if basis is None else q_dense @ basis
@@ -334,10 +348,9 @@ def sweep(inputs: Inputs, *, wall_cap_seconds: float) -> list[dict[str, Any]]:
     for seed in SEEDS:
         rng = np.random.default_rng(seed)
         real = _outcomes(inputs, full, "pooled")
+        episodes = sorted(set(inputs.episodes))
         labels = {
-            q.query_id: frozenset(
-                rng.choice(len(inputs.events), size=o["gold"], replace=False).tolist()
-            )
+            q.query_id: frozenset(rng.choice(episodes, size=o["gold"], replace=False).tolist())
             for q, o in zip(inputs.queries, real, strict=True)
         }
         outcomes = _outcomes(inputs, full, "pooled", labels)

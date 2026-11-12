@@ -37,12 +37,14 @@ def ranking_outcome(scores: Sequence[float], gold: Sequence[bool]) -> dict[str, 
         "margin": float(values[flags].max() - others.max()) if others.size else None,
         "pool": int(len(values)),
         "gold": int(flags.sum()),
+        "contested": bool(others.size),
     }
 
 
 def summarize(outcomes: Sequence[dict[str, Any]]) -> dict[str, Any]:
     """Rates over applicable queries; an empty set reports counts with ``None`` rates."""
     n = len(outcomes)
+    contested = [o for o in outcomes if o["contested"]]
     margins = [o["margin"] for o in outcomes if o["margin"] is not None]
     rate: Callable[[str], float | None] = lambda key: (  # noqa: E731
         sum(1 for o in outcomes if o[key]) / n if n else None
@@ -52,6 +54,11 @@ def summarize(outcomes: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "top1_strict": rate("top1_strict"),
         "top1_tie_inclusive": rate("top1_tie_inclusive"),
         "tied_at_top": rate("tied_at_top"),
+        # Queries whose pool holds a non-gold episode: the only ones where ranking can fail.
+        "contested": len(contested),
+        "top1_strict_contested": (
+            sum(1 for o in contested if o["top1_strict"]) / len(contested) if contested else None
+        ),
         "margin_defined": len(margins),
         "margin_mean": mean(margins) if margins else None,
         "margin_median": median(margins) if margins else None,

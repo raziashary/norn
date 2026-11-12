@@ -8,6 +8,7 @@ from benchmark.metrics import identity
 from benchmark.runs import separation as sweep
 from benchmark.runs.manifest import file_digest
 from norn.contracts.errors import NornError
+from norn.contracts.identity import canonical
 from norn.embedding import separation as sep
 
 HELDOUT = REPO / ".norn" / "p05-t03-heldout-002"
@@ -156,6 +157,54 @@ def test_collision_pairs_count_identical_codes_exactly():
     assert identity.collision_pairs(np.eye(3))["colliding_pairs"] == 0
 
 
+def _tiny_inputs():
+    zero = np.zeros((4, 384))
+    queries = (
+        sweep.Query("q1", "COMPLETE_CUE", "f", "c1", np.zeros(384), (0, 1, 2), frozenset({"A"})),
+        sweep.Query("q2", "PARTIAL_CUE", "f", "c2", np.zeros(384), (2, 3), frozenset({"B", "C"})),
+    )
+    return sweep.Inputs(
+        queries,
+        ("e0", "e1", "e2", "e3"),
+        ("A", "A", "B", "C"),
+        zero,
+        np.zeros((4, 3, 384)),
+        np.ones((4, 3)),
+        "m" * 8,
+        {},
+        {},
+    )
+
+
+def test_copies_of_one_episode_do_not_tie_with_themselves_but_distinct_episodes_do():
+    inputs = _tiny_inputs()
+    # q1: the two renderings of A tie each other at 0.9 and B trails; q2: B and C tie at 0.5.
+    scores = np.array([[0.9, 0.9, 0.2, 0.0], [0.0, 0.0, 0.5, 0.5]])
+    eligible = sweep._outcomes(inputs, scores, "eligible")
+    assert eligible[0]["top1_strict"] and not eligible[0]["tied_at_top"]
+    assert eligible[0]["pool"] == 2 and eligible[0]["gold"] == 1 and eligible[0]["contested"]
+    # q2's two gold episodes tie each other: not credited as an identification, and not contested.
+    assert not eligible[1]["top1_strict"] and eligible[1]["tied_at_top"]
+    assert eligible[1]["top1_tie_inclusive"] and not eligible[1]["contested"]
+    # Pooled: q1 still sees A as the unique best episode among A, B, C (4 events, 3 episodes).
+    pooled = sweep._outcomes(inputs, scores, "pooled")
+    assert pooled[0]["pool"] == 3 and pooled[0]["top1_strict"]
+    assert sweep._episode_top(inputs, scores[0]) == "A"
+    assert sweep._episode_top(inputs, scores[1]) is None  # B and C tie at the top
+
+
+def test_contested_summary_counts_only_queries_with_a_distractor():
+    all_gold = identity.ranking_outcome([0.5, 0.4], [True, True])
+    won = identity.ranking_outcome([0.9, 0.1], [True, False])
+    lost = identity.ranking_outcome([0.1, 0.9], [True, False])
+    s = identity.summarize([all_gold, won, lost])
+    assert s["contested"] == 2 and s["top1_strict_contested"] == 0.5
+    assert s["top1_strict"] == pytest.approx(
+        2 / 3
+    )  # the uncontested query inflates the overall rate
+    assert identity.summarize([all_gold])["top1_strict_contested"] is None
+
+
 def _run_root(tmp_path, names):
     """A manifest with tiny stand-in artifacts for the given relative names."""
     artifacts = {}
@@ -200,35 +249,44 @@ def test_a_run_without_tune_artifacts_or_of_another_kind_is_refused(tmp_path):
     not (HELDOUT / "manifest.json").exists(), reason="needs the local P05 held-out run"
 )
 def test_real_tune_captures_sweep_reports_every_declared_cell_and_the_controls(tmp_path):
-    inputs = sweep.load_inputs(HELDOUT)
-    cells = sweep.sweep(inputs, wall_cap_seconds=600)
+    out = tmp_path / "sweep.json"
+    result = sweep.run(HELDOUT, out, wall_cap_seconds=600)
+    with pytest.raises(NornError, match="SEPARATION_OUTPUT_EXISTS"):
+        sweep.run(HELDOUT, out, wall_cap_seconds=600)
+    report = json.loads(out.read_text(encoding="utf-8"))
+    cells = report["cells"]
     sources, percents, modes = 22, len(sep.SPARSITY_PERCENT), len(sep.MODES)
     sparse = sources * 4 * modes * percents
     matched = sources * 3 * modes * percents
     fusion = 21 * percents * len(sweep.FUSION_WEIGHTS)
-    assert len(cells) == sparse + matched + fusion + 3
-    exhaustive = next(
-        c
-        for c in cells
-        if (c["family"], c["source"], c["geometry"], c["mode"], c["percent"])
-        == ("sparse", "T0", "native", "weighted", 100)
+    assert len(cells) == result["cells"] == sparse + matched + fusion + 3
+    assert report["scopes"]["applicable_queries"] == 51 and "evaluation" not in canonical(
+        report["config"]
     )
+
+    def find(family, source, geometry, mode, percent):
+        return next(
+            c
+            for c in cells
+            if (c["family"], c["source"], c["geometry"], c["mode"], c["percent"])
+            == (family, source, geometry, mode, percent)
+        )
+
+    exhaustive = find("sparse", "T0", "native", "weighted", 100)
+    # The exhaustive control agrees with itself wherever its own top episode is unique.
     assert exhaustive["pooled"]["agreement_with_dense"] == pytest.approx(
         1 - exhaustive["pooled"]["overall"]["tied_at_top"]
     )
-    # Negative control: a full-width binary code ties every event, so nothing is credited.
-    ties = next(
-        c
+    # Negative control: a full-width binary code ties every episode, so nothing is credited.
+    ties = find("sparse", "T0", "native", "binary", 100)
+    assert ties["pooled"]["overall"]["top1_strict"] == 0
+    assert ties["pooled"]["overall"]["tied_at_top"] == 1
+    # Shuffled labels sit near the chance rate of the same pooled episodes, not near the real rate.
+    shuffled = [
+        c["pooled"]["overall"]["top1_strict"]
         for c in cells
-        if (c["family"], c["source"], c["geometry"], c["mode"], c["percent"])
-        == ("sparse", "T0", "native", "binary", 100)
-    )
+        if c["family"] == "shuffled_gold_control"
+    ]
     assert (
-        ties["pooled"]["overall"]["top1_strict"] == 0
-        and ties["pooled"]["overall"]["tied_at_top"] == 1
+        len(shuffled) == 3 and max(shuffled) < exhaustive["pooled"]["overall"]["top1_strict"] + 0.2
     )
-    out = tmp_path / "sweep.json"
-    result = sweep.run(HELDOUT, out, wall_cap_seconds=600)
-    assert json.loads(out.read_text(encoding="utf-8"))["cells"] and result["cells"] == len(cells)
-    with pytest.raises(NornError, match="SEPARATION_OUTPUT_EXISTS"):
-        sweep.run(HELDOUT, out, wall_cap_seconds=600)
