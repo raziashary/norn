@@ -14,7 +14,7 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P03 | 12 | 12 | 0 | DONE | E-P03-003; final measurement/installed/end review verified |
 | P04 | 9 | 9 | 0 | DONE | E-P04-005; final study/installed/native/guard proof and sole review resolved |
 | P05 | 9 | 9 | 0 | DONE | E-P05-001 (T01–T03 train half), E-P05-002 (T04–T06), E-P05-004 (T03 held-out), E-P05-005 (Q-E/Q-F/Q-G), E-P05-006 (T07), E-P05-007 (T08), ADR-0028 and `evidence/losses_and_separation.md` (T09); E-P05-008 (end-review resolution); all nine cards closed at the sole Haiku 5.5 high-effort end review, outcome development-exploratory (T0 retained) |
-| P06 | 12 | 0 | 0 | PLANNED | NOT_RUN |
+| P06 | 21 | 0 | 0 | IN_PROGRESS | ADR-0029 M1 mandate; E-P06 evidence follows; T14 design `evidence/p06_m1_substrate_design.md` awaits the owner's ACL decision |
 | P07 | 8 | 0 | 0 | PLANNED | NOT_RUN |
 | P08 | 8 | 0 | 0 | PLANNED | NOT_RUN |
 | P09 | 13 | 0 | 0 | PLANNED | NOT_RUN |
@@ -23,7 +23,7 @@ MDP atomic checkboxes and states own task status. Counts below must equal that r
 | P12 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 | P13 | 9 | 0 | 0 | PLANNED | NOT_RUN |
 
-Total atomic tasks: 139. Total completed: 59. Runtime tasks completed: 53. R0–R3 and P04 synthetic development outcomes INCONCLUSIVE; no confirmatory efficacy claim.
+Total atomic tasks: 148. Total completed: 59. Runtime tasks completed: 53. R0–R3 and P04 synthetic development outcomes INCONCLUSIVE; no confirmatory efficacy claim.
 
 ## Current work
 

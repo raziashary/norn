@@ -44,7 +44,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** PARTIAL.
 - **Owner phases:** P01,P05.
-- **Owning atomic tasks:** P01-T05.
+- **Owning atomic tasks:** P01-T05, P06-T17.
 - **Positive / completion contract:** Same delivery/payload idempotent; similar distinct episodes stay distinct; reviewed scoped identity and additional support preserved.
 - **Negative / falsification control:** Changed duplicate payload same-name cross-tenant merge false negative pairs and arbitrary vague-cue target reject.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -54,7 +54,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** PARTIAL.
 - **Owner phases:** P01,P03,P06,P09,P11,P12.
-- **Owning atomic tasks:** P01-T06, P06-T03, P09-T04, P11-T04, P12-T03.
+- **Owning atomic tasks:** P01-T06, P06-T03, P09-T04, P11-T04, P12-T03, P06-T14, P06-T16.
 - **Positive / completion contract:** Current host-granted scope applied before candidate windows/ranking/subgraph normalization and at final read; allowed path still works.
 - **Negative / falsification control:** Denied text node intermediary existence counts ranks paths and stale-cache/TOCTOU canaries absent across actual outputs.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -94,7 +94,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** PARTIAL.
 - **Owner phases:** P02,P04,P13.
-- **Owning atomic tasks:** P02-T01, P02-T02, P02-T04, P02-T06.
+- **Owning atomic tasks:** P02-T01, P02-T02, P02-T04, P02-T06, P06-T18, P06-T19.
 - **Positive / completion contract:** Runtime/adapters receive only authorized rendered input; family/entity split before paraphrases; trainer/dev/calibration/locked roles distinct.
 - **Negative / falsification control:** Gold/answers/slots leak in filenames IDs metadata prompts vectors graphs traces imports or tuning makes run invalid.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -124,7 +124,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** PARTIAL.
 - **Owner phases:** P03,P09.
-- **Owning atomic tasks:** P03-T08, P09-T08.
+- **Owning atomic tasks:** P03-T08, P09-T08, P06-T13.
 - **Positive / completion contract:** Five statuses plus explicit permitted missing inputs; complete and incomplete evidence twins measure false answer and false abstention.
 - **Negative / falsification control:** Runtime gold-slot leakage always-refuse false positive causal promotion and sensitive denied-source explanations fail.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -184,7 +184,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** NOT_RUN.
 - **Owner phases:** P06.
-- **Owning atomic tasks:** P06-T01, P06-T02, P06-T04, P06-T11.
+- **Owning atomic tasks:** P06-T01, P06-T02, P06-T04, P06-T11, P06-T15.
 - **Positive / completion contract:** Gold/derived topology split, extraction quality, grounded seeds, BFS/path fixed controls and actual canonical path consumer.
 - **Negative / falsification control:** Unreviewed identity hypothesis-as-cause hub/private bridge or opaque index payload cannot authorize support.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -274,7 +274,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** NOT_RUN.
 - **Owner phases:** P01,P03,P06,P08,P12.
-- **Owning atomic tasks:** P12-T01, P12-T02, P12-T04, P12-T08, P12-T09.
+- **Owning atomic tasks:** P12-T01, P12-T02, P12-T04, P12-T08, P12-T09, P06-T16.
 - **Positive / completion contract:** Positive legitimate path plus injected/forged/malformed/resource/telemetry/private-history controls through actual host and source readers.
 - **Negative / falsification control:** Canary absence checked not just redaction marker; poison repetition/model agreement cannot promote authority; zero observed not zero risk.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
@@ -294,7 +294,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 - **State:** PARTIAL.
 - **Owner phases:** P02-P13.
-- **Owning atomic tasks:** P02-T03, P02-T05, P02-T08, P02-T09, P02-T10, P02-T11, P03-T11, P04-T08, P05-T09, P06-T10, P07-T08, P08-T08, P09-T07, P09-T10, P09-T11, P09-T12, P09-T13.
+- **Owning atomic tasks:** P02-T03, P02-T05, P02-T08, P02-T09, P02-T10, P02-T11, P03-T11, P04-T08, P05-T09, P06-T10, P07-T08, P08-T08, P09-T07, P09-T10, P09-T11, P09-T12, P09-T13, P06-T21, P06-T20.
 - **Positive / completion contract:** Paired published inputs, source/model/budget/clock manifests, hand-calculated and perfect/empty/shuffled scorer controls, observed retrieval stages, full attempt/failure accounting, family-cluster uncertainty and pilot-frozen decision criteria. Actual report reopens exact raw artifacts and declares inference scope.
 - **Negative / falsification control:** Dropped errors, hidden label access, unequal resources, unobserved-stage metrics, model/coordinator labels called independent human truth, test tuning and post-result changed thresholds invalidate the affected claim. Null and unsupported outcomes remain visible.
 - **Phase-local boundary:** P02 proves harness/scorer mechanics; later phases prove specific mechanism experiments. Neither establishes P13 locked superiority. Whole-gate PASS requires declared multi-phase scope and evidence, not a successful control alone.

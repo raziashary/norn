@@ -1892,7 +1892,170 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Source headings:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode.
 - **Entry:** P05-T09 (DONE). **Mandate (ADR-0029, owner answers of 13 November 2026):** stage M1 only, that is the substrate decisions (migration, identity policy and per-object ACL design, fixture version and pools with a noisy-rendering stratum, endpoints and margin proposal, seed definitions) plus an internal, non-public foundation T01-T06 after the plan corrections listed in ADR-0029; stage M2 (T07-T12, public wiring, retention) needs a separate owner decision. The per-object ACL design goes to the owner before code. No card has started.
 - **Exit:** Gold/derived topology and fixed/shared seeds distinguished; bounded BFS/PPR/heat oracle and security controls pass; incremental evidence measured.
+- **State:** IN_PROGRESS.
+- **M1 execution order (ADR-0029):** T14 design and the owner's ACL decision; T13 mechanism check; T15 migration; T16 per-object ACL; T17 identity policy; T18 fixtures; T19 noisy stratum; T20 R0 to R3 re-run; then T01 to T06 in order; then T21 pilot, endpoint preregistration and margin proposal (the owner's answer closes M1). T07 to T12 are M2 and need a separate owner decision; before M2 starts T08 to T11 are split into atomic cards, G-SECURITY, G-ACL, G-GRAPH and G-DIFFUSION ownership and the traceability rows are reconciled, and the owner stops before T11 (arm vocabulary, the meaning of the `graph` capability, CLI) and before retention in T12 are added.
+
+<a id="p06-t13"></a>
+
+### P06-T13 — Confirm the E3 sufficiency mechanism on the existing baseline
+
+- [ ] **P06-T13**
 - **State:** PLANNED.
+- **Files:** `benchmark/runs/e3_mechanism.py`, `tests/test_e3_mechanism.py`, `docs/development/evidence/p06_e3_mechanism.md`.
+- **Depends:** P05-T09.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Read the existing E3 chain observations and replay the sufficiency decision on each (read-only, credential-free) to separate slot recall from the status the gate assigns, and report which of the six false abstentions come from the AMBIGUOUS rule in `governance/sufficiency.py` and which from missing evidence.
+- **Consumer:** T21 margin proposal and T10 reporting read the confirmed mechanism, so a graph arm's chain gain is not credited when it came from a changed gate.
+- **Positive proof:** Per-observation table of requested predicates, distinct values, gate rule fired, retrieved slots and gold slots for all E3 cases; hand-checked on one case.
+- **Negative proof:** A case with distinct values for a requested predicate is not counted as retrieval failure; a case with all slots retrieved and an ambiguity abstention is reported as a gate effect; no gold label is read by the replay except through the evaluator path.
+- **Gate:** G-ABSTENTION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_e3_mechanism.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t14"></a>
+
+### P06-T14 — Record the M1 substrate design and obtain the per-object ACL decision
+
+- [ ] **P06-T14**
+- **State:** IN_PROGRESS.
+- **Files:** `docs/development/evidence/p06_m1_substrate_design.md`, `docs/development/ADR_LOG.md`.
+- **Depends:** P05-T09.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Write the design for per-object ACL, migration 006, the benchmark identity policy, the `public-v2` fixture version with the noisy stratum, seed definitions, endpoints and compute; put the shipped-contract ACL design (D1 to D4) to the owner before any code.
+- **Consumer:** T15 to T21 and T01 to T06 read the design; the owner answers D1 to D4 in ADR_LOG.
+- **Positive proof:** Every design fact is traceable to a source file or ADR; the ACL decision and its alternatives are recorded with the owner's answer.
+- **Negative proof:** No ACL, schema or fixture code is written before the owner answers D1 to D4; a design claim without a source reference is not accepted.
+- **Gate:** G-ACL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: documentation CLI and source-grounded review. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** `docs/development/evidence/p06_m1_substrate_design.md` drafted 13 November 2026 from the current source; the owner decision on section 2 (D1 to D4) is pending; card closes when it is recorded.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t15"></a>
+
+### P06-T15 — Add graph migration 006 with verified upgrade proofs
+
+- [ ] **P06-T15**
+- **State:** PLANNED.
+- **Files:** `src/norn/canonical/006_graph.sql`, `src/norn/canonical/database.py`, `tests/test_graph_migration.py`.
+- **Depends:** P06-T14.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Additive migration: `relation_types`, `graph_edges` with typed endpoints and `graph_edge_support`, `object_scopes` and `graph_manifests`; no existing table or constraint is rebuilt; `SCHEMA_VERSION` becomes 6.
+- **Consumer:** T01 rebuilds the graph from the registry; T16 reads `object_scopes`; T11 later publishes a `graph` manifest.
+- **Positive proof:** A fresh v6 schema, a populated v5 database upgraded after a verified backup, an interrupted upgrade that recovers, a restore and an installed-wheel run each pass as separate proofs; existing relationship and retrieval tests still pass.
+- **Negative proof:** A relation type outside `relation_types` is refused; a graph edge with an unknown endpoint kind or missing support is refused; the upgrade refuses to run without a verified backup record; HYPOTHESIZES_CAUSE can never be flagged causal.
+- **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_graph_migration.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t16"></a>
+
+### P06-T16 — Implement per-object ACL and the non-raising eligibility predicate
+
+- [ ] **P06-T16**
+- **State:** PLANNED.
+- **Files:** `src/norn/governance/access.py`, `src/norn/governance/eligibility.py`, `tests/test_object_acl.py`.
+- **Depends:** P06-T14, P06-T15.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Implement the owner-approved D1 to D4 decisions: label-scoped grants with deny-overrides, fail-closed multi-source objects, current ACL at query time, one `eligible` rule under `check`; retrieval and read paths use it for objects.
+- **Consumer:** Retrieval, the engine reader and the graph seed and traversal readers call `eligible`; the benchmark queries through one Engine per principal.
+- **Positive proof:** A principal with a namespace grant is denied a labelled source; a REVOKE at a label overrides a '*' GRANT; a denied neighbour leaves the response unchanged; multi-source atoms and citations are filtered as designed.
+- **Negative proof:** Denied and absent objects stay indistinguishable; counts, truncation flags and paths do not move when a denied object is added; a mid-read label change raises QUERY_SECURITY_CHANGED; no existing namespace-wide test regresses.
+- **Gate:** G-ACL, G-SECURITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_object_acl.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t17"></a>
+
+### P06-T17 — Apply the benchmark entity identity policy with governed external keys
+
+- [ ] **P06-T17**
+- **State:** PLANNED.
+- **Files:** `benchmark/fixtures/entities.py`, `benchmark/adapters/baseline.py`, `tests/test_entity_policy.py`.
+- **Depends:** P06-T14, P06-T15.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Register entities through the ADMIN-level `register_entity` path only from an external key or an explicit source-grounded alias statement present in the published text; store alias claims as IDENTITY_LINK edges with span support.
+- **Consumer:** T01 builds shared entity nodes from the registry; T18 families depend on keys being present in text.
+- **Positive proof:** Two sources that state the same external key share one entity node; an explicit alias statement links two nodes with span support; the hub and chain fixtures produce the intended degrees.
+- **Negative proof:** Equal or similar names without a key or alias statement never merge; a gold identity table is never read by the loader; a non-ADMIN principal cannot register a key.
+- **Gate:** G-IDENTITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_entity_policy.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t18"></a>
+
+### P06-T18 — Build the `public-v2` multi-hop fixture version
+
+- [ ] **P06-T18**
+- **State:** PLANNED.
+- **Files:** `benchmark/fixtures/multihop.py`, `benchmark/fixtures/partitions.py`, `benchmark/fixtures/scenarios.py`, `tests/test_multihop_fixtures.py`.
+- **Depends:** P06-T14, P06-T17.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Add families M1 to M6, namespaces of 20 to 60 sources, an explicit `search_budget` separate from the 10-slot output limit, and the pilot, tune and evaluation cluster counts of the design; split by scenario and entity family before any paraphrase; move the fixture tag to `public-v2`.
+- **Consumer:** T19 renders noisy variants; T20 re-runs R0 to R3; T21 and T10 measure on it.
+- **Positive proof:** The generator is deterministic and reproduces its digests; pools exceed the 10 cap; chains and hubs have the intended graph degrees through the T17 identity policy.
+- **Negative proof:** Gold, forbidden sources and chain labels are absent from published inputs and IDs; a held-out family never appears in an earlier role; the P05 evaluation role is not reused.
+- **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_multihop_fixtures.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t19"></a>
+
+### P06-T19 — Add the labelled NOISY_V1 rendering stratum
+
+- [ ] **P06-T19**
+- **State:** PLANNED.
+- **Files:** `benchmark/fixtures/noisy_render.py`, `tests/test_noisy_render.py`.
+- **Depends:** P06-T18.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** A seeded, deterministic renderer applies typos, abbreviation, clause reordering, distractor clauses and the en/id/mixed variants to the same facts, labelled NOISY_V1; no model, network or Groq call.
+- **Consumer:** T02 extracts a derived graph from noisy text and measures its error against the hidden gold graph; T20 and T10 read it as a stratum.
+- **Positive proof:** The same seed reproduces identical bytes; every noisy rendering keeps its facts recoverable by a human-readable check on a sample; the stratum is labelled in every published input and report.
+- **Negative proof:** Noise never alters a gold fact or leaks a label; an unlabelled noisy rendering is rejected; a generative renderer is not importable from this module.
+- **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_noisy_render.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t20"></a>
+
+### P06-T20 — Re-run R0 to R3 on `public-v2`
+
+- [ ] **P06-T20**
+- **State:** PLANNED.
+- **Files:** `benchmark/runs/baselines.py`, `docs/development/evidence/baselines_multihop.md`, `tests/test_baselines_multihop.py`.
+- **Depends:** P06-T13, P06-T18, P06-T19.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Run the conventional retrieval arms on the new fixture version with a wall-time cap in the receipt, separating slot recall from sufficiency status, and record which endpoints saturate.
+- **Consumer:** T21 and T10 compare graph arms against these runs; the old public-v1 numbers are not reused.
+- **Positive proof:** R0 to R3 observations reload and validate under an external attestation; endpoint saturation is stated per family.
+- **Negative proof:** No P03 or P05 number is carried over; a run without an attestation or the development-only label is not citable.
+- **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_baselines_multihop.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
+
+<a id="p06-t21"></a>
+
+### P06-T21 — Preregister endpoints, run the pilot and propose the margins
+
+- [ ] **P06-T21**
+- **State:** PLANNED.
+- **Files:** `docs/development/evidence/p06_margin_proposal.md`, `benchmark/runs/graph_pilot.py`, `tests/test_graph_pilot.py`.
+- **Depends:** P06-T06, P06-T20.
+- **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
+- **Change:** Run G0 to G4 on the pilot role only, estimate the endpoint variance, write the margin and cluster-count proposal of design section 7, and record the owner's answer before any tune-role read.
+- **Consumer:** T10 and T12 read the frozen margins; the owner answers in ADR_LOG.
+- **Positive proof:** Every proposed margin is computed from the pilot with its denominator and interval; the owner's answer is recorded before the margins are frozen in code.
+- **Negative proof:** No tune or evaluation role is read before the answer; a margin changed after a result invalidates promotion; a pilot result is never used as a benefit claim.
+- **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
+- **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_graph_pilot.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
+- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t01"></a>
 
@@ -1901,12 +2064,12 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - [ ] **P06-T01**
 - **State:** PLANNED.
 - **Files:** `src/norn/graph/contracts.py`, `src/norn/graph/adjacency.py`, `tests/test_graph_contracts.py`.
-- **Depends:** P05-T09.
+- **Depends:** P06-T15, P06-T17.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Typed nodes/endpoints/relations carry independent source support, identity, time, scope, origin and revision.
+- **Change:** Typed nodes/endpoints/relations on schema 6 (`graph_edges`, `relation_types`, shared entity nodes from the T17 policy) carry independent source support, identity, time, scope, origin and revision.
 - **Consumer:** Seed and traversal readers rebuild graph from registry.
 - **Positive proof:** Exact event/atom/entity/source graph reloads deterministically.
-- **Negative proof:** Name similarity cannot merge; missing provenance or unsupported direction cannot enter eligible graph.
+- **Negative proof:** Name similarity cannot merge; missing provenance or unsupported direction cannot enter eligible graph; an edge whose endpoint or support is not eligible for the principal is absent from the graph.
 - **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_contracts.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
 - **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
@@ -1918,10 +2081,10 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P06-T02**
 - **State:** PLANNED.
-- **Files:** `src/norn/extraction/relations.py`, `benchmark/metrics/graph_quality.py`, `tests/test_relation_extraction.py`.
-- **Depends:** P06-T01.
+- **Files:** `src/norn/extraction/relations.py`, `benchmark/metrics/graph_quality.py` (relation precision and recall only; identity precision stays in `benchmark/metrics/identity.py`), `tests/test_relation_extraction.py`.
+- **Depends:** P06-T01, P06-T19.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Separate hidden oracle diagnostic from source-derived graph and measure identity/relation extraction precision.
+- **Change:** Build the derived graph on three tracks (template read-back control with zero extraction error by construction, NOISY_V1, hidden gold diagnostic) and measure identity/relation extraction against the hidden gold graph; the hidden oracle never feeds the derived track.
 - **Consumer:** Traversal report attributes construction errors separately.
 - **Positive proof:** Same published sources reproduce supported graph with known extraction limits.
 - **Negative proof:** Candidate-only oracle edges not matched comparison; speculation stays HYPOTHESIZES_CAUSE.
@@ -1937,12 +2100,12 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - [ ] **P06-T03**
 - **State:** PLANNED.
 - **Files:** `src/norn/graph/seeds.py`, `tests/test_graph_seeds.py`.
-- **Depends:** P06-T02.
+- **Depends:** P06-T02, P06-T16.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Map exact/BM25/dense/binding candidates after ACL/time/erasure then normalize and preserve channel version.
+- **Change:** Map exact/BM25/dense (T0)/binding candidates after ACL/time/erasure into one nonnegative sum-one seed vector with channel and version recorded, defined as fixed (identical for every arm) and shared (identical across topologies) per the T14 design; an empty exact channel is reported as EXACT_CHANNEL_DEGRADED.
 - **Consumer:** Every graph algorithm receives same declared seed control.
 - **Positive proof:** Known code/partial cue gives expected positive seed mass; empty anchors explicit.
-- **Negative proof:** Wrong tenant/name, zero/nonfinite mass, denied or stale anchors cannot seed.
+- **Negative proof:** Wrong tenant/name, zero/nonfinite mass, denied or stale anchors cannot seed; seed construction imports nothing from evaluator or gold modules and shuffled gold labels leave the seed vectors byte-identical.
 - **Gate:** G-ACL. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_seeds.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
 - **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
@@ -1960,7 +2123,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Change:** Typed directions and global unique/repeated-work/hop/fanout/time limits with diagnostic path attenuation.
 - **Consumer:** Source recovery reads path-backed candidates.
 - **Positive proof:** Hand line/diamond and bounded hub fixtures recover target and expose truncation.
-- **Negative proof:** Path score is neither full PPR nor causation; cycles/denied intermediaries cannot leak.
+- **Negative proof:** Path score is neither full PPR nor causation; cycles/denied intermediaries cannot leak; a denied bridge node is never traversed and counts, truncation flags and paths do not move when a denied object is added; unique and repeated-work budgets are global.
 - **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_paths.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
 - **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
@@ -1978,7 +2141,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Change:** Row-stochastic forward-alpha PPR with restart, declared dangling rule, global budget, residual and mass metadata.
 - **Consumer:** Retriever uses activation only to propose IDs.
 - **Positive proof:** Sparse iteration matches dense line/cycle/diamond/dangling oracle within tolerance.
-- **Negative proof:** Wrong transpose/restart, leaked mass, negative weight and per-iteration-only node cap fail.
+- **Negative proof:** Wrong transpose/restart, leaked mass, negative weight and per-iteration-only node cap fail; budgets and counts are computed over the eligible subgraph only.
 - **Gate:** G-DIFFUSION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_ppr.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
 - **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
@@ -1996,7 +2159,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Change:** Exact small-graph exponential and sparse Poisson-series approximation with tail/work/time error bounds and same seed/graph.
 - **Consumer:** Paired runner compares true approximation/locality costs.
 - **Positive proof:** Mass/locality and tail tolerance match oracle on hand graphs.
-- **Negative proof:** Underflow/overflow/truncation cannot claim converged full result; diffusion scale not physical seconds.
+- **Negative proof:** Underflow/overflow/truncation cannot claim converged full result; diffusion scale not physical seconds; budgets and counts are computed over the eligible subgraph only.
 - **Gate:** G-DIFFUSION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_heat.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
 - **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
@@ -2008,12 +2171,12 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P06-T07**
 - **State:** PLANNED.
-- **Files:** `benchmark/adapters/graph_arms.py`, `src/norn/graph/recurrent.py`, `tests/test_graph_arm_contracts.py`.
+- **Files:** `benchmark/adapters/graph_arms.py`, `tests/test_graph_arm_contracts.py`.
 - **Depends:** P06-T06.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Wire retained-binding+PPR, graph-only diagnostic and optional approved recurrent energy/state experiment; unsupported remains explicit.
+- **Change:** Wire G5 (T0 dense-seed channel plus PPR) and G6 (graph/exact seeds only); G7 stays disabled and returns FEATURE_NOT_SUPPORTED with no recurrent module created (ADR-0029 P06-Q6); the shared-binding interaction R10 is not part of P06; unsupported remains explicit.
 - **Consumer:** Runner and next phase consume genuine supported arm matrix.
-- **Positive proof:** G5/G6 use real intended channels; G7 disabled returns FEATURE_NOT_SUPPORTED.
+- **Positive proof:** G5 uses the real T0 dense channel and G6 the intended exact/graph channels; G7 disabled returns FEATURE_NOT_SUPPORTED.
 - **Negative proof:** Missing binding cannot silently substitute G5; HNSW/BFS cannot masquerade as learned attractor.
 - **Gate:** G-DIFFUSION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_arm_contracts.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
@@ -2063,7 +2226,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - [ ] **P06-T10**
 - **State:** PLANNED.
 - **Files:** `benchmark/runs/graph.py`, `tests/test_graph_report.py`, `docs/development/evidence/graph_completion.md`.
-- **Depends:** P06-T09.
+- **Depends:** P06-T09, P06-T21.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
 - **Change:** Same graph/seeds/scope/tokens/work/time across G arms; separate oracle/derived and fixed/shared seed effects.
 - **Consumer:** Research report reads raw paired outcomes including extraction cost.

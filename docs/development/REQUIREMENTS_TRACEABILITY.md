@@ -56,13 +56,13 @@ P01–P04 rows have phase-local proof in E-P01-003/E-P02-003/E-P03-003/E-P04-005
 | E1 | Near-duplicate episode | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P01-T05,P05-T08 | G-IDENTITY | P01 PASS E-P01-003; P05-T08 PARTIAL E-P05-007 (descriptive); later ownership NOT_RUN |
 | E2 | Partial cue | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P04-T08,P05-T08 | G-BINDING | P04 local investigation PASS E-P04-005; scientific INCONCLUSIVE; P05-T08 PARTIAL E-P05-007 (descriptive); later ownership NOT_RUN |
 | E3 | Multi-hop | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T10 | G-DIFFUSION | PLANNED / NOT_RUN |
-| E4 | False association hubs | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T09 | G-GRAPH | PLANNED / NOT_RUN |
+| E4 | False association hubs | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T09,P06-T17,P06-T18 | G-GRAPH | PLANNED / NOT_RUN |
 | E5 | User corrections | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P01-T10,P09-T03 | G-TEMPORAL | P01 PASS E-P01-003; later ownership NOT_RUN |
 | E6 | Conflicting authorities | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P03-T08 | G-ABSTENTION | P03 local contract PASS E-P03-003; scientific outcome INCONCLUSIVE |
 | E7 | Temporal late arrivals | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P01-T03,P09-T03 | G-TEMPORAL | P01 PASS E-P01-003; later ownership NOT_RUN |
 | E8 | Salience dramatic distractors | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P07-T07 | G-SALIENCE | PLANNED / NOT_RUN |
 | E9 | Unanswerable twins | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P02-T03,P03-T08 | G-ABSTENTION | P02 mechanics PASS E-P02-003; P03 local contract PASS E-P03-003; scientific outcome INCONCLUSIVE |
-| E10 | ACL neighbor privacy | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T09,P12-T03 | G-ACL | PLANNED / NOT_RUN |
+| E10 | ACL neighbor privacy | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P06-T09,P06-T16,P12-T03 | G-ACL | PLANNED / NOT_RUN |
 | E11 | Memory poisoning | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P12-T02 | G-SECURITY | PLANNED / NOT_RUN |
 | E12 | Storage failure | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P11-T06,P12-T06 | G-OPS | PLANNED / NOT_RUN |
 | E13 | Long-run consolidation exceptions | [design](MASTER_DEV_PLAN.md#worked-scenarios) | P08-T07,P08-T08 | G-CONSOLIDATION | PLANNED / NOT_RUN |
