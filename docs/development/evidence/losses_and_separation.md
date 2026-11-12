@@ -116,5 +116,5 @@ Same frozen codes over all 138 tune queries (51 sufficient, 86 insufficient-cue,
 | selection | `cb0ea3de70d4b626caac73529a9e9909d011832c0d139a5bde3bfc6d7321812c` |
 | held-out report | `e8b82db509c372fd3d7c3818ab5952412f96622ef77c44056b83bd542a3e22b1` |
 | factorial training digest (`p05-t03-001`) | `2e0fc9567dc2144caf3ee933566eb7c150a47a2d0ae5951c378424688401b0f6` |
-| T07 sweep report (run 003) | `f6f26498df72828721eaade1e071fbb1844671c34648ecc34717e663a56d9013` |
-| T08 partial-cues report | `4a61282947212d58eb8a7893470280bba5c1db90b604c9ca8eb88f2b4b8023e4` |
+| T07 sweep report (run 003; rerun 004 after the loader fix reproduces every cell, sha `a081e67cf46d02219332d044afc6c33d39b7bbf1c14c3e95f3cdcb89cd71a655`) | `f6f26498df72828721eaade1e071fbb1844671c34648ecc34717e663a56d9013` |
+| T08 partial-cues report (run 001; rerun 002 after the loader fix reproduces every cell, sha `68d81ba1597f0913c5e99ce1981960666cebccafbade38d5e7322811c1770365`) | `4a61282947212d58eb8a7893470280bba5c1db90b604c9ca8eb88f2b4b8023e4` |
