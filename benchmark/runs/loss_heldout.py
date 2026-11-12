@@ -179,7 +179,7 @@ def _stack(environment: dict[str, Any]) -> dict[str, Any]:
     return {k: v for k, v in environment.items() if k != "head_threads"}
 
 
-def _checkpoint_name(arm: str, seed: int) -> str:
+def checkpoint_name(arm: str, seed: int) -> str:
     return f"checkpoints/{arm}-{seed}.json"
 
 
@@ -229,7 +229,7 @@ def prepare(
     checkpoints = {}
     for (arm, seed), job in sorted(jobs.items()):
         require(file_digest(factorial / job["path"]) == job["sha256"], "CHECKPOINT_SOURCE_CHANGED")
-        relative = _checkpoint_name(arm, seed)
+        relative = checkpoint_name(arm, seed)
         (root / relative).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(factorial / job["path"], root / relative)
         require(file_digest(root / relative) == job["sha256"], "CHECKPOINT_COPY_CHANGED")
@@ -290,7 +290,7 @@ def checked(root: Path) -> dict[str, Any]:
         require(file_digest(root / name) == sha, "HELDOUT_ARTIFACT_CHANGED")
     for key, sha in manifest["checkpoints"].items():
         arm, seed = key.split("/")
-        require(file_digest(root / _checkpoint_name(arm, int(seed))) == sha, "CHECKPOINT_CHANGED")
+        require(file_digest(root / checkpoint_name(arm, int(seed))) == sha, "CHECKPOINT_CHANGED")
     return cast(dict[str, Any], manifest)
 
 
@@ -305,7 +305,7 @@ def conditions(root: Path, role: str) -> list[Condition]:
     result = [Condition("B0", None, None, {"arm": "T0"})]
     for arm in arms:
         for seed in CONFIG["seeds"]:
-            result.append(Condition("B3", seed, root / _checkpoint_name(arm, seed), {"arm": arm}))
+            result.append(Condition("B3", seed, root / checkpoint_name(arm, seed), {"arm": arm}))
     return result
 
 
@@ -362,7 +362,7 @@ def observations(root: Path, model_root: Path, role: str) -> list[dict[str, Any]
     models = {}
     for key in manifest["checkpoints"]:
         arm, seed = key.split("/")
-        models[arm, int(seed)] = checkpoint.load(root / _checkpoint_name(arm, int(seed))).model
+        models[arm, int(seed)] = checkpoint.load(root / checkpoint_name(arm, int(seed))).model
     expected = {tuple(p) for p in done["planned"]}
     tokenizer = EvidenceTokenizer(model_root)
     chain, seen, rows = file_digest(root / "manifest.json"), set(), []

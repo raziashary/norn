@@ -118,6 +118,12 @@ def parser() -> argparse.ArgumentParser:
             heldout.add_argument("--enable-models", action="store_true")
         if operation == "report":
             heldout.add_argument("--output", type=Path, required=True)
+    separation = commands.add_parser(
+        "separation-sweep", help="Explicit P05-T07 offline sparse/dense code sweep (tune role only)"
+    )
+    separation.add_argument("directory", type=Path)
+    separation.add_argument("--output", type=Path, required=True)
+    separation.add_argument("--wall-cap-seconds", type=float, required=True)
     for toy in ("toy-support", "toy-cues"):
         toy_parser = commands.add_parser(toy, help="Explicit P05 toy-study reproduction")
         toy_parser.add_argument("--output", type=Path, required=True)
@@ -218,6 +224,12 @@ def main(argv: list[str] | None = None) -> int:
                     "selected": value["selected"],
                     "verdict": value["verdict"],
                 }
+        elif args.command == "separation-sweep":
+            from benchmark.runs import separation
+
+            result = separation.run(
+                args.directory, args.output, wall_cap_seconds=args.wall_cap_seconds
+            )
         elif args.command == "factorial-diagnostics":
             from benchmark.runs import loss_diagnostics
 
