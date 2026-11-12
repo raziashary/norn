@@ -1833,7 +1833,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T07**
 - **State:** PLANNED.
-- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Dimensions other than 384 and any cap change need the owner answer in ADR-0027 (Q-A) before this card runs.
+- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Owner answered Q-A on 12 November 2026 (ADR-0027): keep every cap and sweep at 384 dimensions only; a dimension above 384 or a cap change needs a new owner answer.
 - **Depends:** P05-T06.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Development dimension/sparsity/margin/projection and semantic/episode fusion sweep at matched bytes and exhaustive control.
@@ -1851,7 +1851,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 - [ ] **P05-T08**
 - **State:** PLANNED.
-- **Files:** `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). A language-held-out claim needs the split decided in ADR-0027 (Q-B); otherwise the card claims paraphrase and unseen-identity transfer only.
+- **Files:** `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). Owner answered Q-B on 12 November 2026 (ADR-0027): the card claims paraphrase and unseen-identity transfer only; language transfer stays untested.
 - **Depends:** P05-T07.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Score discrimination only with sufficient cue and safe ambiguity otherwise; include paraphrase and unseen identity/language.
