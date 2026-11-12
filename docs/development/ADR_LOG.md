@@ -1,5 +1,17 @@
 # Architecture and research decision log
 
+## ADR-0028 — P05 retained-code decision: T0 retained, learned heads not adopted
+
+- **Status:** APPLIED by main on 12 November 2026 under the owner-approved R09 rule; open to owner override in "My answer". No later phase has a mandate.
+- **Question:** After P05-T03 held-out retrieval, the T07 separation sweep and the T08 ambiguity/transfer check, which code does the P06 graph study start from, and what may it assume about learned and sparse codes?
+- **Why:** ADR-0026 and ADR-0027 Q-D fixed the margins and the simpler-winner rule before any tune-role read: if no arm clears C1 or C2 the simpler arm (T0 or T1) is retained. The held-out verdict is `T0_RETAINED_NO_ARM_CLEARS_C1` (T1 selected by tie-break; C1 +0.095, interval [0.000, 0.262]). T07 and T08 had no approved margins and are descriptive; they do not decide, but they bound what P06 may assume (R37, R38).
+- **Options:** Retain T0, the frozen E5 single-feature code (chosen); retain T1 (rejected: T1 is the retrieval-only learned head and did not clear C1); retain a separation arm T4, T5 or T7 (rejected: not scored on the evaluation role, no held-out evidence, and all collapse onto a hub episode over pooled events); adopt a sparse or binary code (rejected: not consistently better than a random dense code of equal bytes, binary collides); ask the owner for new margins first (available at any time, not required by the approved rule).
+- **Recommendation / decision:** P06 starts from T0 dense cosine over the 384-coordinate frozen E5 code. T1–T7 checkpoints stay as development artifacts; a learned head may enter only as a separately enabled, separately measured treatment with new owner-approved margins fixed before the first read on a role not already reported. Learned codes are never a global identity index (R37) and separation margins never decide abstention (R38). The report is `docs/development/evidence/losses_and_separation.md`.
+- **What affects what:** P06 entry and its baseline; G-RESEARCH; R33, R35, R37, R38; `tests/test_loss_report.py` binds the report to the frozen margins, the verdict function and (when present) the local run artifacts.
+- **My answer (editable):** (empty: the decision follows the owner-approved rule; the owner may state "agree" or request new margins or a different retained arm here.)
+- **Authority:** ADR-0026 (mandate), ADR-0027 Q-A to Q-G (owner answers of 7 and 12 November 2026) and the approved R09 proposal §3; the application of the rule is main's.
+- **Verification:** E-P05-001, E-P05-004, E-P05-006, E-P05-007; `loss_heldout.verdict` reproduces the label from the recorded contrasts (test); the per-seed training table in the report is checked against `training.json` when the run exists.
+
 ## ADR-0027 — Review findings, recorded deviations and P05 start conditions
 
 - **Status:** PROPOSED by main on 7 November 2026; **Q-D ANSWERED by the owner on 7 November 2026 (approved as written); Q-A, Q-B, Q-C, Q-E, Q-F and Q-G ANSWERED by the owner on 12 November 2026 (all took the recommendation)**. Execution status of each is in the answer field. The items marked Q-A to Q-G are the only ones that block a card; everything else is disclosure.

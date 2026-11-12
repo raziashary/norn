@@ -1842,7 +1842,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** No universal orthogonalization, c-to-c^k or JL40dim claim; ANN/model changes disclosed.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_separation.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-006: 1,858 cells over tune-role captures at 384 dimensions, descriptive only (R09 left T07 margins unapproved). Eligible pools almost never contain a distractor (8 of 51), learned codes win inside a pool but collapse onto a hub episode over pooled events (R37), and sparse top-k is not better than a random dense code of equal bytes; runs 001/002 are retained as superseded; card closes with the P05 end review.
+- **Evidence:** E-P05-006: 1,858 cells over tune-role captures at 384 dimensions, descriptive only (R09 left T07 margins unapproved). Eligible pools almost never contain a distractor (8 of 51), learned codes win inside a pool but collapse onto a hub episode over pooled events (R37), and sparse top-k is not consistently better than a random dense code of equal bytes; runs 001/002 are retained as superseded; card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t08"></a>
@@ -1868,7 +1868,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T09 — Publish loss separation and retained-code decision
 
 - [ ] **P05-T09**
-- **State:** PLANNED.
+- **State:** IN_PROGRESS.
 - **Files:** `docs/development/evidence/losses_and_separation.md`, `docs/development/ADR_LOG.md`, `tests/test_loss_report.py`.
 - **Depends:** P05-T08.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1878,7 +1878,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Calibration/test tuning or post-result margin revision invalidates promotion.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_loss_report.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** ADR-0028 and `docs/development/evidence/losses_and_separation.md` (retained code T0 under the approved simpler-winner rule; T1-T7 not retained; no sparse/binary code adopted; every arm, seed and raw failure preserved); `tests/test_loss_report.py` 7 tests bind the report to the frozen margins, the verdict function and the local run artifacts. Descriptive for T07/T08; card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06"></a>
