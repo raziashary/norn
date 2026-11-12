@@ -1832,8 +1832,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T07 — Sweep real dense sparse random learned codes
 
 - [ ] **P05-T07**
-- **State:** PLANNED.
-- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Owner answered Q-A on 12 November 2026 (ADR-0027): keep every cap and sweep at 384 dimensions only; a dimension above 384 or a cap change needs a new owner answer.
+- **State:** IN_PROGRESS.
+- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, `benchmark/metrics/identity.py` (the single identity-metric owner, started here so T08 extends it instead of duplicating), `benchmark/runs/cli.py` (`separation-sweep`), `loss_heldout.checkpoint_name` made public, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Owner answered Q-A on 12 November 2026 (ADR-0027): keep every cap and sweep at 384 dimensions only; a dimension above 384 or a cap change needs a new owner answer.
 - **Depends:** P05-T06.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Development dimension/sparsity/margin/projection and semantic/episode fusion sweep at matched bytes and exhaustive control.
@@ -1842,7 +1842,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** No universal orthogonalization, c-to-c^k or JL40dim claim; ANN/model changes disclosed.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_separation.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-006: 1,858 cells over tune-role captures at 384 dimensions, descriptive only (R09 left T07 margins unapproved). Eligible pools almost never contain a distractor (8 of 51), learned codes win inside a pool but collapse onto a hub episode over pooled events (R37), and sparse top-k is not better than a random dense code of equal bytes; runs 001/002 are retained as superseded; card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t08"></a>
