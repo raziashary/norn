@@ -191,6 +191,11 @@ def test_copies_of_one_episode_do_not_tie_with_themselves_but_distinct_episodes_
     assert pooled[0]["pool"] == 3 and pooled[0]["top1_strict"]
     assert sweep._episode_top(inputs, scores[0]) == "A"
     assert sweep._episode_top(inputs, scores[1]) is None  # B and C tie at the top
+    # Hubness: one of the two queries has a unique leader, and it is episode A.
+    result = sweep._scope_result(inputs, scores, "pooled", None)
+    assert result["distinct_top_episodes"] == 1 and result["hub_share"] == 0.5
+    hub = np.array([[0.9, 0.9, 0.2, 0.0], [0.9, 0.9, 0.2, 0.0]])
+    assert sweep._scope_result(inputs, hub, "pooled", None)["hub_share"] == 1.0
 
 
 def test_contested_summary_counts_only_queries_with_a_distractor():
@@ -281,12 +286,16 @@ def test_real_tune_captures_sweep_reports_every_declared_cell_and_the_controls(t
     ties = find("sparse", "T0", "native", "binary", 100)
     assert ties["pooled"]["overall"]["top1_strict"] == 0
     assert ties["pooled"]["overall"]["tied_at_top"] == 1
-    # Shuffled labels sit near the chance rate of the same pooled episodes, not near the real rate.
+    # Shuffled labels sit near the pooled chance rate, far below the real exhaustive rate.
+    chance = exhaustive["pooled"]["chance_top1"]
     shuffled = [
         c["pooled"]["overall"]["top1_strict"]
         for c in cells
         if c["family"] == "shuffled_gold_control"
     ]
+    real = exhaustive["pooled"]["overall"]["top1_strict"]
+    assert len(shuffled) == 3 and max(shuffled) < chance + 0.1 < real
     assert (
-        len(shuffled) == 3 and max(shuffled) < exhaustive["pooled"]["overall"]["top1_strict"] + 0.2
+        1 <= exhaustive["pooled"]["distinct_top_episodes"] <= report["scopes"]["distinct_episodes"]
     )
+    assert 0 < exhaustive["pooled"]["hub_share"] <= 1

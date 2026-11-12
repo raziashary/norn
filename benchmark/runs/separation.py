@@ -43,7 +43,7 @@ SEEDS = (11, 29, 47)
 FUSION_WEIGHTS = (0.25, 0.5, 0.75)
 SCOPES = ("eligible", "pooled")
 CONFIG: dict[str, Any] = {
-    "revision": "separation-sweep-v2-episode-level",
+    "revision": "separation-sweep-v3-episode-level-hubness",
     "status": "DEVELOPMENT_DESCRIPTIVE_NO_THRESHOLD_NO_SELECTION",
     "role": ROLE,
     "dimension": separation.DIMENSION,
@@ -223,11 +223,16 @@ def _scope_result(
             [o["pool"] for o in outcomes], [o["gold"] for o in outcomes]
         ),
     }
-    if dense_top is not None and scope == "pooled":
+    if scope == "pooled":
         top = [_episode_top(inputs, scores[i]) for i in range(len(inputs.queries))]
-        result["agreement_with_dense"] = sum(
-            1 for a, b in zip(top, dense_top, strict=True) if a is not None and a == b
-        ) / len(top)
+        named = Counter(t for t in top if t is not None)
+        # Hubness: how many different episodes ever lead, and the share one episode leads.
+        result["distinct_top_episodes"] = len(named)
+        result["hub_share"] = max(named.values()) / len(top) if named else 0.0
+        if dense_top is not None:
+            result["agreement_with_dense"] = sum(
+                1 for a, b in zip(top, dense_top, strict=True) if a is not None and a == b
+            ) / len(top)
     return result
 
 
