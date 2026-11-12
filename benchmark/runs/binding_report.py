@@ -405,7 +405,16 @@ def observe(
     }
 
 
-def report(root: Path, model_root: Path, attestation: Path | None = None) -> dict[str, Any]:
+def report(
+    root: Path,
+    model_root: Path,
+    attestation: Path | None = None,
+    *,
+    development_only: bool = False,
+) -> dict[str, Any]:
+    from benchmark.runs.validate import require_attestation
+
+    evidence_status = require_attestation(attestation, development_only)
     if attestation is not None:
         from benchmark.runs.seal import verify
 
@@ -552,6 +561,7 @@ def report(root: Path, model_root: Path, attestation: Path | None = None) -> dic
         "schema": 1,
         "scope": "UNAUDITED_FROZEN_BACKBONE_DEVELOPMENT_ONLY",
         "scientific_outcome": "INCONCLUSIVE",
+        "evidence_status": evidence_status,
         "pairs": len(seen),
         "arms": arms,
         "strata": strata,

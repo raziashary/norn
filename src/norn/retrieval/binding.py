@@ -21,6 +21,11 @@ if TYPE_CHECKING:
     from norn.integration.engine import Engine
 
 
+# The default candidate limit (20 events) times the write limit of 64 atoms per event: the
+# default always fits, while a larger limit over atom-rich events fails closed (ADR-0027 Q-G).
+MAX_EXPANDED_HITS = 20 * 64
+
+
 def expand_ranked_events(
     records: tuple[Record, ...], scores: dict[str, float], variant: str, limit: int
 ) -> tuple[Hit, ...]:
@@ -28,12 +33,17 @@ def expand_ranked_events(
 
     The candidate limit counts events: one event with many atoms cannot fill the list and push
     every other event out. Atoms of an event keep key order; later stages bound the evidence.
+    The expanded atom count is capped by ``MAX_EXPANDED_HITS`` and exceeding it is an error,
+    never a silent truncation, because every kept atom is resolved in later stages.
     """
     by_event: dict[str, list[Record]] = {}
     for record in records:
         by_event.setdefault(record.event_id, []).append(record)
     order = sorted(
         by_event, key=lambda event: (-scores[event], min(r.key for r in by_event[event]))
+    )
+    require(
+        sum(len(by_event[e]) for e in order[:limit]) <= MAX_EXPANDED_HITS, "EXPANDED_HITS_BUDGET"
     )
     return tuple(
         Hit(record, scores[event], variant)

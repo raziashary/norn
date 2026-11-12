@@ -126,14 +126,16 @@ class SourceStore:
         removed = 0
         cutoff = time.time() - max_age_seconds
         for entry in self.root.iterdir():
-            if (
-                entry.name.startswith(STAGING_PREFIX)
-                and entry.is_file()
-                and not entry.is_symlink()
-                and entry.stat().st_mtime < cutoff
-            ):
-                entry.unlink(missing_ok=True)
-                removed += 1
+            if not entry.name.startswith(STAGING_PREFIX):
+                continue
+            try:
+                if not entry.is_file() or entry.is_symlink() or entry.stat().st_mtime >= cutoff:
+                    continue
+                entry.unlink()
+            except FileNotFoundError:
+                # A live writer discarded its staging file between the listing and this check.
+                continue
+            removed += 1
         return removed
 
     def read(self, version: str) -> bytes:

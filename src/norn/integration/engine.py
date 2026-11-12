@@ -2,6 +2,7 @@
 
 import json
 import shutil
+import sqlite3
 from pathlib import Path
 from threading import Event
 from typing import Any, Self
@@ -127,6 +128,16 @@ class Engine:
     ) -> dict[str, Any]:
         return self.registry.ingest(request, correction=correction)
 
+    def _both_assert(self, ns: str, row: sqlite3.Row, edge: sqlite3.Row) -> bool:
+        """Whether both endpoints of a relationship are asserting-origin atoms."""
+        if row["origin"] not in ASSERTING_ORIGINS:
+            return False
+        other = edge["from_id"] if edge["to_id"] == row["id"] else edge["to_id"]
+        found = self.db.connection.execute(
+            "SELECT origin FROM atoms WHERE ns=? AND id=?", (ns, other)
+        ).fetchone()
+        return found is not None and found["origin"] in ASSERTING_ORIGINS
+
     def read(self, event_id: str, clock: QueryClock) -> EvidenceView:
         event = self.registry.event_row(event_id)
         current_seq = self.db.connection.execute(
@@ -200,9 +211,12 @@ class Engine:
                     edge["relation_type"] == "CONTRADICTS"
                     and active
                     and edge["epistemic"] in ASSERTING_ORIGINS
+                    and self._both_assert(ns, row, edge)
                 ):
                     # A hypothesis or model inference may be recorded as disagreeing, but it is
-                    # not evidence and cannot put an observation into CONFLICT (invariant I2).
+                    # not evidence: it cannot put an observation into CONFLICT, and a
+                    # contradiction of a hypothesis is not a conflict of evidence (invariant I2,
+                    # ADR-0027 Q-E).
                     contradictions.append(edge["id"])
             # Fixed precedence, never relationship-id order: a replaced or out-of-window atom is
             # not also in live conflict, and a retracted atom cannot become a conflict.

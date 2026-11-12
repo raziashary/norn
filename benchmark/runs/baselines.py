@@ -127,10 +127,18 @@ def quantiles(values: list[int]) -> dict[str, float | None]:
     }
 
 
-def report(root: Path, model_root: Path, attestation: Path | None = None) -> dict[str, Any]:
+def report(
+    root: Path,
+    model_root: Path,
+    attestation: Path | None = None,
+    *,
+    development_only: bool = False,
+) -> dict[str, Any]:
     from benchmark.runs.validate import validate_run
 
-    result = validate_run(root, model_root=model_root, attestation=attestation)
+    result = validate_run(
+        root, model_root=model_root, attestation=attestation, development_only=development_only
+    )
     require(result["run_kind"] == "CONVENTIONAL_RETRIEVAL_DEVELOPMENT", "BASELINE_RUN_REQUIRED")
     observations = result["observations"]
     strata: dict[str, Any] = {}

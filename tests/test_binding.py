@@ -108,6 +108,39 @@ def test_candidate_limit_counts_events_so_one_large_event_cannot_crowd_out_the_r
     assert {h.record.event_id for h in atom_level} == {"big"}
 
 
+def test_expanded_atom_count_is_capped_and_fails_closed():
+    from dataclasses import replace
+
+    from norn.retrieval import binding
+    from norn.retrieval.binding import MAX_EXPANDED_HITS, expand_ranked_events
+    from norn.retrieval.contracts import Record
+
+    base = Record(
+        "ns", "e", "a", "s", ("a",), "p", '"v"', "{}", "USER_REPORTED", "UNVERIFIED", "ACTIVE",
+        "CURRENT", "{}", "src", "v" * 8, 0, 4, "d" * 8, "text", 1,
+    )  # fmt: skip
+
+    def events(count, atoms):
+        records = tuple(
+            replace(base, atom_id=f"a-{e}-{i}", event_id=f"e-{e}")
+            for e in range(count)
+            for i in range(atoms)
+        )
+        return records, {f"e-{e}": 1.0 - e / 1000 for e in range(count)}
+
+    assert MAX_EXPANDED_HITS == 1280
+    # Positive control: the default limit with maximally loaded events fits exactly.
+    records, scores = events(20, 64)
+    assert len(expand_ranked_events(records, scores, "B3", 20)) == 1280
+    # One atom over the cap fails closed with a visible code instead of truncating.
+    records, scores = events(21, 64)
+    with pytest.raises(NornError, match="EXPANDED_HITS_BUDGET"):
+        expand_ranked_events(records, scores, "B3", 21)
+    # Only the kept events count: a small limit over a large corpus is fine.
+    assert len(expand_ranked_events(records, scores, "B3", 20)) == 1280
+    assert binding.MAX_EXPANDED_HITS == MAX_EXPANDED_HITS
+
+
 def test_b4_type_embedding_is_not_a_redundant_second_bias():
     # In v1 the type offset entered before the tanh, so (types + c, bias - c) was an exact
     # reparametrisation. After the activation the two differ, so types carry their own signal.

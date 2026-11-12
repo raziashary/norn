@@ -47,7 +47,7 @@ def test_reopened_run_retains_all_dispositions_and_denominators(tmp_path):
         "native:R4",
     )
     completion = run_controls(root, names=names)
-    report = validate_run(root)
+    report = validate_run(root, development_only=True)
     assert report["pairs"] == completion["observations"] == 135 * len(names)
     assert set(completion["dispositions"]) == {
         "OK",
@@ -101,7 +101,7 @@ def test_rehashed_corruptions_fail_for_actual_reason(tmp_path, kind, code):
 
     rewrite_ledger(root, change)
     with pytest.raises(NornError, match=code):
-        validate_run(root)
+        validate_run(root, development_only=True)
 
 
 def test_changed_manifest_source_and_extra_public_filename_rejected(tmp_path):
@@ -111,11 +111,11 @@ def test_changed_manifest_source_and_extra_public_filename_rejected(tmp_path):
     original = path.read_bytes()
     path.write_bytes(original + b" ")
     with pytest.raises(NornError, match="RUN_ARTIFACT_CHANGED"):
-        validate_run(root)
+        validate_run(root, development_only=True)
     path.write_bytes(original)
     (root / "published" / "required_slot_hidden.json").write_text("{}")
     with pytest.raises(NornError, match="UNDECLARED_PUBLIC_FILE"):
-        validate_run(root)
+        validate_run(root, development_only=True)
 
 
 def test_relabeling_smoke_as_calibration_fails_even_after_rehash(tmp_path):
@@ -129,7 +129,7 @@ def test_relabeling_smoke_as_calibration_fails_even_after_rehash(tmp_path):
     (root / "completion.json").write_text(canonical(completion), encoding="utf-8")
     rewrite_ledger(root, lambda rows: None)
     with pytest.raises(NornError, match="WORLD_PARTITION_LINEAGE_CHANGED"):
-        validate_run(root)
+        validate_run(root, development_only=True)
 
 
 def test_external_attestation_catches_a_rehashed_self_consistent_ledger(tmp_path):
@@ -143,8 +143,30 @@ def test_external_attestation_catches_a_rehashed_self_consistent_ledger(tmp_path
     assert validate_run(root, attestation=seal)["observations"]
     # A latency edit is semantically valid, so run-internal checks cannot notice the rewrite.
     rewrite_ledger(root, lambda rows: rows[0].__setitem__("elapsed_ns", rows[0]["elapsed_ns"] + 1))
-    assert validate_run(root)["observations"]
+    assert validate_run(root, development_only=True)["observations"]
     with pytest.raises(NornError, match="RUN_ATTESTATION_MISMATCH"):
         validate_run(root, attestation=seal)
     with pytest.raises(NornError, match="ATTESTATION_INSIDE_RUN"):
         attest(root, root / "inside.json")
+
+
+def test_a_run_cited_as_evidence_needs_an_attestation_and_the_opt_out_is_labelled(tmp_path):
+    # ADR-0027 Q-F: the default path no longer accepts an unattested run.
+    from benchmark.runs.seal import attest
+
+    root = tmp_path / "run"
+    run_controls(root, sample_only=True, names=("perfect",))
+    with pytest.raises(NornError, match="ATTESTATION_REQUIRED"):
+        validate_run(root)
+    seal = tmp_path / "seals" / "run.json"
+    attest(root, seal)
+    attested = validate_run(root, attestation=seal)
+    assert attested["evidence_status"] == "ATTESTED"
+    inspected = validate_run(root, development_only=True)
+    assert inspected["evidence_status"] == "DEVELOPMENT_ONLY_NOT_CITABLE"
+    with pytest.raises(NornError, match="ATTESTATION_OR_DEVELOPMENT_ONLY"):
+        validate_run(root, attestation=seal, development_only=True)
+    # Positive control for the guard: a rewritten ledger is rejected on the default path.
+    rewrite_ledger(root, lambda rows: rows[0].__setitem__("elapsed_ns", rows[0]["elapsed_ns"] + 1))
+    with pytest.raises(NornError, match="RUN_ATTESTATION_MISMATCH"):
+        validate_run(root, attestation=seal)

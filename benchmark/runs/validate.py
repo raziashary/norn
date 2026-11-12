@@ -42,9 +42,25 @@ def gold_from(raw: dict[str, Any]) -> Gold:
     return Gold(**data)
 
 
+def require_attestation(attestation: Path | None, development_only: bool) -> str:
+    """A run cited as evidence needs an external attestation (ADR-0027 Q-F).
+
+    ``development_only`` is the explicit, labelled opt-out for inspecting an unattested run; the
+    report then says it is not citable.
+    """
+    require(attestation is not None or development_only, "ATTESTATION_REQUIRED")
+    require(attestation is None or not development_only, "ATTESTATION_OR_DEVELOPMENT_ONLY")
+    return "ATTESTED" if attestation is not None else "DEVELOPMENT_ONLY_NOT_CITABLE"
+
+
 def validate_run(
-    root: Path, *, model_root: Path | None = None, attestation: Path | None = None
+    root: Path,
+    *,
+    model_root: Path | None = None,
+    attestation: Path | None = None,
+    development_only: bool = False,
 ) -> dict[str, Any]:
+    evidence_status = require_attestation(attestation, development_only)
     if attestation is not None:
         from benchmark.runs.seal import verify
 
@@ -324,6 +340,7 @@ def validate_run(
         "arms": arms,
         "contrasts": adjust_family(contrasts),
         "observations": scores,
+        "evidence_status": evidence_status,
         "research_efficacy": "UNSEALED_DEVELOPMENT_ONLY" if baselines else "NOT_EVALUATED",
         "unsupported_algorithms": "R4-R10 NOT_RUN" if baselines else "R0-R10 NOT_RUN",
     }

@@ -133,7 +133,7 @@ if __name__ == "__main__":
     parser.add_argument("run", type=Path)
     parser.add_argument("--model-root", type=Path, required=True)
     args = parser.parse_args()
-    observed = report(args.run, args.model_root)
+    observed = report(args.run, args.model_root, development_only=True)
     assert set(observed["strata"]["family"]) == {f"E{i}" for i in range(1, 15)}
     assert len(observed["training"]["jobs"]) == 12
     assert observed["pairs"] == (450 if observed["arms"]["B0"]["unique_queries"] == 15 else 4140)

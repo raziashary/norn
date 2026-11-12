@@ -114,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument("run", type=Path)
     parser.add_argument("--model-root", type=Path, required=True)
     args = parser.parse_args()
-    result = report(args.run, args.model_root)
+    result = report(args.run, args.model_root, development_only=True)
     ledger = [json.loads(line) for line in (args.run / "ledger.jsonl").read_text().splitlines()]
     assert result["pairs"] == len(ledger) and set(result["arms"]) == {"R0", "R1", "R2", "R3"}
     assert set(result["strata"]["family"]) == {f"E{i}" for i in range(1, 15)}

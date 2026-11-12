@@ -156,3 +156,7 @@ The first pinned wording of the second toy ordering drew the random stream in ex
 
 The pre-declared rule (highest tune C1, tie to the earlier arm) was applied as written and picked T1, but four arms had the identical tune score (identity top-1 1.000), so the choice was the tie-break, not evidence. The one evaluation read then gave a point estimate above the margin with a confidence interval touching zero, which the approved rule correctly reports as no benefit shown rather than a win. Before a selection rule is frozen, check that its endpoint can still separate the candidates on the data it will see; report the tied set, and do not let a tie-break stand in for a finding.
 
+## L029 — An intermittent failure is a race until a test makes it deterministic
+
+One failure in a full run that passed before and passed three times alone looked like noise. The traceback named the exact call (`stat` on a `.pending-*` file), which pointed to a sweep that runs on every open racing a live writer. A test that makes the file vanish between the listing and the check reproduced the same error on the old code and passes on the fix. Record the cause and the deterministic test, not the number of green reruns.
+

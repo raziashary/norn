@@ -154,6 +154,28 @@ def test_a_hypothesis_cannot_put_an_observation_into_conflict(engine):
     assert atom["applicability"] == "CONFLICT"
 
 
+def test_a_contradicted_hypothesis_is_not_a_conflict_of_evidence(engine):
+    # ADR-0027 Q-E: an observation that disagrees with a HYPOTHESIS must not put either side
+    # into CONFLICT; only two asserting endpoints can conflict.
+    from norn.contracts.evidence import Epistemic, EpistemicState
+
+    guess = engine.write(
+        request("guess", place="ZoneC", origin=EpistemicState(Epistemic.HYPOTHESIS))
+    )
+    seen = engine.write(request("seen"), correction=correction(guess["atom_ids"][0], "CONTRADICTS"))
+    for receipt in (guess, seen):
+        view = engine.read(receipt["event_id"], clock()).serialize()
+        assert view["outcome"] != "CONFLICT"
+        assert view["atoms"][0]["applicability"] == "CURRENT"
+    assert engine.read(seen["event_id"], clock()).serialize()["outcome"] == "SUPPORTED"
+    # Negative control: the same shape between two observations is still a conflict.
+    first = engine.write(request("first", place="ZoneA"))
+    engine.write(
+        request("second", place="ZoneB"), correction=correction(first["atom_ids"][0], "CONTRADICTS")
+    )
+    assert engine.read(first["event_id"], clock()).serialize()["outcome"] == "CONFLICT"
+
+
 def test_only_the_producer_or_an_admin_can_retract(engine, tmp_path):
     from conftest import HOST
 

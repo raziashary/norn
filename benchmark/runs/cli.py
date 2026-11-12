@@ -41,6 +41,7 @@ def parser() -> argparse.ArgumentParser:
     validate.add_argument("--report", type=Path)
     validate.add_argument("--model-root", type=Path)
     validate.add_argument("--attestation", type=Path)
+    validate.add_argument("--development-only", action="store_true")
     seal = commands.add_parser(
         "seal", help="Write an external attestation of a finished run (outside the run directory)"
     )
@@ -63,6 +64,8 @@ def parser() -> argparse.ArgumentParser:
     baseline_report.add_argument("directory", type=Path)
     baseline_report.add_argument("--model-root", type=Path, required=True)
     baseline_report.add_argument("--output", type=Path, required=True)
+    baseline_report.add_argument("--attestation", type=Path)
+    baseline_report.add_argument("--development-only", action="store_true")
     for operation in ("prepare", "train", "evaluate", "report", "run"):
         binding = commands.add_parser(
             "binding-" + operation, help="Explicit P04 development " + operation
@@ -76,6 +79,8 @@ def parser() -> argparse.ArgumentParser:
             binding.add_argument("--smoke", action="store_true")
         if operation == "report":
             binding.add_argument("--output", type=Path, required=True)
+            binding.add_argument("--attestation", type=Path)
+            binding.add_argument("--development-only", action="store_true")
     for operation in ("prepare", "train", "report", "run"):
         factorial = commands.add_parser(
             "factorial-" + operation, help="Explicit P05 loss-factorial " + operation
@@ -130,6 +135,8 @@ def parser() -> argparse.ArgumentParser:
     calibrate.add_argument("output", type=Path)
     calibrate.add_argument("--bins", type=int, default=10)
     calibrate.add_argument("--arm", default="confidence")
+    calibrate.add_argument("--attestation", type=Path)
+    calibrate.add_argument("--development-only", action="store_true")
     return result
 
 
@@ -160,7 +167,13 @@ def main(argv: list[str] | None = None) -> int:
                     )
                     train_run(args.directory)
                     evaluate(args.directory, args.model_root, enabled=args.enable_models)
-                report = binding_report(args.directory, args.model_root)
+                # A one-shot run cannot be attested before it exists, so it is never citable.
+                report = binding_report(
+                    args.directory,
+                    args.model_root,
+                    None if operation == "run" else args.attestation,
+                    development_only=operation == "run" or args.development_only,
+                )
                 output = args.output if operation == "report" else args.directory / "report.json"
                 result = {
                     "pairs": report["pairs"],
@@ -260,7 +273,12 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "baseline-report":
             from benchmark.runs.baselines import report as baseline_report
 
-            report = baseline_report(args.directory, args.model_root)
+            report = baseline_report(
+                args.directory,
+                args.model_root,
+                args.attestation,
+                development_only=args.development_only,
+            )
             result = {
                 "report_digest": write_once(args.output, report),
                 "pairs": report["pairs"],
@@ -269,7 +287,10 @@ def main(argv: list[str] | None = None) -> int:
             }
         elif args.command == "validate":
             report = validate_run(
-                args.directory, model_root=args.model_root, attestation=args.attestation
+                args.directory,
+                model_root=args.model_root,
+                attestation=args.attestation,
+                development_only=args.development_only,
             )
             if args.report:
                 write_once(args.report, report)
@@ -296,7 +317,11 @@ def main(argv: list[str] | None = None) -> int:
                 "human_review": "PENDING; PACK_IS_NOT_A_JUDGMENT",
             }
         else:
-            report = validate_run(args.input_run)
+            report = validate_run(
+                args.input_run,
+                attestation=args.attestation,
+                development_only=args.development_only,
+            )
             require(
                 report["partition"] == "calibration" and report["partition_role"] == "calibrator",
                 "CALIBRATION_PARTITION_REQUIRED",
@@ -323,6 +348,7 @@ def main(argv: list[str] | None = None) -> int:
                     "completion_digest": source_digest,
                     "manifest_digest": report["manifest_digest"],
                     "arm": args.arm,
+                    "evidence_status": report["evidence_status"],
                 },
             }
             result = {"artifact_digest": write_once(args.output, artifact), **artifact}

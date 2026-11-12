@@ -118,7 +118,7 @@ The actual development runner and reopened report are:
 
 ```powershell
 uv run --locked --no-env-file --extra retrieval norn-benchmark run-baselines <new-run> --model-root .norn/models --enable-models
-uv run --locked --no-env-file --extra retrieval norn-benchmark baseline-report <run> --model-root .norn/models --output <new-report.json>
+uv run --locked --no-env-file --extra retrieval norn-benchmark baseline-report <run> --model-root .norn/models --attestation <run-seal.json> --output <new-report.json>
 uv run --locked --no-env-file --extra retrieval python -m benchmark.runs.ann_recall <run> <new-ann.json> --model-root .norn/models --enable-models
 uv run --locked --no-env-file --extra retrieval python tests/test_recall_cli.py --model-root .norn/models
 ```
@@ -143,11 +143,16 @@ or a production retrieval system. From the repository root:
 
 ```powershell
 uv run --no-env-file norn-benchmark run-controls .norn/my-controls --judgments docs/development/evidence/label_judgments.json --arms perfect empty shuffled extractive error timeout unsupported invalid not_run native:R4 native:R5 native:R6
-uv run --no-env-file norn-benchmark validate .norn/my-controls --report .norn/my-scorecard.json
+uv run --no-env-file norn-benchmark seal .norn/my-controls --output .norn/my-seal.json
+uv run --no-env-file norn-benchmark validate .norn/my-controls --attestation .norn/my-seal.json --report .norn/my-scorecard.json
 uv run --no-env-file norn-benchmark --help
 ```
 
 Choose a new run/report path; artifacts are created exclusively and cannot be overwritten.
+A run cited as evidence must be validated against its external attestation (`seal`, then
+`--attestation`; ADR-0027 Q-F). Without one `validate`, `baseline-report`, `binding-report` and
+`calibrate` refuse with `ATTESTATION_REQUIRED`; `--development-only` inspects an unattested run and
+stamps the report `DEVELOPMENT_ONLY_NOT_CITABLE`.
 Reopening verifies code/source/gold/audit/input digests, declared pairs, every ledger row,
 attempts, raw/normalized results, exact source locators, stages and budgets. Code changes
 invalidate old runs. Artifacts stay ignored under `.norn/`; preserve the manifest and
@@ -167,7 +172,7 @@ sources/gold invalidates bindings. Omit `--judgments` only for an explicitly una
 mechanics run; its report remains PENDING_OR_DISPUTED. Role/partition options separate
 smoke, development and calibration; locked confirmation is deliberately unavailable here.
 
-`calibrate <run-directory> <new-output.json> --arm confidence` reopens a verified
+`calibrate <run-directory> <new-output.json> --arm confidence --attestation <run-seal.json>` reopens a verified
 calibration/calibrator run and fits actual probability/correctness rows. Generate its
 math-only forecasts with `run-controls <new-directory> --partition calibration --role
 calibrator --arms confidence`; this explicitly named control emits constant0.5 forecasts.

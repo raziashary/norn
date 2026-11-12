@@ -66,3 +66,28 @@ def test_source_symlink_rejected(tmp_path):
         nested.symlink_to(outside / "missing")
     with pytest.raises(NornError, match="UNSAFE_SOURCE_PATH"):
         store.read("0" * 64)
+
+
+def test_sweep_survives_a_staging_file_discarded_by_a_live_writer(tmp_path, monkeypatch):
+    # Opening an engine sweeps staging files while other writers stage and discard theirs. A file
+    # that vanishes between the listing and the age check must be skipped, not crash the open.
+    from pathlib import Path
+
+    store = SourceStore(tmp_path / "blobs")
+    vanishing = store.stage(b"live writer")
+    stale = store.stage(b"abandoned by a crash")
+    os.utime(stale.path, (0, 0))
+    real_stat = Path.stat
+
+    def stat(self, *args, **kwargs):
+        if self.name == vanishing.path.name and self.exists():
+            vanishing.path.unlink()  # the writer discards it right before the check
+        return real_stat(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "stat", stat)
+    assert store.sweep_staging() == 1  # only the genuinely stale file is counted
+    assert not stale.path.exists() and not vanishing.path.exists()
+    # Negative control: a fresh live file is left alone when it is still there.
+    monkeypatch.undo()
+    fresh = store.stage(b"fresh")
+    assert store.sweep_staging() == 0 and fresh.path.exists()
