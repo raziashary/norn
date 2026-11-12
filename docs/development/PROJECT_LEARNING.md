@@ -151,3 +151,8 @@ The first smoke run failed twice because the training-pair builder perturbed the
 ## L027 — A pre-registered ordering can silently equal another; a falling loss can sit on collapsed codes
 
 The first pinned wording of the second toy ordering drew the random stream in exactly the order of the first, so the two "variants" were the same run. A unit test that asserted the variants differ caught it before any formal run, and the card was corrected. An alternative that is not demonstrably different from the base case is not a control. Separately, the reconstruction-only arm drove its loss from 1.97 to 0.03 while its codes collapsed to effective rank about 2 with mean cosine 1.00, and the untrained adapter already looks collapsed because the backbone features are anisotropic. A falling loss and a collapse flag are both properties of the training set, so neither stands in for held-out identity evidence, and a flag needs a no-training control before it is read.
+
+## L028 — A selection rule on a saturated endpoint selects by its tie-break
+
+The pre-declared rule (highest tune C1, tie to the earlier arm) was applied as written and picked T1, but four arms had the identical tune score (identity top-1 1.000), so the choice was the tie-break, not evidence. The one evaluation read then gave a point estimate above the margin with a confidence interval touching zero, which the approved rule correctly reports as no benefit shown rather than a win. Before a selection rule is frozen, check that its endpoint can still separate the candidates on the data it will see; report the tied set, and do not let a tie-break stand in for a finding.
+

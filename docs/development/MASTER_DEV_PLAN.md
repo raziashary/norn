@@ -1770,7 +1770,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** T2/T3/T6 query alignment failures not excluded; lowest incomparable loss sum cannot select winner.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_training_manifest.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-001 (`f307d19`, `9c841b7`): T0–T7 trained and reloaded on the train role, 21 checkpoints, 0 failures; **held-out dev retrieval is not run** (needs the ADR-0027 Q-D answer), so the card stays IN_PROGRESS.
+- **Evidence:** E-P05-001 (`f307d19`, `9c841b7`): T0–T7 trained and reloaded on the train role, 21 checkpoints, 0 failures. E-P05-004 (`e47bf6f`): held-out dev retrieval through the engine reader; tune selected T1 by tie-break (four arms tie at identity 1.000), one evaluation read gives C1 +0.095 with interval [0.000, 0.262], verdict T0_RETAINED_NO_ARM_CLEARS_C1 (development-exploratory). The card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t04"></a>
