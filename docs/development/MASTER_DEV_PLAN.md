@@ -1850,8 +1850,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 ### P05-T08 — Test ambiguity same-event and held-out transfer
 
 - [ ] **P05-T08**
-- **State:** PLANNED.
-- **Files:** `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). Owner answered Q-B on 12 November 2026 (ADR-0027): the card claims paraphrase and unseen-identity transfer only; language transfer stays untested.
+- **State:** IN_PROGRESS.
+- **Files:** `benchmark/runs/partial_cues.py` (runner added: the card named no runner, so the check had no entry point), `benchmark/runs/cli.py` (`partial-cues`), `benchmark/runs/separation.py` (loader extended to every tune query), `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). Owner answered Q-B on 12 November 2026 (ADR-0027): the card claims paraphrase and unseen-identity transfer only; language transfer stays untested.
 - **Depends:** P05-T07.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Score discrimination only with sufficient cue and safe ambiguity otherwise; include paraphrase and unseen identity/language.
@@ -1860,7 +1860,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Arbitrary sole-positive gold and over-separation recall loss are defects/regressions not wins.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_partial_cues.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P05-007: 138 tune queries, descriptive only (R09 left T08 margins unapproved). Learned codes win inside an eligible pool (contested top-1 0.50 to 1.000, set recall 0.25 to 0.58-0.75) but lose over pooled events (top-1 0.549 to 0.00-0.08) and their top-1/top-2 gap is larger on ambiguous cues than on specific ones (gap AUROC 0.20-0.54, R38); no language-transfer claim (Q-B); card closes with the P05 end review.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t09"></a>
