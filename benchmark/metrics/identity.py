@@ -96,3 +96,39 @@ def chance_top1(pools: Sequence[int], golds: Sequence[int]) -> float | None:
     """Expected strict top-1 of a uniformly random ranker: the mean of gold count over pool size."""
     require(len(pools) == len(golds) and all(0 < g <= p for p, g in zip(pools, golds, strict=True)))
     return mean(g / p for p, g in zip(pools, golds, strict=True)) if pools else None
+
+
+def set_recall(scores: Sequence[float], gold: Sequence[bool]) -> bool | None:
+    """True when every gold episode strictly outranks every non-gold one; None if nothing to beat.
+
+    Over-separation shows here: a code that pushes one gold episode below a distractor loses part of
+    the answer set even when its top-1 is right.
+    """
+    require(len(scores) == len(gold) > 0 and any(gold), "IDENTITY_RANKING_INPUT")
+    values, flags = np.asarray(scores, dtype=np.float64), np.asarray(gold, dtype=bool)
+    if flags.all():
+        return None
+    return bool(values[flags].min() > values[~flags].max() + TIE)
+
+
+def top_gap(scores: Sequence[float]) -> float | None:
+    """Best score minus the runner-up (None with fewer than two candidates)."""
+    values = sorted((float(s) for s in scores), reverse=True)
+    return values[0] - values[1] if len(values) >= 2 else None
+
+
+def auroc(positive: Sequence[float], negative: Sequence[float]) -> float | None:
+    """Chance a random positive scores above a random negative; ties count one half."""
+    if not positive or not negative:
+        return None
+    wins = sum((p > n) + 0.5 * (p == n) for p in positive for n in negative)
+    return wins / (len(positive) * len(negative))
+
+
+def all_correct_rate(groups: Sequence[Sequence[bool]], minimum: int = 2) -> dict[str, Any]:
+    """Share of same-target groups (at least ``minimum`` queries) in which every query is right."""
+    sized = [g for g in groups if len(g) >= minimum]
+    return {
+        "groups": len(sized),
+        "all_correct": sum(1 for g in sized if all(g)) / len(sized) if sized else None,
+    }

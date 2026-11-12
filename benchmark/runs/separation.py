@@ -69,6 +69,10 @@ class Query:
     vector: Array
     pool: tuple[int, ...]
     relevant: frozenset[str]
+    status: str = "SUPPORTED"
+    variant: str = "positive"
+    language: str = "en"
+    missing_fraction: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -101,8 +105,11 @@ def _verified(root: Path) -> dict[str, Any]:
     return cast(dict[str, Any], manifest)
 
 
-def load_inputs(root: Path) -> Inputs:
+def load_inputs(root: Path, *, applicable_only: bool = True) -> Inputs:
     """Read only the digest-verified tune-role artifacts and the 21 trained checkpoints.
+
+    ``applicable_only`` keeps the identity-applicable queries (the T07 sweep); T08 asks for every
+    tune query so that insufficient-cue queries can be compared with sufficient ones.
 
     An *event* is one captured memory: the same public episode is rendered with slightly different
     features in different captures (different stores), so events are keyed per capture and the
@@ -132,10 +139,14 @@ def load_inputs(root: Path) -> Inputs:
                     array(memory["mask"], (3,)),
                 )
             )
-        if label["expected_status"] != "SUPPORTED" or not label["relevant_events"]:
+        applicable = label["expected_status"] == "SUPPORTED" and bool(label["relevant_events"])
+        if applicable_only and not applicable:
             continue
-        relevant = frozenset(label["relevant_events"])
-        require(any(episodes[i] in relevant for i in pool), "SEPARATION_GOLD_NOT_IN_POOL")
+        relevant = frozenset(label["relevant_events"]) if applicable else frozenset()
+        require(
+            not applicable or any(episodes[i] in relevant for i in pool),
+            "SEPARATION_GOLD_NOT_IN_POOL",
+        )
         queries.append(
             Query(
                 label["query_id"],
@@ -145,6 +156,10 @@ def load_inputs(root: Path) -> Inputs:
                 array(capture["query"], (384,)),
                 tuple(pool),
                 relevant,
+                label["expected_status"],
+                label["variant"],
+                label["language"],
+                label["cue_missing_fraction"],
             )
         )
     require(bool(queries) and bool(events), "SEPARATION_NO_QUERIES")

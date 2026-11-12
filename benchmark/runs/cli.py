@@ -124,6 +124,12 @@ def parser() -> argparse.ArgumentParser:
     separation.add_argument("directory", type=Path)
     separation.add_argument("--output", type=Path, required=True)
     separation.add_argument("--wall-cap-seconds", type=float, required=True)
+    cues = commands.add_parser(
+        "partial-cues", help="Explicit P05-T08 offline ambiguity/transfer check (tune role only)"
+    )
+    cues.add_argument("directory", type=Path)
+    cues.add_argument("--output", type=Path, required=True)
+    cues.add_argument("--wall-cap-seconds", type=float, required=True)
     for toy in ("toy-support", "toy-cues"):
         toy_parser = commands.add_parser(toy, help="Explicit P05 toy-study reproduction")
         toy_parser.add_argument("--output", type=Path, required=True)
@@ -228,6 +234,12 @@ def main(argv: list[str] | None = None) -> int:
             from benchmark.runs import separation
 
             result = separation.run(
+                args.directory, args.output, wall_cap_seconds=args.wall_cap_seconds
+            )
+        elif args.command == "partial-cues":
+            from benchmark.runs import partial_cues
+
+            result = partial_cues.run(
                 args.directory, args.output, wall_cap_seconds=args.wall_cap_seconds
             )
         elif args.command == "factorial-diagnostics":
