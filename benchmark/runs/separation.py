@@ -120,7 +120,16 @@ def load_inputs(root: Path, *, applicable_only: bool = True) -> Inputs:
     episodes: list[str] = []
     rows: list[tuple[Array, Array, Array]] = []
     queries: list[Query] = []
-    for capture_path in sorted((root / "captures" / ROLE).glob("query_*.json")):
+    listed = manifest["artifacts"]
+    names = sorted(n for n in listed if n.startswith(f"captures/{ROLE}/"))
+    for name in names:
+        # Only manifest-listed (digest-verified) files are read; a stray file is never opened.
+        capture_path = root / name
+        siblings = (
+            f"evaluator/{ROLE}/{capture_path.name}",
+            f"published/{ROLE}/{capture_path.name}",
+        )
+        require(all(n in listed for n in siblings), "SEPARATION_TUNE_ARTIFACTS_MISSING")
         capture = load(capture_path)
         label = load(root / "evaluator" / ROLE / capture_path.name)
         public = load(root / "published" / ROLE / capture_path.name)

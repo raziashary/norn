@@ -299,3 +299,19 @@ def test_real_tune_captures_sweep_reports_every_declared_cell_and_the_controls(t
         1 <= exhaustive["pooled"]["distinct_top_episodes"] <= report["scopes"]["distinct_episodes"]
     )
     assert 0 < exhaustive["pooled"]["hub_share"] <= 1
+
+
+def test_loader_reads_only_manifest_listed_tune_files(tmp_path):
+    names = [f"{f}/tune/query_{'a' * 64}.json" for f in ("captures", "evaluator", "published")]
+    root = _run_root(tmp_path, names)
+    stray = root / f"captures/tune/query_{'c' * 64}.json"
+    stray.write_text("not json and not in the manifest", encoding="utf-8")
+    # The stray capture is never opened (no parse error); the listed one fails on its own content.
+    with pytest.raises(Exception) as caught:
+        sweep.load_inputs(root)
+    assert "c" * 64 not in str(caught.value)
+    # A listed capture without its listed label or public file is refused.
+    other = [n.replace("a" * 64, "d" * 64) for n in names[1:]]
+    lone = _run_root(tmp_path / "lone", [names[0], *other])
+    with pytest.raises(NornError, match="SEPARATION_TUNE_ARTIFACTS_MISSING"):
+        sweep.load_inputs(lone)
