@@ -1,6 +1,6 @@
 # Norn project map
 
-Updated 7 November 2026 (Asia/Bangkok). P01–P04 are implemented and verified locally; final P04 proof is E-P04-005 with scientific outcome INCONCLUSIVE, re-measured in E-FIX-002. P04 adds source-backed views, trained frozen-E5 binding (revision v2 after the B4 fix), schema4 and opt-in public consumers; the pre-P05 cleanup adds schema5 (`005_indexes_support_time.sql`), lexical tokenizer v2, `embedding/controls.py` (operator model checks, split from `baseline.py`) and `benchmark/runs/seal.py` (external run attestation). P05+ remain proposals; current scoped main publication is approved in ADR-0023.
+Updated 7 November 2026 (Asia/Bangkok). P01–P04 are implemented and verified locally; final P04 proof is E-P04-005 with scientific outcome INCONCLUSIVE, re-measured in E-FIX-002. P04 adds source-backed views, trained frozen-E5 binding (revision v2 after the B4 fix), schema4 and opt-in public consumers; the pre-P05 cleanup adds schema5 (`005_indexes_support_time.sql`), lexical tokenizer v2, `embedding/controls.py` (operator model checks, split from `baseline.py`) and `benchmark/runs/seal.py` (external run attestation). P05 (12 November 2026) adds `embedding/{losses,diagnostics,separation}.py`, `benchmark/metrics/identity.py` (the single identity-metric owner) and the P05 runners `benchmark/runs/{loss_factorial,loss_diagnostics,loss_heldout,separation,partial_cues,toy_support,toy_cues}.py`, all offline/local and recorded in E-P05-001 to E-P05-007; P06+ remain proposals; current scoped main publication is approved in ADR-0023.
 
 ## Actual repository
 
@@ -35,13 +35,13 @@ Actual runtime includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,g
 | extraction | source-anchored atoms, typed relation candidates, uncertainty | immutable source → registry/graph | P01/P06 |
 | retrieval | exact/lexical/dense/ANN/fusion/rerank/source recovery | cue + eligible snapshot → cited memory candidates | P03 |
 | embedding | pinned local encoder/reranker assets, explicit CPU worker lifecycle and inference | eligible sources/cues → normalized vectors/raw rerank scores | P03/P04 actual |
-| features and later embedding research | multiple views, query/memory binding, objectives, checkpoint lineage | canonical episode → versioned derived code | P04 verified; P05/P07/P10 planned |
+| features and later embedding research | multiple views, query/memory binding, objectives, checkpoint lineage | canonical episode → versioned derived code | P04 verified; P05 built (T0 retained, learned heads not adopted, ADR-0028); P07/P10 planned |
 | graph | grounded seeds, typed adjacency, bounded BFS/path/PPR/heat/optional recurrent | permitted canonical refs → candidate/path diagnostics | P06 |
 | consolidation | source independence, aggregates, summary proposals, review/invalidation | eligible episodes → new supported derived assertions | P08 |
 | integration | memory facade and bounded agent context | authenticated host → next-turn cited context | P01/P04 actual; P09 planned |
 | projection | local readiness then external workers/manifests/rebuild/purge/restore | canonical log/outbox → coherent derived indexes | P03/P04 actual; P11 planned |
 | telemetry | redacted stage/resource/failure traces | actual owners → operator/evaluator | P03 onward |
-| benchmark (separate) | P02 actual typed synthetic fixtures/publication/common control contracts/immutable ledger/scorers/statistics/CLI; later scientific and sealed runners planned | public capture boundary → trusted controls → immutable ledger → reopened evaluator; hidden gold only scorer/oracle diagnostic | P02/P03/P04 actual; P05–P13 planned |
+| benchmark (separate) | P02 actual typed synthetic fixtures/publication/common control contracts/immutable ledger/scorers/statistics/CLI; later scientific and sealed runners planned | public capture boundary → trusted controls → immutable ledger → reopened evaluator; hidden gold only scorer/oracle diagnostic | P02/P03/P04/P05 actual; P06–P13 planned |
 
 ## Dependencies and flows — implemented core and planned extensions
 

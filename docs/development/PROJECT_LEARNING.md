@@ -160,3 +160,10 @@ The pre-declared rule (highest tune C1, tie to the earlier arm) was applied as w
 
 One failure in a full run that passed before and passed three times alone looked like noise. The traceback named the exact call (`stat` on a `.pending-*` file), which pointed to a sweep that runs on every open racing a live writer. A test that makes the file vanish between the listing and the check reproduced the same error on the old code and passes on the fix. Record the cause and the deterministic test, not the number of green reruns.
 
+## L030 — Count the denominator that can fail before trusting a rate
+
+The T07 eligible scope reported a strict top-1 of 0.922 for the frozen baseline, but only 8 of 51 eligible pools held a non-gold episode, so the rate could fail on 8 queries and a uniform ranker scored 0.909. Every summary now carries the number of contested queries and the rate over them, and the evidence says which scope can discriminate. A high rate with a tiny contested denominator is saturation, not strength.
+
+## L031 — Score at the unit of the claim
+
+A first sweep scored captured events, so copies of one episode tied with themselves and every pooled top-1 collapsed to zero. The claim was about episode identity, so the scorer now aggregates to episodes and a tie counts only between distinct episodes. When a metric yields an implausible total result, check that its unit matches the claim before reading the result as a finding, and keep the superseded run as a record with its error mechanism.
