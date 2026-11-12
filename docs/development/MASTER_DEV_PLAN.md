@@ -36,7 +36,7 @@ The user requested an extensive engineering MDP, not merely a phase list. This d
 
 Current user instructions and applicable AGENTS govern work. The blueprint owns intended research scope; live source, actual migrations, executed tests, and measurements own implemented behavior. This MDP translates intent and remains subordinate to both. Resolve a conflict explicitly: identify the source, affected contract/consumer, options, recommendation, and owner direction. An MDP sentence cannot silently amend the vision or a shipped contract.
 
-[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03 models/schema/workers are approved in ADR-0017/0018 and verified by E-P03-003. P04 paths are implemented under accepted ADR-0020/0021, verified in E-P04-005; P05+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03 GO is accepted in ADR-0017 and closes with E-P03-003. P04 GO is explicit in the current thread goal; ADR-0020 records accepted training/comparison/interface choices. P05+ retain their own authority; the current completed P03/P04 publication is separately approved in ADR-0023, without future standing push authority.
+[ADR_LOG](ADR_LOG.md) owns decisions. PROPOSED means unresolved, even when a recommended implementation is written in detail here. P01/P02 Python paths and executables are accepted under ADR-0002/0012/0014; P03 models/schema/workers are approved in ADR-0017/0018 and verified by E-P03-003. P04 paths are implemented under accepted ADR-0020/0021, verified in E-P04-005; P05 paths are implemented (development-exploratory, E-P05-001 to E-P05-008, ADR-0028); P06+ paths remain planned. The proposed design is reviewable now; it is not permission to install libraries, call providers, change foreign projects, expose endpoints, or execute real-data writes. Current scope includes the documentation suite, owner setup/instruction amendment and explicitly authorized publication (ADR-0010/0011). P01 GO and foundation decisions are approved in ADR-0012. P01 is complete; explicit P02 GO and partition clarification are recorded in ADR-0014/0015. P02 closes with E-P02-003. P03 GO is accepted in ADR-0017 and closes with E-P03-003. P04 GO is explicit in the current thread goal; ADR-0020 records accepted training/comparison/interface choices. P05+ retain their own authority; the current completed P03/P04 publication is separately approved in ADR-0023, without future standing push authority.
 
 ### Owner setup and generative LLM policy
 
@@ -119,7 +119,7 @@ Palladion's small graph pilot retained graph-disabled defaults after no incremen
 
 ## Architecture and module ownership
 
-The tree shows implemented P01–P04 owners and planned P05+ research owners. P04 source is implemented and verified under ADR-0020/0021 and E-P04-005. MDP card states and evidence establish the actual boundary. Do not scaffold empty files merely to match the map. Create a file only with its producer/consumer slice. Package imports flow toward contracts/canonical/governance, never from those owners into an agent, provider, or hidden evaluator.
+The tree shows implemented P01–P05 owners and planned P06+ research owners. P04 source is implemented and verified under ADR-0020/0021 and E-P04-005. MDP card states and evidence establish the actual boundary. Do not scaffold empty files merely to match the map. Create a file only with its producer/consumer slice. Package imports flow toward contracts/canonical/governance, never from those owners into an agent, provider, or hidden evaluator.
 
 ```text
 src/norn/
@@ -1715,16 +1715,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Blueprint stage:** Stage 1.
 - **Design:** [technical contract](#learning).
 - **Source headings:** Training objectives; Pattern separation theory and experiments; Primary selection criterion.
-- **Entry:** P04-T09 as sequencing/decision-record handoff only; T0-T7 and sparse controls are predeclared Stage1 research and remain eligible after a negative preliminary binding result. Mandate and conditions: ADR-0026 (all nine cards after the pre-P05 cleanup in E-FIX-002; frozen pinned E5-small plus small heads; local CPU with a wall-time cap in the receipt before each study; hierarchical reduced sweep; R09 margins proposed by main and approved by the owner before they are frozen; reviewers Claude Haiku 5.5 high effort). Development-role reuse and exploratory status: ADR-0027.
+- **Entry:** P04-T09 as sequencing/decision-record handoff only; T0-T7 and sparse controls are predeclared Stage1 research and remain eligible after a negative preliminary binding result. Mandate and conditions: ADR-0026 (all nine cards after the pre-P05 cleanup in E-FIX-002; frozen pinned E5-small plus small heads; local CPU with a wall-time cap in the receipt before each study; hierarchical reduced sweep (T07 ran the full 1,858-cell grid instead; owner question Q-H in ADR-0028); R09 margins proposed by main and approved by the owner before they are frozen; reviewers Claude Haiku 5.5 high effort). Development-role reuse and exploratory status: ADR-0027.
 - **Exit:** T0-T7 and sparse controls fairly evaluated; toy reproduction separate from real recall; outcome and regression limits explicit.
-- **State:** PLANNED.
+- **State:** DONE.
+- **Evidence pointer:** E-P05-001 to E-P05-008, ADR-0028 and `docs/development/evidence/losses_and_separation.md`; task cards inherit them.
+- **Exit proof:** all nine cards built and recorded; held-out verdict `T0_RETAINED_NO_ARM_CLEARS_C1` (T0 retained, ADR-0028); T07/T08 descriptive; sole Haiku 5.5 high-effort end review resolved (E-P05-008). Outcome development-exploratory (ADR-0027 Q-C), not a sealed or production claim; owner questions Q-H and Q-I are open and do not block closure.
 
 <a id="p05-t01"></a>
 
 ### P05-T01 — Build multi-positive pairs and screened negatives
 
-- [ ] **P05-T01**
-- **State:** IN_PROGRESS.
+- [x] **P05-T01**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/training_pairs.py`, `tests/test_training_pairs.py`.
 - **Depends:** P04-T09.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1734,16 +1736,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Valid alternative cannot be false negative; held-out labels cannot enter training.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_training_pairs.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-001 (`7301482`, 11 tests, real train role 178 pairs/98 skipped); card closes with the P05 end review.
+- **Evidence:** E-P05-001 (`7301482`, 11 tests, real train role 178 pairs/98 skipped); the held-out disjointness negative proof is `assert_disjoint_from_heldout`, exercised by test only, and the run-time protection is that `build_pairs` refuses any role but train (a run-time disjointness call would itself read held-out cases); closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t02"></a>
 
 ### P05-T02 — Implement retrieval reconstruction separation objectives
 
-- [ ] **P05-T02**
-- **State:** IN_PROGRESS.
-- **Files:** `src/norn/embedding/losses.py`, `tests/test_losses.py`; reuse and extend `src/norn/embedding/numerics.py` (`contrastive` already implements the multi-positive form), do not duplicate it.
+- [x] **P05-T02**
+- **State:** DONE.
+- **Files:** `src/norn/embedding/losses.py`, `tests/test_losses.py`; reuse and extend `src/norn/embedding/numerics.py` (contrastive already implements the multi-positive form), do not duplicate it.
 - **Depends:** P05-T01.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Multi-positive contrastive, masked scaled reconstruction and identity-margin separation with finite checked params.
@@ -1752,16 +1754,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Invalid temperature, zero/missing target and collapse-only regularization fail.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_losses.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-001 (`8ce7325`, 13 tests); card closes with the P05 end review.
+- **Evidence:** E-P05-001 (`8ce7325`, 13 tests); closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t03"></a>
 
 ### P05-T03 — Train controlled T0 to T7 and checkpoint lineage
 
-- [ ] **P05-T03**
-- **State:** IN_PROGRESS.
-- **Files:** `src/norn/embedding/training.py` (owns `TrainingBatch`, `objective`, `train` and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (`VARIANTS`, `LEARNED`, `shapes()`), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `benchmark/runs/loss_heldout.py` (held-out dev retrieval through `score_conditions`, the shared engine scoring loop in `benchmark/runs/binding.py`), `tests/test_training_manifest.py`, `tests/test_loss_heldout.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
+- [x] **P05-T03**
+- **State:** DONE.
+- **Files:** `src/norn/embedding/training.py` (owns TrainingBatch, objective, train and the training envelope; extend it rather than adding a second trainer), `src/norn/embedding/binding.py` (VARIANTS, LEARNED, shapes()), `src/norn/embedding/checkpoint.py`, `benchmark/runs/loss_factorial.py`, `benchmark/runs/loss_heldout.py` (held-out dev retrieval through score_conditions, the shared engine scoring loop in `benchmark/runs/binding.py`), `tests/test_training_manifest.py`, `tests/test_loss_heldout.py`. Training roles use the tune-role gate of `benchmark/fixtures/partitions.py`; a trainer cannot read evaluation labels (negative control required).
 - **Depends:** P05-T02.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Run each combination with matched backbone/data/updates/budget and multiple seeds; bind checkpoint/data/config hashes.
@@ -1770,16 +1772,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** T2/T3/T6 query alignment failures not excluded; lowest incomparable loss sum cannot select winner.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_training_manifest.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-001 (`f307d19`, `9c841b7`): T0–T7 trained and reloaded on the train role, 21 checkpoints, 0 failures. E-P05-004 (`e47bf6f`): held-out dev retrieval through the engine reader; tune selected T1 by tie-break (four arms tie at identity 1.000), one evaluation read gives C1 +0.095 with interval [0.000, 0.262], verdict T0_RETAINED_NO_ARM_CLEARS_C1 (development-exploratory). The card closes with the P05 end review.
+- **Evidence:** E-P05-001 (`f307d19`, `9c841b7`): T0–T7 trained and reloaded on the train role, 21 checkpoints, 0 failures. E-P05-004 (`e47bf6f`): held-out dev retrieval through the engine reader; tune selected T1 by tie-break (four arms tie at identity 1.000), one evaluation read gives C1 +0.095 with interval [0.000, 0.262], verdict T0_RETAINED_NO_ARM_CLEARS_C1 (development-exploratory). Closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t04"></a>
 
 ### P05-T04 — Measure gradient conflicts collapse and schedules
 
-- [ ] **P05-T04**
-- **State:** IN_PROGRESS.
-- **Files:** `src/norn/embedding/diagnostics.py`, `tests/test_diagnostics.py`; per-objective gradients need `training.objective` to return each objective term separately (today it returns only the contrastive gradient), so that refactor is part of this card.
+- [x] **P05-T04**
+- **State:** DONE.
+- **Files:** `src/norn/embedding/diagnostics.py`, `tests/test_diagnostics.py`; per-objective gradients need training.objective to return each objective term separately (today it returns only the contrastive gradient), so that refactor is part of this card.
 - **Depends:** P05-T03.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Record objective norms/cosines, effective rank/norm distribution and optional warm-start schedule as distinct treatment.
@@ -1788,15 +1790,15 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Missing metric not proof of no conflict; different exposure/schedule must not be hidden.
 - **Gate:** G-LEARNING. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_diagnostics.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-002 (`8ca3037`): per-objective gradient conflict, collapse flags and warm-start disclosure measured on `p05-t03-001`; T7 re-run reproduced T03 exactly; card closes with the P05 end review.
+- **Evidence:** E-P05-002 (`8ca3037`): per-objective gradient conflict, collapse flags and warm-start disclosure measured on `p05-t03-001`; T7 re-run reproduced T03 exactly; closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t05"></a>
 
 ### P05-T05 — Reproduce sparse-support toy study
 
-- [ ] **P05-T05**
-- **State:** IN_PROGRESS.
+- [x] **P05-T05**
+- **State:** DONE.
 - **Files:** `benchmark/runs/toy_support.py`, `tests/test_toy_support.py`, declared output `docs/development/evidence/p05_toy_expected.json` (transcribed from blueprint 10.3 before any reproduction code existed).
 - **Depends:** P05-T04.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1806,15 +1808,15 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Support overlap not cosine/Recall@K; failed reproduction remains visible.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_toy_support.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-002: ordering V1 reproduces the declared table exactly (V2/V3 NOT_EXACT but within 3 SE); card closes with the P05 end review.
+- **Evidence:** E-P05-002: ordering V1 reproduces the declared table exactly (V2/V3 NOT_EXACT but within 3 SE); closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t06"></a>
 
 ### P05-T06 — Reproduce weak-cue correlated-competitor study
 
-- [ ] **P05-T06**
-- **State:** IN_PROGRESS.
+- [x] **P05-T06**
+- **State:** DONE.
 - **Files:** `benchmark/runs/toy_cues.py`, `tests/test_toy_cues.py`, declared output `docs/development/evidence/p05_toy_expected.json`.
 - **Depends:** P05-T05.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1824,16 +1826,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Ties not credited; toy cannot establish real trained-language benefit.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_toy_cues.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-002: ordering V1 reproduces the declared proportions within 0.0005 (V2 NOT_EXACT, within 3 SE); ties not credited; card closes with the P05 end review.
+- **Evidence:** E-P05-002: ordering V1 reproduces the declared proportions within 0.0005 (V2 NOT_EXACT, within 3 SE); ties not credited; closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t07"></a>
 
 ### P05-T07 — Sweep real dense sparse random learned codes
 
-- [ ] **P05-T07**
-- **State:** IN_PROGRESS.
-- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, `benchmark/metrics/identity.py` (the single identity-metric owner, started here so T08 extends it instead of duplicating), `benchmark/runs/cli.py` (`separation-sweep`), `loss_heldout.checkpoint_name` made public, and the caps it may hit: `binding.py` (`DIMENSION`/`HIDDEN`/`FACETS` and the 2,000,000-byte parameter budget), `training.py` (`TrainingBatch.validate` 384 coordinates), `checkpoint.py` (`MAX_BYTES` 1,048,576). Staged per ADR-0026 (hierarchical reduced grid, every cell reported, grid and wall-time cap written to a receipt first). Owner answered Q-A on 12 November 2026 (ADR-0027): keep every cap and sweep at 384 dimensions only; a dimension above 384 or a cap change needs a new owner answer.
+- [x] **P05-T07**
+- **State:** DONE.
+- **Files:** `src/norn/embedding/separation.py`, `benchmark/runs/separation.py`, `tests/test_separation.py`, `benchmark/metrics/identity.py` (the single identity-metric owner, started here so T08 extends it instead of duplicating), `benchmark/runs/cli.py` (separation-sweep), loss_heldout.checkpoint_name made public, and the caps it may hit: `src/norn/embedding/binding.py` (DIMENSION/HIDDEN/FACETS and the 2,000,000-byte parameter budget), `src/norn/embedding/training.py` (TrainingBatch.validate 384 coordinates), `src/norn/embedding/checkpoint.py` (MAX_BYTES 1,048,576). Staged per ADR-0026 (hierarchical reduced grid planned; the full grid was run and every cell reported, a departure recorded as owner question Q-H in ADR-0028; grid and wall-time cap written to a receipt first). Owner answered Q-A on 12 November 2026 (ADR-0027): keep every cap and sweep at 384 dimensions only; a dimension above 384 or a cap change needs a new owner answer.
 - **Depends:** P05-T06.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Development dimension/sparsity/margin/projection and semantic/episode fusion sweep at matched bytes and exhaustive control.
@@ -1842,16 +1844,16 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** No universal orthogonalization, c-to-c^k or JL40dim claim; ANN/model changes disclosed.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_separation.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-006: 1,858 cells over tune-role captures at 384 dimensions, descriptive only (R09 left T07 margins unapproved). Eligible pools almost never contain a distractor (8 of 51), learned codes win inside a pool but collapse onto a hub episode over pooled events (R37), and sparse top-k is not consistently better than a random dense code of equal bytes; runs 001/002 are retained as superseded; card closes with the P05 end review.
+- **Evidence:** E-P05-006: 1,858 cells over tune-role captures at 384 dimensions, descriptive only (R09 left T07 margins unapproved). Eligible pools almost never contain a distractor (8 of 51), learned codes win inside a pool but collapse onto a hub episode over pooled events (R37), and sparse top-k is not consistently better than a random dense code of equal bytes; runs 001/002 are retained as superseded; closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t08"></a>
 
 ### P05-T08 — Test ambiguity same-event and held-out transfer
 
-- [ ] **P05-T08**
-- **State:** IN_PROGRESS.
-- **Files:** `benchmark/runs/partial_cues.py` (runner added: the card named no runner, so the check had no entry point), `benchmark/runs/cli.py` (`partial-cues`), `benchmark/runs/separation.py` (loader extended to every tune query), `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). Owner answered Q-B on 12 November 2026 (ADR-0027): the card claims paraphrase and unseen-identity transfer only; language transfer stays untested.
+- [x] **P05-T08**
+- **State:** DONE.
+- **Files:** `benchmark/runs/partial_cues.py` (runner added: the card named no runner, so the check had no entry point), `benchmark/runs/cli.py` (partial-cues), `benchmark/runs/separation.py` (loader extended to every tune query), `benchmark/metrics/identity.py` (the single owner of identity metrics; `benchmark/runs/binding_report.py` keeps its P04 top-1/margin readers and must not be duplicated), `tests/test_partial_cues.py`; hand-computed plus perfect/empty/shuffled controls for every metric (AGENTS benchmark rule). Owner answered Q-B on 12 November 2026 (ADR-0027): the card claims paraphrase and unseen-identity transfer only; language transfer stays untested.
 - **Depends:** P05-T07.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
 - **Change:** Score discrimination only with sufficient cue and safe ambiguity otherwise; include paraphrase and unseen identity/language.
@@ -1860,15 +1862,15 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Arbitrary sole-positive gold and over-separation recall loss are defects/regressions not wins.
 - **Gate:** G-SEPARATION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_partial_cues.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** E-P05-007: 138 tune queries, descriptive only (R09 left T08 margins unapproved). Learned codes win inside an eligible pool (contested top-1 0.50 to 1.000, set recall 0.25 to 0.58-0.75) but lose over pooled events (top-1 0.549 to 0.00-0.08) and their top-1/top-2 gap is larger on ambiguous cues than on specific ones (gap AUROC 0.20-0.54, R38); no language-transfer claim (Q-B); card closes with the P05 end review.
+- **Evidence:** E-P05-007: 138 tune queries, descriptive only (R09 left T08 margins unapproved). Learned codes win inside an eligible pool (contested top-1 0.50 to 1.000, set recall 0.25 to 0.58-0.75) but lose over pooled events (top-1 0.549 to 0.00-0.08) and their top-1/top-2 gap is larger on ambiguous cues than on specific ones (gap AUROC 0.20-0.54, R38); no language-transfer claim (Q-B); closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p05-t09"></a>
 
 ### P05-T09 — Publish loss separation and retained-code decision
 
-- [ ] **P05-T09**
-- **State:** IN_PROGRESS.
+- [x] **P05-T09**
+- **State:** DONE.
 - **Files:** `docs/development/evidence/losses_and_separation.md`, `docs/development/ADR_LOG.md`, `tests/test_loss_report.py`.
 - **Depends:** P05-T08.
 - **Source:** Training objectives; Pattern separation theory and experiments; Primary selection criterion; [design](#learning).
@@ -1878,7 +1880,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Calibration/test tuning or post-result margin revision invalidates promotion.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_loss_report.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** ADR-0028 and `docs/development/evidence/losses_and_separation.md` (retained code T0 under the approved simpler-winner rule; T1-T7 not retained; no sparse/binary code adopted; every arm, seed and raw failure preserved); `tests/test_loss_report.py` 7 tests bind the report to the frozen margins, the verdict function and the local run artifacts. Descriptive for T07/T08; card closes with the P05 end review.
+- **Evidence:** ADR-0028 and `docs/development/evidence/losses_and_separation.md` (retained code T0 under the approved simpler-winner rule; T1-T7 not retained; no sparse/binary code adopted; every arm, seed and raw failure preserved); `tests/test_loss_report.py` 7 tests bind the report to the frozen margins, the verdict function and the local run artifacts. Descriptive for T07/T08; closed at the P05 end review (E-P05-008).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06"></a>

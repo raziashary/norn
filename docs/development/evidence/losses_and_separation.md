@@ -1,6 +1,6 @@
 # P05 loss, separation and retained-code decision (P05-T09)
 
-Status: **DEVELOPMENT-EXPLORATORY, descriptive** (ADR-0027 Q-C, owner answer 12 November 2026). This is the P05 scorecard for the T0–T7 arms, the T07 separation sweep and the T08 ambiguity/transfer check. Nothing in it is a production, superiority or semantic-accuracy claim. Authority: ADR-0026 (mandate), ADR-0027 Q-A to Q-G (owner answers), ADR-0028 (this decision). The evidence entries are E-P05-001, E-P05-004, E-P05-006 and E-P05-007 in `EVIDENCE_LOG.md`.
+Status: **DEVELOPMENT-EXPLORATORY, descriptive** (ADR-0027 Q-C, owner answer 12 November 2026). This is the P05 scorecard for the T0–T7 arms, the T07 separation sweep and the T08 ambiguity/transfer check. Nothing in it is a production, superiority or semantic-accuracy claim. Authority: ADR-0026 (mandate), ADR-0027 Q-A to Q-G (owner answers), ADR-0028 (this decision). The evidence entries are E-P05-001, E-P05-004, E-P05-006, E-P05-007 and the end-review resolution E-P05-008 in `EVIDENCE_LOG.md`.
 
 ## 1. Decision
 
@@ -12,7 +12,7 @@ Status: **DEVELOPMENT-EXPLORATORY, descriptive** (ADR-0027 Q-C, owner answer 12 
 
 ## 2. T0–T7 scorecard (held-out development retrieval, run `p05-t03-heldout-002`)
 
-Metrics are the frozen R09 definitions (`benchmark/runs/loss_heldout.py` `CONFIG`): identity = strict episode top-1 over identity-applicable queries (non-OK counts 0); complete-set over fully answerable queries with a complete positive cue; false-answer and false-abstention over their declared denominators (unobserved rows count as the declared failure semantics). Learned arms are B3 checkpoints at seeds 11/29/47, so their denominators are 3x those of T0 (rows are query x seed pairs); raw per-seed training facts are in §3.
+Metrics are the frozen R09 definitions (`benchmark/runs/loss_heldout.py` `CONFIG`): identity = strict episode top-1 over identity-applicable queries (non-OK counts 0); complete-set over fully answerable queries with a complete positive cue; false-answer and false-abstention over their declared denominators (unobserved rows count as the declared failure semantics). Learned arms are B3 checkpoints at seeds 11/29/47, so their denominators are 3x those of T0 (rows are query x seed pairs); raw per-seed training facts are in §3. **T2, T3 and T6 leave the query head at its random initialisation** (E-P05-001), so their identity numbers (0.922, 0.941, 0.908) measure an untrained query path and cannot test reconstruction or separation effects.
 
 **Tune role (14 clusters; selected arm T1 by the declared rule, tie-break to the earlier arm):**
 
@@ -35,7 +35,7 @@ Metrics are the frozen R09 definitions (`benchmark/runs/loss_heldout.py` `CONFIG
 | T1 | 153/153 = 1.000 | 0.867 (135) | 0.069 (261) | 0.212 (156) | 9/414 |
 
 - C1 (T1 minus T0, identity) = **+0.0952**, interval [0.000, 0.2619], bootstrap seed 47, 1,000 samples, 14 clusters, 153 pairs; Holm family of one (C2–C5 are undefined when T1 is selected), adjusted p 0.1998. Verdict: `T0_RETAINED_NO_ARM_CLEARS_C1`.
-- **The identity endpoint is saturated on tune**: four arms tie at 1.000, so the selection among them was a tie-break, not evidence (R35). False-answer (0.069) and false-abstention (0.212) are identical for every arm on both roles; the mechanism was not investigated, so these harm contrasts could not discriminate between arms. Zero privacy incidents.
+- **The identity endpoint is saturated on tune**: four arms tie at 1.000, so the selection among them was a tie-break, not evidence (R35). False-answer (0.069) and false-abstention (0.212) are identical for every arm on both roles; the harm contrasts C4 and C5 could not discriminate between arms by construction: every one of the 276 published queries has `max_candidates` 10 and no capture holds more than 7 memories (verified from the run), so every arm admits the same candidate set and only the order differs, which leaves the approved harm bounds unable to fail on this corpus (R39). Zero privacy incidents.
 - **Cost, confusion, abstention and completeness frontier:** on false-answer and false-abstention the frontier is flat (identical across arms). On complete-set the tune ordering is T7 0.889, T5 0.867, T1/T3/T4 0.859, T2/T6 0.837, T0 0.800, descriptive and not the selection key. Cost: every arm has 61,952 parameters and a 0.34–0.36 MB checkpoint, trains in 4.6–9.7 s per job on CPU (165.0 s for all 21), and stores a 384-coordinate float32 code (1,536 B) per event exactly like T0; the learned arms add a write-time facet projection and a read-time query head. No isolated online-latency comparison between T0 and a learned arm was measured (ledger timings include validation and repeated diagnostics).
 
 ## 3. Raw failures, seeds and superseded records preserved
@@ -91,7 +91,7 @@ Same frozen codes over all 138 tune queries (51 sufficient, 86 insufficient-cue,
 
 | question | observation |
 |---|---|
-| Specific cue picks the right episode? | Inside a pool, set recall 0.250 (T0) versus 0.583 / 0.583 / 0.625 / 0.750 (T1 / T4 / T5 / T7); same-target rewording consistency 14/15 (T0) versus 15/15; no cluster worse for those four arms. |
+| Specific cue picks the right episode? | Inside a pool, set recall 0.250 (T0) versus 0.583 / 0.583 / 0.625 / 0.750 (T1 / T4 / T5 / T7); mixed-language same-target rewording consistency 14/15 (T0) versus 15/15 (the rewording groups differ in language, so paraphrase and language are not separable); no cluster worse for those four arms. |
 | Vague cue keeps a plausible set or asks? | The top-1/top-2 gap does not mark sufficiency: gap AUROC 0.20–0.54 (T0 0.331; learned arms widen the gap more on insufficient cues, e.g. T1 median 0.210 sufficient versus 0.397 insufficient), so a separation-margin clarification rule would be backwards or uninformative (R38). Over-separation on ambiguous cues is harm, not benefit. |
 | Cross-pool transfer harm | Pooled top-1 0.549 (T0) versus 0.000–0.078; set recall 0.510 versus 0.000–0.078; learned arms worse than T0 in 9–10 of 14 clusters. |
 
@@ -99,7 +99,8 @@ Same frozen codes over all 138 tune queries (51 sufficient, 86 insufficient-cue,
 
 - Frozen before the first tune-role read (source commit `e47bf6f`): minimum benefit **+0.05** with a lower bound above zero; maximum regression **0.02** for the harm contrasts (C3 lower bound not below −0.02; C4 and C5 upper bounds not above +0.02); selection by highest tune C1 point estimate with ties to the earlier arm; raw loss never selects. These are the same values as `loss_heldout.CONFIG["margins"]` and the proposal `p05_r09_margin_proposal.md`.
 - T07 and T08 had no approved margins; they are descriptive and cannot promote or reject an arm.
-- Calibration and locked-test roles were not copied or read; the evaluation role was read once for the selected arm and two comparators, after selection was frozen.
+- Calibration and locked-test roles were not copied or read. The evaluation role's files were copied into the run directory by `heldout-prepare` and byte-hashed by the tune-phase integrity check, but no evaluation label was parsed, scored or used for selection before the selection was frozen; the role was then scored once for T0 and T1 (T1 is both the selected arm and the comparator; no third arm). Later runs scope the tune-phase check to tune files (`loss_heldout.checked(root, "tune")`, tested).
+- Evidence status (ADR-0027 Q-F): the held-out and factorial runs are bound by external attestations in `docs/development/evidence/attestations/` (verified at their recorded code digests, which differ from current source, so their reports are read-only records). T07 and T08 are single-file offline reports without a ledger; their digests are in §8 and in E-P05-006/007. All outcomes are development-exploratory (Q-C).
 - **A post-result margin revision, tuning on calibration or test data, or promotion from the T07/T08 descriptive numbers invalidates promotion of any learned arm.** A learned arm may be reconsidered only with new owner-approved margins fixed before the first read and a role not already reported.
 
 ## 7. Consumers and limits
@@ -117,4 +118,5 @@ Same frozen codes over all 138 tune queries (51 sufficient, 86 insufficient-cue,
 | held-out report | `e8b82db509c372fd3d7c3818ab5952412f96622ef77c44056b83bd542a3e22b1` |
 | factorial training digest (`p05-t03-001`) | `2e0fc9567dc2144caf3ee933566eb7c150a47a2d0ae5951c378424688401b0f6` |
 | T07 sweep report (run 003; rerun 004 after the loader fix reproduces every cell, sha `a081e67cf46d02219332d044afc6c33d39b7bbf1c14c3e95f3cdcb89cd71a655`) | `f6f26498df72828721eaade1e071fbb1844671c34648ecc34717e663a56d9013` |
+| attestations (`docs/development/evidence/attestations/`) | `p05-t03-heldout-002.json`, `p05-t03-001-factorial.json` (each file holds its own digests) |
 | T08 partial-cues report (run 001; rerun 002 after the loader fix reproduces every cell, sha `68d81ba1597f0913c5e99ce1981960666cebccafbade38d5e7322811c1770365`) | `4a61282947212d58eb8a7893470280bba5c1db90b604c9ca8eb88f2b4b8023e4` |

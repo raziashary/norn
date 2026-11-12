@@ -162,23 +162,23 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 
 ## G-LEARNING — Multi-objective training and checkpoints
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P05.
 - **Owning atomic tasks:** P05-T01, P05-T02, P05-T03, P05-T04.
 - **Positive / completion contract:** T0-T7 single/pair/triple objectives plus fixed exposure/seeds diagnostics reload into real retrieval; multi-positive pairs screened.
 - **Negative / falsification control:** Raw incomparable loss winner false negatives test-data training collapse and dropped no-query-alignment arms invalidate results.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** PARTIAL: E-P05-001 (T0-T7 trained and reloaded, 21 checkpoints), E-P05-002, E-P05-004 (held-out dev retrieval through the engine reader; T0 retained), E-P05-008. Development-exploratory (ADR-0027 Q-C); no sealed or locked efficacy claim, no longitudinal or multi-store consumer.
 
 ## G-SEPARATION — Discrimination-generalization frontier
 
-- **State:** NOT_RUN.
+- **State:** PARTIAL.
 - **Owner phases:** P05.
 - **Owning atomic tasks:** P05-T05, P05-T06, P05-T07, P05-T08.
 - **Positive / completion contract:** Both toy studies exact reproducibility scope plus real sparse/dense/learned/random sweeps measure specific/ambiguous/paraphrase/held-out recall.
 - **Negative / falsification control:** Support overlap not weighted cosine or task score; ties not correct; universal orthogonality/JL40dims/c-to-power claims unsupported.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** PARTIAL: E-P05-002 (both toy studies, V1 exact, V2/V3 NOT_EXACT within 3 SE), E-P05-006 (1,858-cell sweep) and E-P05-007 (ambiguity/transfer), descriptive with no approved T07/T08 margins; learned codes carry no cross-pool identity (R37) and the gap does not mark sufficiency (R38). Development-exploratory.
 
 ## G-GRAPH — Typed topology seeds source paths and integration
 

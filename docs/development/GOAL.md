@@ -1,6 +1,6 @@
 # Norn goal and acceptance
 
-Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05 is mandated in full (nine cards, after the cleanup) by ADR-0026 and is built and recorded, awaiting its end review (12 November 2026); P06+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
+Updated 22 October 2026 (Asia/Bangkok). The mandate for all nine P04 tasks is fulfilled in E-P04-005; ADR-0020 choices are owner-approved. P05 is mandated in full (nine cards, after the cleanup) by ADR-0026 and is DONE after its end review (12 November 2026); P06+ have no mandate; the owner separately approved current main publication after verified closeout (ADR-0023). All12 P03 conventional retrieval tasks are complete under ADR-0017/E-P03-003; P00–P02 are complete and published. Current P03/P04 publication is separately authorized under ADR-0023. The longer program is the blueprint's memory-engine research. These are separate completion claims.
 
 ## Audit repair — 6 November 2026
 
@@ -32,7 +32,7 @@ Determine whether distinct functional views, aligned query-memory binding, contr
 | O01 | Source-backed event/atom/edge identity and independent epistemic/time/scope contracts | P01 foundation complete, E-P01-003; later source/retrieval paths keep their own gates | DONE |
 | O02 | Current ACL, correction, historical knowledge and deletion controls | P01/P03 local controls verified; P09/P11/P12 remain | IN_PROGRESS |
 | O03 | Fair conventional strong baseline and evidence-qualified recall | P02/P03; E-P03-003; actual local field-support/measurement proof, scientific outcome INCONCLUSIVE | DONE |
-| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04 DONE/E-P04-005, outcome INCONCLUSIVE; P05 built and recorded (E-P05-001 to E-P05-007, ADR-0028): held-out null, T0 retained as the simpler winner, learned codes carry no cross-pool identity; cards close at the P05 end review; G-BINDING PASS | IN_PROGRESS |
+| O04 | Measured views/binding/loss/separation value or justified simpler winner | P04 DONE/E-P04-005, outcome INCONCLUSIVE; P05 DONE (E-P05-001 to E-P05-008, ADR-0028): held-out null, T0 retained as the simpler winner, learned codes carry no cross-pool identity; cards closed at the P05 end review; G-BINDING PASS, G-LEARNING and G-SEPARATION PARTIAL | IN_PROGRESS |
 | O05 | Measured graph activation benefit and false-association tradeoff | P06; G-GRAPH/G-DIFFUSION; fixed-seed topology controls and path source proof | PLANNED |
 | O06 | Explicit CDZ/salience/consolidation retain/reject decisions | P07/P08; G-CDZ/G-SALIENCE/G-CONSOLIDATION; fidelity, rare exceptions, correction/revoke | PLANNED |
 | O07 | Real next-turn consumer and source-compatible external transfer | P09; G-INTEGRATION/G-TRANSFER; restarted host and separate retrieval/fixed-generator tracks | PLANNED |
