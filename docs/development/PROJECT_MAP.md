@@ -32,7 +32,7 @@ Actual runtime includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,g
 | contracts | identity, tagged values, clocks, evidence, budgets, snapshots | host/canonical → all owners | P01 |
 | canonical | source bytes, registry, identity, schema, append-only controls, local outbox | authorized writes → source/recall/projection readers | P01/P03/P04 |
 | governance | current permissions, temporal basis, sufficiency, denial/purge | host/registry → every search/traversal/return | P01/P03/P04/P11/P12 |
-| extraction | source-anchored atoms, typed relation candidates, uncertainty | immutable source → registry/graph | P01/P06 |
+| extraction | source-anchored atoms, uncertainty (typed relation candidates are P06; none exist today) | immutable source → registry/graph | P01/P06 |
 | retrieval | exact/lexical/dense/ANN/fusion/rerank/source recovery | cue + eligible snapshot → cited memory candidates | P03 |
 | embedding | pinned local encoder/reranker assets, explicit CPU worker lifecycle and inference | eligible sources/cues → normalized vectors/raw rerank scores | P03/P04 actual |
 | features and later embedding research | multiple views, query/memory binding, objectives, checkpoint lineage | canonical episode → versioned derived code | P04 verified; P05 built (T0 retained, learned heads not adopted, ADR-0028); P07/P10 planned |
