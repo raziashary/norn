@@ -1719,7 +1719,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Exit:** T0-T7 and sparse controls fairly evaluated; toy reproduction separate from real recall; outcome and regression limits explicit.
 - **State:** DONE.
 - **Evidence pointer:** E-P05-001 to E-P05-008, ADR-0028 and `docs/development/evidence/losses_and_separation.md`; task cards inherit them.
-- **Exit proof:** all nine cards built and recorded; held-out verdict `T0_RETAINED_NO_ARM_CLEARS_C1` (T0 retained, ADR-0028); T07/T08 descriptive; sole Haiku 5.5 high-effort end review resolved (E-P05-008). Outcome development-exploratory (ADR-0027 Q-C), not a sealed or production claim; owner questions Q-H and Q-I are open and do not block closure.
+- **Exit proof:** all nine cards built and recorded; held-out verdict `T0_RETAINED_NO_ARM_CLEARS_C1` (T0 retained, ADR-0028); T07/T08 descriptive; sole Haiku 5.5 high-effort end review resolved (E-P05-008). Outcome development-exploratory (ADR-0027 Q-C), not a sealed or production claim; owner questions Q-H and Q-I were answered on 13 November 2026 (ADR-0028).
 
 <a id="p05-t01"></a>
 
@@ -1890,7 +1890,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Blueprint stage:** Stage 2.
 - **Design:** [technical contract](#graph-algorithms).
 - **Source headings:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode.
-- **Entry:** P05-T09.
+- **Entry:** P05-T09 (DONE). **Mandate (ADR-0029, owner answers of 13 November 2026):** stage M1 only, that is the substrate decisions (migration, identity policy and per-object ACL design, fixture version and pools with a noisy-rendering stratum, endpoints and margin proposal, seed definitions) plus an internal, non-public foundation T01-T06 after the plan corrections listed in ADR-0029; stage M2 (T07-T12, public wiring, retention) needs a separate owner decision. The per-object ACL design goes to the owner before code. No card has started.
 - **Exit:** Gold/derived topology and fixed/shared seeds distinguished; bounded BFS/PPR/heat oracle and security controls pass; incremental evidence measured.
 - **State:** PLANNED.
 
