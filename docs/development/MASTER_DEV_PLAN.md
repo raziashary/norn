@@ -2007,18 +2007,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T19 — Add the labelled NOISY_V1 rendering stratum
 
-- [ ] **P06-T19**
-- **State:** PLANNED.
+- [x] **P06-T19**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/noisy_render.py`, `tests/test_noisy_render.py`.
 - **Depends:** P06-T18.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
-- **Change:** A seeded, deterministic renderer applies typos, abbreviation, clause reordering, distractor clauses and the en/id/mixed variants to the same facts, labelled NOISY_V1; no model, network or Groq call.
+- **Change:** A seeded, deterministic renderer applies typos, abbreviation, clause reordering, distractor clauses and the en/id/mixed variants to the same facts, labelled NOISY_V1; no model, network or Groq call. **Scope as built (13 November 2026):** the transform rewrites only the message of each public-v2 source and keeps the authenticated capture and every identifier (display names, values, `[key:..]` and `[alias:..]` statements) verbatim; the label is the capture producer `synthetic-recorder-noisy-v1`; question variants change language only (no typos in questions). T02 must extract from the message text, never from the capture.
 - **Consumer:** T02 extracts a derived graph from noisy text and measures its error against the hidden gold graph; T20 and T10 read it as a stratum.
 - **Positive proof:** The same seed reproduces identical bytes; every noisy rendering keeps its facts recoverable by a human-readable check on a sample; the stratum is labelled in every published input and report.
 - **Negative proof:** Noise never alters a gold fact or leaks a label; an unlabelled noisy rendering is rejected; a generative renderer is not importable from this module.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_noisy_render.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-006: `benchmark/fixtures/noisy_render.py` (`noisy_case`, `noisy_source`, `require_labelled`), 10 tests in `tests/test_noisy_render.py` with five of five mutations killed, pinned corpus digest over the pilot role in three languages.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t20"></a>
