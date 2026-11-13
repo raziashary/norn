@@ -194,6 +194,7 @@ class Engine:
         evidence_bytes = 0
         checked = [event_id, version["source_id"]]
         valid = stamp(clock.valid_at)
+        denied = self.access.labels.denied_sources_json("READ")
         conflicts = []
         for row in rows:
             self.access.check("READ", row["id"])
@@ -211,9 +212,15 @@ class Engine:
                 "SELECT r.*,e.recorded_at FROM relationships r JOIN atoms a "
                 "ON r.ns=a.ns AND r.from_id=a.id JOIN events e ON a.ns=e.ns AND a.event_id=e.id "
                 "WHERE r.ns=? AND (r.to_id=? OR r.from_id=?) AND r.commit_seq<=? "
-                "AND e.recorded_at<=? ORDER BY r.id LIMIT 257",
-                (ns, row["id"], row["id"], snapshot, known),
+                "AND e.recorded_at<=? AND NOT EXISTS (SELECT 1 FROM atoms o JOIN events oe "
+                "ON o.ns=oe.ns AND o.event_id=oe.id JOIN source_versions ov ON oe.ns=ov.ns "
+                "AND oe.source_version=ov.id WHERE o.ns=r.ns AND o.id IN (r.from_id,r.to_id) "
+                "AND ov.source_id IN (SELECT value FROM json_each(?))) "
+                "ORDER BY r.id LIMIT 257",
+                (ns, row["id"], row["id"], snapshot, known, denied),
             ).fetchall()
+            # A label-denied neighbour is absent, not an error, and spends no relation budget.
+            edges = [e for e in edges if self.access.acl_allows("READ", e["id"])]
             require(len(edges) <= corrections.MAX_RELATIONS, "RELATION_BUDGET")
             for edge in edges:
                 # Do not expose a relation endpoint without its current source access.
@@ -258,6 +265,14 @@ class Engine:
                 (ns, row["id"], snapshot, known),
             ).fetchall()
             require(0 < len(supports) <= corrections.MAX_SUPPORTS, "SUPPORT_INTEGRITY_OR_BUDGET")
+            # Additional corroboration from a label-denied source is dropped from the citations;
+            # the primary support already passed the source check above.
+            supports = [
+                x
+                for x in supports
+                if x["support_kind"] == "PRIMARY" or self.access.acl_allows("READ", x["source_id"])
+            ]
+            require(0 < len(supports), "SUPPORT_INTEGRITY_OR_BUDGET")
             for support in supports:
                 evidence_bytes += support["end_byte"] - support["start_byte"]
                 require(evidence_bytes <= 1_048_576, "EVIDENCE_BUDGET")

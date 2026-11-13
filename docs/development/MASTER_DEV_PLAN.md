@@ -1953,8 +1953,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T16 — Implement per-object ACL and the non-raising eligibility predicate
 
-- [ ] **P06-T16**
-- **State:** PLANNED.
+- [x] **P06-T16**
+- **State:** DONE.
 - **Files:** `src/norn/governance/access.py`, `src/norn/governance/eligibility.py`, `tests/test_object_acl.py`.
 - **Depends:** P06-T14, P06-T15.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
@@ -1964,7 +1964,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** Denied and absent objects stay indistinguishable; counts, truncation flags and paths do not move when a denied object is added; a mid-read label change raises QUERY_SECURITY_CHANGED; no existing namespace-wide test regresses.
 - **Gate:** G-ACL, G-SECURITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_object_acl.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-003: one `Access.eligible` rule under the raising `check`, `Access.recheck` (QUERY_SECURITY_CHANGED for a label or grant change), `set_scope`, label-scoped `grant`, `Eligibility` in `governance/eligibility.py`, SQL exclusion of denied sources before LIMIT in `retrieval/exact.py`, dropped additional-support citations and denied neighbour edges in `Engine.read`, label-aware `inspect_entity`; 11 tests in `tests/test_object_acl.py` with four of five mutations killed and the fifth a documented redundant guard.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t17"></a>

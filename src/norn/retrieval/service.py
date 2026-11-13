@@ -41,10 +41,10 @@ class RecallView:
         self._snapshot, self._epoch, self._payload = snapshot, epoch, canonical(data)
 
     def serialize(self) -> dict[str, Any]:
-        require(self._engine.access.check("READ") == self._epoch, "QUERY_SECURITY_CHANGED")
+        self._engine.access.recheck("READ", self._epoch)
         for hit in self._hits:
             resolve(self._engine, hit, self._request, self._snapshot, self._epoch)
-        require(self._engine.access.check("READ") == self._epoch, "QUERY_SECURITY_CHANGED")
+        self._engine.access.recheck("READ", self._epoch)
         return json.loads(self._payload)  # type: ignore[no-any-return]
 
 

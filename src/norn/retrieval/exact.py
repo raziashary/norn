@@ -40,12 +40,14 @@ def _unindexed(engine: Engine, request: RecallRequest, snapshot: int) -> bool:
         "NOT EXISTS (SELECT 1 FROM atoms a WHERE a.ns=e.ns AND a.event_id=e.id)",
         "NOT EXISTS (SELECT 1 FROM tombstones t WHERE t.ns=e.ns "
         "AND t.object_id IN (e.id,v.source_id))",
+        "v.source_id NOT IN (SELECT value FROM json_each(?))",
     ]
     values: list[str | int] = [
         engine.access.ns,
         snapshot,
         stamp(request.clock.knowledge_at),
         stamp(request.clock.knowledge_at),
+        engine.access.labels.denied_sources_json("READ"),
     ]
     if request.event_id is not None:
         clauses.append("e.id=?")
@@ -96,6 +98,10 @@ def eligible(
     window, parameters = _window(request)
     clauses.extend(window)
     params.extend(parameters)
+    # A source label that denies this principal is excluded silently and before LIMIT: it must
+    # not mark the corpus incomplete or spend scan budget, or a denied object would be visible.
+    clauses.append("v.source_id NOT IN (SELECT value FROM json_each(?))")
+    params.append(engine.access.labels.denied_sources_json("READ"))
     # Current denial overrides historical snapshots, before any LIMIT or ranking.
     clauses.append(
         "NOT EXISTS (SELECT 1 FROM tombstones t WHERE t.ns=a.ns AND "
@@ -193,7 +199,7 @@ def eligible(
                 snapshot,
             )
         )
-    require(engine.access.check("READ") == epoch, "QUERY_SECURITY_CHANGED")
+    engine.access.recheck("READ", epoch)
     return EligibleCorpus(
         tuple(records),
         snapshot,

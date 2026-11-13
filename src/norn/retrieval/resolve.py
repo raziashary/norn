@@ -17,7 +17,7 @@ def resolve(engine: Engine, hit: Hit, request: RecallRequest, snapshot: int, epo
         record.namespace == engine.access.ns and record.snapshot == snapshot,
         "CANDIDATE_SNAPSHOT_MISMATCH",
     )
-    require(engine.access.check("READ", record.atom_id) == epoch, "QUERY_SECURITY_CHANGED")
+    engine.access.recheck("READ", epoch, record.atom_id)
     view = engine.read(record.event_id, replace(request.clock, snapshot=snapshot)).serialize()
     atom = next((a for a in view["atoms"] if a["atom_id"] == record.atom_id), None)
     if atom is None:
@@ -72,5 +72,5 @@ def resolve(engine: Engine, hit: Hit, request: RecallRequest, snapshot: int, epo
         ),
         "CANDIDATE_SOURCE_MISMATCH",
     )
-    require(engine.access.check("READ") == epoch, "QUERY_SECURITY_CHANGED")
+    engine.access.recheck("READ", epoch)
     return record

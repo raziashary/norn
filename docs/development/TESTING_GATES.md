@@ -58,7 +58,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Current host-granted scope applied before candidate windows/ranking/subgraph normalization and at final read; allowed path still works.
 - **Negative / falsification control:** Denied text node intermediary existence counts ranks paths and stale-cache/TOCTOU canaries absent across actual outputs.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003/E-P03-003: eligibility before candidate windows, private-flood controls, held-output recheck, current revocation/denial and full-envelope canaries. Zero observed canaries is not a population bound; P06/P12 remain NOT_RUN.
+- **Evidence:** E-P01-003/E-P03-003: eligibility before candidate windows, private-flood controls, held-output recheck, current revocation/denial and full-envelope canaries. Zero observed canaries is not a population bound; P06/P12 remain NOT_RUN. E-P06-003 (P06-T16): label-scoped per-object eligibility, deny overrides, fail-closed derived objects and byte-identity of reader responses across worlds differing only in a denied source are proven for recall and read; graph traversal, seeds, counts and paths are not yet built.
 
 ## G-INGEST — Atomic commit local outbox and real reader
 
@@ -278,7 +278,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Positive legitimate path plus injected/forged/malformed/resource/telemetry/private-history controls through actual host and source readers.
 - **Negative / falsification control:** Canary absence checked not just redaction marker; poison repetition/model agreement cannot promote authority; zero observed not zero risk.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required. E-P06-003 (P06-T16): label-scoped per-object eligibility, deny overrides, fail-closed derived objects and byte-identity of reader responses across worlds differing only in a denied source are proven for recall and read; graph traversal, seeds, counts and paths are not yet built.
 
 ## G-CONFIRMATORY — Sealed fair study and qualified conclusions
 

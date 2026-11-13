@@ -113,18 +113,27 @@ def inspect_entity(registry: Registry, entity: str) -> dict[str, object]:
         (ns, row["provisional_span_id"]),
     ).fetchone()
     require(source is not None, "STORE_INTEGRITY")
-    registry.access.check("READ", source[0])
-    aliases = connection.execute(
-        "SELECT label FROM entity_aliases WHERE ns=? AND entity_id=?", (ns, entity)
-    ).fetchall()
+    # The entity is visible when any contributing source is readable (ADR-0029); a label-denied
+    # defining source is therefore not an error, but a tombstone still is.
+    if registry.access.acl_allows("READ", source[0]):
+        registry.access.check("READ", source[0])
+    aliases = [
+        r
+        for r in connection.execute(
+            "SELECT a.label,v.source_id FROM entity_aliases a JOIN source_spans s ON a.ns=s.ns "
+            "AND a.span_id=s.id JOIN source_versions v ON s.ns=v.ns AND s.version_id=v.id "
+            "WHERE a.ns=? AND a.entity_id=?",
+            (ns, entity),
+        )
+        if registry.access.acl_allows("READ", r[1])
+    ]
     decisions = connection.execute(
         "SELECT id,decision,left_id,right_id,span_id FROM identity_events "
         "WHERE ns=? AND (left_id=? OR right_id=?) ORDER BY recorded_seq",
         (ns, entity, entity),
     ).fetchall()
+    visible = []
     for decision in decisions:
-        for endpoint in (decision["left_id"], decision["right_id"]):
-            registry.access.check("READ", endpoint)
         supporting = connection.execute(
             "SELECT v.source_id FROM source_spans s "
             "JOIN source_versions v ON s.ns=v.ns AND s.version_id=v.id "
@@ -132,11 +141,21 @@ def inspect_entity(registry: Registry, entity: str) -> dict[str, object]:
             (ns, decision["span_id"]),
         ).fetchone()
         require(supporting is not None, "STORE_INTEGRITY")
+        ends = (decision["left_id"], decision["right_id"])
+        # A review that needs a label-denied endpoint or support is absent, not an error.
+        if not (
+            registry.access.acl_allows("READ", supporting[0])
+            and all(registry.access.acl_allows("READ", e) for e in ends)
+        ):
+            continue
+        for endpoint in ends:
+            registry.access.check("READ", endpoint)
         registry.access.check("READ", supporting[0])
+        visible.append(decision)
     registry.access.check("READ", entity)
     return {
         "entity_id": entity,
         "external_key": row["external_key"],
         "aliases": [r[0] for r in aliases],
-        "review_history": [dict(r) for r in decisions],
+        "review_history": [dict(r) for r in visible],
     }
