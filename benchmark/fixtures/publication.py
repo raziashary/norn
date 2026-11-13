@@ -25,7 +25,8 @@ QUERY_FIELDS = set(Query.__dataclass_fields__)
 def validate_public(payload: dict[str, Any], private_markers: tuple[str, ...] = ()) -> PublicInput:
     require(type(payload) is dict and set(payload) == {"query", "sources"}, "PUBLIC_SCHEMA")
     require(
-        type(payload["query"]) is dict and set(payload["query"]) == QUERY_FIELDS,
+        type(payload["query"]) is dict
+        and set(payload["query"]) in (QUERY_FIELDS, QUERY_FIELDS - {"search_budget"}),
         "PUBLIC_QUERY_SCHEMA",
     )
     query_raw = dict(payload["query"])

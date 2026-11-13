@@ -23,6 +23,8 @@ def render(
     copy: int = 0,
     principals: tuple[str, ...] = ("reader",),
     language: str = "en",
+    suffix: str = "",
+    tag: str = "publication-v1",
 ) -> PublishedSource:
     observation = Observation(
         fact.actor, fact.predicate, fact.value, fact.event_time, fact.recorded_at, fact.origin
@@ -33,8 +35,9 @@ def render(
         if language == "en"
         else f"Catatan {fact.actor}: {fact.predicate} = {fact.value}."
     )
-    text = canonical({"capture": asdict(observation), "message": sentence})
-    key = opaque("source", "publication-v1", seed, namespace, fact.hidden_id, copy, language)
+    # ``suffix`` carries identity statements ([key:..], [alias:..]) in the message itself.
+    text = canonical({"capture": asdict(observation), "message": sentence + suffix})
+    key = opaque("source", tag, seed, namespace, fact.hidden_id, copy, language)
     return PublishedSource(
         key,
         opaque("event", seed, fact.actor, fact.event_time),

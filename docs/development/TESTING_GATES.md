@@ -98,7 +98,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Runtime/adapters receive only authorized rendered input; family/entity split before paraphrases; trainer/dev/calibration/locked roles distinct.
 - **Negative / falsification control:** Gold/answers/slots leak in filenames IDs metadata prompts vectors graphs traces imports or tuning makes run invalid.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P02-003/E-P03-003: public-only input and canonical readback mapping, immutable paired report and six rehashed corruption rejections pass. All135 P03 development labels unaudited; P04/P13 sealed study obligations remain NOT_RUN.
+- **Evidence:** E-P02-003/E-P03-003: public-only input and canonical readback mapping, immutable paired report and six rehashed corruption rejections pass. All135 P03 development labels unaudited; P04/P13 sealed study obligations remain NOT_RUN. E-P06-005 (P06-T18): public-v2 generator reproduces its pinned pilot digest, role clusters are disjoint from each other and from the P05 tiers, and gold, private sources and hidden labels are absent from published inputs; tune and evaluation cases not built, NOISY_V1 (T19) not done.
 
 ## G-REUSE — Audited references and independent adapters
 

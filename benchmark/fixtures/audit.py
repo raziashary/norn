@@ -1,7 +1,7 @@
 """Hash-bound human audit workflow; constructed labels never impersonate humans."""
 
 import json
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -113,7 +113,7 @@ def write_audit_pack(
     )
     pack = [
         {
-            "query": asdict(c.query),
+            "query": c.query.public(),
             "source_digest": binding(c)[0],
             "gold_digest": binding(c)[1],
             "constructed_gold": gold_payload(c),

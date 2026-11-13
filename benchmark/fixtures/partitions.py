@@ -44,6 +44,10 @@ def authorize_partition(role: str, tier: str, *, sealed: bool = False) -> None:
         "tuner": {"development"},
         "calibrator": {"calibration"},
         "confirmatory": {"locked"},
+        # public-v2 roles (P06-T18); the evaluation tier is sealed like the P05 locked tier.
+        "pilot": {"pilot"},
+        "tune": {"tune"},
+        "evaluation": {"evaluation"},
     }
     require(role in roles and tier in roles[role], "PARTITION_ACCESS_DENIED")
-    require(tier != "locked" or sealed, "LOCKED_NOT_SEALED")
+    require(tier not in {"locked", "evaluation"} or sealed, "LOCKED_NOT_SEALED")

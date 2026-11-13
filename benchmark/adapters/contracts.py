@@ -52,8 +52,23 @@ class Query:
     max_candidates: int
     max_evidence_tokens: int
     required_capabilities: tuple[str, ...] = ("source_read",)
+    # public-v2 only: the candidate pool every arm may search, separate from the output limit
+    # ``max_candidates``. None (public-v1) is omitted from the published payload so v1 bytes and
+    # digests do not move.
+    search_budget: int | None = None
+
+    def public(self) -> dict[str, Any]:
+        result = asdict(self)
+        if result["search_budget"] is None:
+            del result["search_budget"]
+        return result
 
     def __post_init__(self) -> None:
+        require(self.search_budget is None or type(self.search_budget) is int)
+        require(
+            self.search_budget is None or self.max_candidates <= self.search_budget <= 1000,
+            "INVALID_SEARCH_BUDGET",
+        )
         require(re.fullmatch(r"query_[0-9a-f]{64}", self.query_id) is not None, "INVALID_QUERY_ID")
         parts = self.namespace.split("/")
         require(len(parts) == 3, "INVALID_NAMESPACE")
@@ -86,7 +101,7 @@ class PublicInput:
             )
 
     def payload(self) -> dict[str, Any]:
-        return {"query": asdict(self.query), "sources": [s.public() for s in self.sources]}
+        return {"query": self.query.public(), "sources": [s.public() for s in self.sources]}
 
     @property
     def sha256(self) -> str:

@@ -185,3 +185,22 @@ def test_loader_imports_no_gold_world_or_evaluator_objects():
     assert not any(str(m).startswith(tuple(forbidden)) for m in imported if m)
     assert json.dumps(sorted(str(m) for m in imported))  # control: imports were actually parsed
     assert "benchmark.adapters.contracts" in imported
+
+
+def test_alias_to_a_keyed_entity_resolves_through_its_provisional_twin(tmp_path):
+    published = world_of(
+        ("a", "Aleksander", "Aleksander parked [key:acct-1]"),
+        ("b", "Alex", "Alex is Aleksander [alias:Aleksander]"),
+    )
+    engine, (_mapping, identity) = load(tmp_path, published)
+    try:
+        # The keyed entity and the provisional twin of its defining source are one occurrence.
+        assert identity["alias_links"] == 1 and identity["unresolved"] == []
+        right = engine.db.connection.execute(
+            "SELECT e.external_key FROM identity_events i JOIN entities e ON e.ns=i.ns "
+            "AND e.id=i.right_id WHERE i.ns=?",
+            (engine.access.ns,),
+        ).fetchone()[0]
+        assert right == "acct-1"  # linked to the governed entity, not its twin
+    finally:
+        engine.close()

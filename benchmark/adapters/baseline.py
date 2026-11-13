@@ -54,27 +54,40 @@ def apply_identity(
     shared: dict[str, str] = {}
     for source_id, key in plan.keys:
         shared[key] = register_entity(engine.registry, atoms[source_id], actors[source_id], key)
+    key_of = dict(plan.keys)
     connection = engine.db.connection
     links, unresolved = 0, []
     for source_id, name in plan.aliases:
-        left = connection.execute(
-            "SELECT subject_ref FROM atoms WHERE ns=? AND id=?",
+        atom = connection.execute(
+            "SELECT subject_ref,source_span_id FROM atoms WHERE ns=? AND id=?",
             (engine.access.ns, atoms[source_id]),
-        ).fetchone()[0]
+        ).fetchone()
+        left = shared[key_of[source_id]] if source_id in key_of else atom[0]
         rows = connection.execute(
-            "SELECT DISTINCT entity_id FROM entity_aliases WHERE ns=? AND label=? AND entity_id<>?",
-            (engine.access.ns, name, left),
+            "SELECT e.id,e.provisional_span_id,e.external_key FROM entities e "
+            "JOIN entity_aliases a "
+            "ON a.ns=e.ns AND a.entity_id=e.id WHERE e.ns=? AND a.label=? "
+            "AND e.provisional_span_id<>? ORDER BY e.id",
+            (engine.access.ns, name, atom[1]),
         ).fetchall()
+        # A keyed entity and the provisional twin of its defining source are one occurrence
+        # (same span); different spans with the same name stay distinct candidates.
+        by_span: dict[str, str] = {}
+        for entity_id, span, external_key in rows:
+            if span not in by_span or external_key is not None:
+                by_span[span] = entity_id
         # An alias statement links only to one unambiguous target; same-name entities stay apart.
-        if len(rows) != 1:
+        if len(by_span) != 1:
             unresolved.append(
                 {
                     "source": source_id,
-                    "reason": "UNKNOWN_ALIAS_TARGET" if not rows else "AMBIGUOUS_ALIAS_TARGET",
+                    "reason": "UNKNOWN_ALIAS_TARGET" if not by_span else "AMBIGUOUS_ALIAS_TARGET",
                 }
             )
             continue
-        review_identity(engine.registry, left, rows[0][0], "SAME_AS", atoms[source_id])
+        review_identity(
+            engine.registry, left, next(iter(by_span.values())), "SAME_AS", atoms[source_id]
+        )
         links += 1
     return {
         "keys": len(plan.keys),

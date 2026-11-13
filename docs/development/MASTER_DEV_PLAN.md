@@ -1989,18 +1989,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T18 — Build the `public-v2` multi-hop fixture version
 
-- [ ] **P06-T18**
-- **State:** PLANNED.
-- **Files:** `benchmark/fixtures/multihop.py`, `benchmark/fixtures/partitions.py`, `benchmark/fixtures/scenarios.py`, `tests/test_multihop_fixtures.py`.
+- [x] **P06-T18**
+- **State:** DONE.
+- **Files:** `benchmark/fixtures/multihop.py`, `benchmark/fixtures/partitions.py`, `benchmark/fixtures/render.py`, `benchmark/adapters/contracts.py`, `benchmark/fixtures/publication.py`, `benchmark/fixtures/audit.py`, `benchmark/adapters/baseline.py`, `tests/test_multihop_fixtures.py`, `tests/test_entity_policy.py`. **Amended 13 November 2026 (visible change):** scenarios.py was not edited (the new families build Case and Gold from it unchanged); the other files carry the search_budget field, the renderer identity suffix and tag, the v2 roles and the alias-twin fix found while building M2.
 - **Depends:** P06-T14, P06-T17.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
-- **Change:** Add families M1 to M6, namespaces of 20 to 60 sources, an explicit `search_budget` separate from the 10-slot output limit, and the pilot, tune and evaluation cluster counts of the design; split by scenario and entity family before any paraphrase; move the fixture tag to `public-v2`.
+- **Change:** Add families M1 to M6, namespaces of 20 to 60 sources, an explicit `search_budget` separate from the 10-slot output limit, and the pilot, tune and evaluation cluster counts of the design (**owner decision 13 November 2026, primary-weighted:** per family M1 to M4 / M5 and M6, pilot 5 / 2, tune 10 / 4, evaluation 50 / 20, so 24, 48 and 240 clusters with 200 on the primary families); M4 has two variants per cluster (a positive variant with a public detour next to the private shortcut, a missing variant whose only path is private); split by scenario and entity family before any paraphrase; move the fixture tag to `public-v2`.
 - **Consumer:** T19 renders noisy variants; T20 re-runs R0 to R3; T21 and T10 measure on it.
 - **Positive proof:** The generator is deterministic and reproduces its digests; pools exceed the 10 cap; chains and hubs have the intended graph degrees through the T17 identity policy.
 - **Negative proof:** Gold, forbidden sources and chain labels are absent from published inputs and IDs; a held-out family never appears in an earlier role; the P05 evaluation role is not reused.
 - **Gate:** G-CUSTODY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_multihop_fixtures.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-005: `benchmark/fixtures/multihop.py` (families M1 to M6, `GraphGold` evaluator-only hidden graph, `multihop_cases`), `Query.search_budget` omitted when None so v1 bytes do not move, v2 roles in `authorize_partition`; 10 tests in `tests/test_multihop_fixtures.py` with five of five mutations killed; the T17 alias resolver now collapses a keyed entity with its provisional twin (one more test).
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t19"></a>
