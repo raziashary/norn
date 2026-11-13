@@ -15,13 +15,14 @@ from norn.contracts.identity import digest
 from norn.contracts.time import Clock, aware, stamp, wall_clock
 
 APPLICATION_ID = 0x4E4F524E
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 MIGRATIONS = (
     "schema.sql",
     "002_governance.sql",
     "003_projection.sql",
     "004_binding.sql",
     "005_indexes_support_time.sql",
+    "006_graph.sql",
 )
 MUTABLE_TABLES = {"namespaces", "migration_state"}
 

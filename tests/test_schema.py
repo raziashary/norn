@@ -96,7 +96,7 @@ def test_migration_005_backfills_support_times_with_verified_backup_and_indexes(
     root, first, extra = seeded_v4_store(tmp_path)
     with Engine(root, HOST) as upgraded:
         connection = upgraded.db.connection
-        assert connection.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION == 5
+        assert connection.execute("PRAGMA user_version").fetchone()[0] == SCHEMA_VERSION
         backup_ref = connection.execute(
             "SELECT backup_ref FROM schema_migrations WHERE version=5"
         ).fetchone()[0]

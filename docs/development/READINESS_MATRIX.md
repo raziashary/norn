@@ -19,7 +19,7 @@ Updated 22 October 2026 (Asia/Bangkok). Readiness is evidence of usable behavior
 | Expanded privacy/security envelope | PLANNED | NOT_RUN | NOT_EVALUATED | P12; P01 direct canonical controls proven, expanded privacy envelope remains unexecuted |
 | Sealed reproducible study | PLANNED | NOT_RUN | NOT_EVALUATED | P13; no frozen numeric threshold or locked result |
 
-Audit repair 6 November 2026 (ADR-0024, E-FIX-001): canonical recording time is injectable; the earlier "158 tests pass" receipts were correct on 22 October and failed on 6 November through a wall-clock dependency, now removed. P03/P04 rows keep their evidence levels for the source they froze. The owner-enabled bounded re-measurement on current source is done and sealed (E-FIX-002): R0–R3 `p05-pre-r-002`, binding `p05-pre-b-001` (B4 type embedding fixed, retrained); outcomes stay INCONCLUSIVE and no row is promoted. Schema is 5 (`005_indexes_support_time.sql`); the installed-wheel proof of migration 005 waits for the next wheel build.
+Audit repair 6 November 2026 (ADR-0024, E-FIX-001): canonical recording time is injectable; the earlier "158 tests pass" receipts were correct on 22 October and failed on 6 November through a wall-clock dependency, now removed. P03/P04 rows keep their evidence levels for the source they froze. The owner-enabled bounded re-measurement on current source is done and sealed (E-FIX-002): R0–R3 `p05-pre-r-002`, binding `p05-pre-b-001` (B4 type embedding fixed, retrained); outcomes stay INCONCLUSIVE and no row is promoted. Schema is 6 (`006_graph.sql`, additive graph tables, installed-wheel proof of the v5 to v6 upgrade in E-P06-002); the installed-wheel proof of migration 005 is still not run.
 
 ## Promotion rules
 

@@ -1935,8 +1935,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T15 — Add graph migration 006 with verified upgrade proofs
 
-- [ ] **P06-T15**
-- **State:** PLANNED.
+- [x] **P06-T15**
+- **State:** DONE.
 - **Files:** `src/norn/canonical/006_graph.sql`, `src/norn/canonical/database.py`, `tests/test_graph_migration.py`.
 - **Depends:** P06-T14.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
@@ -1946,7 +1946,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** A relation type outside `relation_types` is refused; a graph edge with an unknown endpoint kind or missing support is refused; the upgrade refuses to run without a verified backup record; HYPOTHESIZES_CAUSE can never be flagged causal.
 - **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_graph_migration.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-002: schema 6 (`006_graph.sql`, five additive tables, four indexes, no rebuilt table); fresh v6, populated v5 upgrade after a verified backup, injected failure leaving v5 intact and retryable, backup failure refusing the upgrade, restore of the backup and re-upgrade, constraint refusals and an installed-wheel upgrade each pass as separate proofs. Graph writers, `object_scopes` readers and the graph manifest publisher belong to T01, T16 and T11.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t16"></a>
