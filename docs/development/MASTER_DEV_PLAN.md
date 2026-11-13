@@ -1899,8 +1899,8 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T13 — Confirm the E3 sufficiency mechanism on the existing baseline
 
-- [ ] **P06-T13**
-- **State:** PLANNED.
+- [x] **P06-T13**
+- **State:** DONE.
 - **Files:** `benchmark/runs/e3_mechanism.py`, `tests/test_e3_mechanism.py`, `docs/development/evidence/p06_e3_mechanism.md`.
 - **Depends:** P05-T09.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
@@ -1910,7 +1910,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Negative proof:** A case with distinct values for a requested predicate is not counted as retrieval failure; a case with all slots retrieved and an ambiguity abstention is reported as a gate effect; no gold label is read by the replay except through the evaluator path.
 - **Gate:** G-ABSTENTION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_e3_mechanism.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-001 and `docs/development/evidence/p06_e3_mechanism.md`: 52 E3 observations replayed (24 applicable positives, 24 false abstentions, all observed `MISSING_CASE_INPUT` from the interpreter's chain rule, `AMBIGUOUS` latent in all 24 if fields were supplied, complete evidence in 5 of 24); the adversary's AMBIGUOUS-gate hypothesis is corrected in ADR-0029.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t14"></a>

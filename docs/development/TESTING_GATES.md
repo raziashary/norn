@@ -128,7 +128,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Five statuses plus explicit permitted missing inputs; complete and incomplete evidence twins measure false answer and false abstention.
 - **Negative / falsification control:** Runtime gold-slot leakage always-refuse false positive causal promotion and sensitive denied-source explanations fail.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P03-003: five field-support statuses, EN/ID missing-prerequisite public consumer, source-normalized complete/partial/ambiguity results and explicit failure denominators pass locally. Observed false answers6/83, false abstentions9/50 remain; typed-path/general entailment and P09 agent proof unestablished.
+- **Evidence:** E-P03-003: five field-support statuses, EN/ID missing-prerequisite public consumer, source-normalized complete/partial/ambiguity results and explicit failure denominators pass locally. Observed false answers6/83, false abstentions9/50 remain; typed-path/general entailment and P09 agent proof unestablished. E-P06-001 (P06-T13): the six E3 false abstentions per arm are interpreter-withheld fields, the field-only `AMBIGUOUS` rule is latent behind them and a single exposed link passes the gate, so chain completeness is not decided by this gate.
 
 ## G-SNAPSHOT — Exact manifests and declared content snapshot
 
