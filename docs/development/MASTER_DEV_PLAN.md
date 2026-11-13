@@ -1971,18 +1971,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T17 — Apply the benchmark entity identity policy with governed external keys
 
-- [ ] **P06-T17**
-- **State:** PLANNED.
+- [x] **P06-T17**
+- **State:** DONE.
 - **Files:** `benchmark/fixtures/entities.py`, `benchmark/adapters/baseline.py`, `tests/test_entity_policy.py`.
 - **Depends:** P06-T14, P06-T15.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
-- **Change:** Register entities through the ADMIN-level `register_entity` path only from an external key or an explicit source-grounded alias statement present in the published text; store alias claims as IDENTITY_LINK edges with span support.
+- **Change:** Register entities through the ADMIN-level `register_entity` path only from an external key or an explicit source-grounded alias statement present in the published text; store alias claims as span-supported `SAME_AS` identity events (T01 projects them as IDENTITY_LINK edges). **Amended 13 November 2026 (visible change):** the original text said the loader stores IDENTITY_LINK edges directly; the graph writer does not exist before T01, so the loader records the claim in the existing identity-review table and T01 owns the edge projection. `load_sources` (ingest plus identity) is split out of `prepare` so it runs without the local models.
 - **Consumer:** T01 builds shared entity nodes from the registry; T18 families depend on keys being present in text.
-- **Positive proof:** Two sources that state the same external key share one entity node; an explicit alias statement links two nodes with span support; the hub and chain fixtures produce the intended degrees.
+- **Positive proof:** Two sources that state the same external key share one entity node; an explicit alias statement links two nodes with span support; the loader reports shared-key and alias-link counts. **Amended:** the hub and chain degrees are not proven here; the current E-family fixtures carry no key or alias statements and the `public-v2` families that do belong to T18, which owns the degree check.
 - **Negative proof:** Equal or similar names without a key or alias statement never merge; a gold identity table is never read by the loader; a non-ADMIN principal cannot register a key.
 - **Gate:** G-IDENTITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_entity_policy.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-004: `identity_plan` (label-free parser of one `[key:...]` and one `[alias:...]` statement per source), `apply_identity` and `load_sources` in `benchmark/adapters/baseline.py`, `prepare` reports an `identity` summary; 6 tests in `tests/test_entity_policy.py`, three of three mutations killed.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t18"></a>

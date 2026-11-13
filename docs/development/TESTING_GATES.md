@@ -48,7 +48,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Same delivery/payload idempotent; similar distinct episodes stay distinct; reviewed scoped identity and additional support preserved.
 - **Negative / falsification control:** Changed duplicate payload same-name cross-tenant merge false negative pairs and arbitrary vague-cue target reject.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim.
+- **Evidence:** E-P01-003; P01 phase-local contracts/reader/control/installed proof and end review PASS. Later owning tasks remain unexecuted; no cross-phase completeness claim. E-P06-004 (P06-T17): benchmark loader identity policy (key or source-grounded alias only, ADMIN registration, no name merging) proven on synthetic sources; hub and chain degrees remain for T18.
 
 ## G-ACL — Eligibility before search traversal and return
 

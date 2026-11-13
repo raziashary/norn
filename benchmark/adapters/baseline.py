@@ -9,6 +9,8 @@ from typing import Any
 from benchmark.adapters import r0, r1, r2, r3
 from benchmark.adapters.common import candidate, parse_source, replay_clock
 from benchmark.adapters.contracts import ArmSpec, PublicInput, Result
+from benchmark.fixtures.entities import IdentityPlan, identity_plan
+from norn.canonical.identity import register_entity, review_identity
 from norn.canonical.registry import WriteRequest
 from norn.contracts.errors import require
 from norn.contracts.evidence import Epistemic, EpistemicState, TaggedValue
@@ -42,6 +44,84 @@ def host(published: PublicInput) -> HostIdentity:
     return HostIdentity(Namespace(*published.query.namespace.split("/")), published.query.principal)
 
 
+def apply_identity(
+    engine: Engine, plan: IdentityPlan, atoms: dict[str, str], actors: dict[str, str]
+) -> dict[str, Any]:
+    """Apply the identity policy through the ADMIN paths only; report what could not be linked.
+
+    ``atoms`` maps source id to its atom id and ``actors`` source id to the actor label.
+    """
+    shared: dict[str, str] = {}
+    for source_id, key in plan.keys:
+        shared[key] = register_entity(engine.registry, atoms[source_id], actors[source_id], key)
+    connection = engine.db.connection
+    links, unresolved = 0, []
+    for source_id, name in plan.aliases:
+        left = connection.execute(
+            "SELECT subject_ref FROM atoms WHERE ns=? AND id=?",
+            (engine.access.ns, atoms[source_id]),
+        ).fetchone()[0]
+        rows = connection.execute(
+            "SELECT DISTINCT entity_id FROM entity_aliases WHERE ns=? AND label=? AND entity_id<>?",
+            (engine.access.ns, name, left),
+        ).fetchall()
+        # An alias statement links only to one unambiguous target; same-name entities stay apart.
+        if len(rows) != 1:
+            unresolved.append(
+                {
+                    "source": source_id,
+                    "reason": "UNKNOWN_ALIAS_TARGET" if not rows else "AMBIGUOUS_ALIAS_TARGET",
+                }
+            )
+            continue
+        review_identity(engine.registry, left, rows[0][0], "SAME_AS", atoms[source_id])
+        links += 1
+    return {
+        "keys": len(plan.keys),
+        "shared_entities": len(shared),
+        "alias_links": links,
+        "unresolved": unresolved,
+    }
+
+
+def load_sources(
+    engine: Engine, published: PublicInput, clock: Any
+) -> tuple[dict[str, str], dict[str, Any]]:
+    """Ingest every published source, then apply the identity policy; no models are involved."""
+    mapping: dict[str, str] = {}
+    for source in published.sources:
+        observation = parse_source(source)
+        content = source.text.encode()
+        clock.set(parse_instant(observation.recorded_at))
+        fixture = FixtureAtom(
+            observation.actor,
+            observation.predicate,
+            TaggedValue("TEXT", observation.value),
+            0,
+            len(content),
+            EpistemicState(Epistemic(observation.origin)),
+        )
+        receipt = engine.write(
+            WriteRequest(
+                host(published).principal,
+                source.source_id,
+                source.source_id,
+                content,
+                TimeValue(TimeKind.EXACT, parse_instant(observation.event_time)),
+                parse_instant(observation.event_time),
+                (fixture,),
+            )
+        )
+        mapping[receipt["atom_ids"][0]] = source.source_id
+    identity = apply_identity(
+        engine,
+        identity_plan(published.sources),
+        {source: atom for atom, source in mapping.items()},
+        {s.source_id: parse_source(s).actor for s in published.sources},
+    )
+    return mapping, identity
+
+
 def prepare(
     published: PublicInput,
     root: Path,
@@ -69,31 +149,7 @@ def prepare(
         clock=clock,
     ) as engine:
         engine.access.bootstrap()
-        mapping = {}
-        for source in published.sources:
-            observation = parse_source(source)
-            content = source.text.encode()
-            clock.set(parse_instant(observation.recorded_at))
-            fixture = FixtureAtom(
-                observation.actor,
-                observation.predicate,
-                TaggedValue("TEXT", observation.value),
-                0,
-                len(content),
-                EpistemicState(Epistemic(observation.origin)),
-            )
-            receipt = engine.write(
-                WriteRequest(
-                    host(published).principal,
-                    source.source_id,
-                    source.source_id,
-                    content,
-                    TimeValue(TimeKind.EXACT, parse_instant(observation.event_time)),
-                    parse_instant(observation.event_time),
-                    (fixture,),
-                )
-            )
-            mapping[receipt["atom_ids"][0]] = source.source_id
+        mapping, identity = load_sources(engine, published, clock)
         projection = (
             engine.project()
             if build_projection
@@ -103,6 +159,7 @@ def prepare(
         "offline_ns": time.perf_counter_ns() - start,
         "projection": projection,
         "mapping": mapping,
+        "identity": identity,
         "input_digest": published.sha256,
         "profile": "DISTINCT_PUBLISHED_SOURCE_OCCURRENCES",
     }
