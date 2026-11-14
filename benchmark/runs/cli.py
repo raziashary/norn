@@ -69,6 +69,25 @@ def parser() -> argparse.ArgumentParser:
     baseline.add_argument("--enable-models", action="store_true")
     baseline.add_argument("--sample-only", action="store_true")
     baseline.add_argument("--seed", type=int, default=47)
+    multihop = commands.add_parser(
+        "run-multihop-baselines", help="R0-R3 on the public-v2 pilot role (development only)"
+    )
+    multihop.add_argument("directory", type=Path)
+    multihop.add_argument("--model-root", type=Path, required=True)
+    multihop.add_argument("--enable-models", action="store_true")
+    multihop.add_argument("--seed", type=int, default=47)
+    multihop.add_argument("--strata", nargs="+", default=["TEMPLATE"])
+    multihop.add_argument("--limit-per-family", type=int)
+    multihop.add_argument("--wall-cap-seconds", type=float, required=True)
+    multihop.add_argument("--cap-basis", required=True)
+    multihop_report = commands.add_parser(
+        "multihop-report", help="Reopen, validate and score a public-v2 baseline run"
+    )
+    multihop_report.add_argument("directory", type=Path)
+    multihop_report.add_argument("--model-root", type=Path, required=True)
+    multihop_report.add_argument("--output", type=Path, required=True)
+    multihop_report.add_argument("--attestation", type=Path)
+    multihop_report.add_argument("--development-only", action="store_true")
     baseline_report = commands.add_parser(
         "baseline-report", help="Reopen and score real baseline artifacts"
     )
@@ -317,6 +336,36 @@ def main(argv: list[str] | None = None) -> int:
                 model_root=args.model_root,
                 enable_models=args.enable_models,
             )
+        elif args.command == "run-multihop-baselines":
+            from benchmark.runs.multihop_run import run_multihop
+
+            result = run_multihop(
+                args.directory,
+                seed=args.seed,
+                role="pilot",
+                strata=tuple(args.strata),
+                names=("R0", "R1", "R2", "R3"),
+                model_root=args.model_root,
+                enable_models=args.enable_models,
+                wall_cap_seconds=args.wall_cap_seconds,
+                cap_basis=args.cap_basis,
+                limit_per_family=args.limit_per_family,
+            )
+        elif args.command == "multihop-report":
+            from benchmark.runs.multihop_run import report_multihop
+
+            report = report_multihop(
+                args.directory,
+                args.model_root,
+                args.attestation,
+                development_only=args.development_only,
+            )
+            result = {
+                "report_digest": write_once(args.output, report),
+                "evidence_status": report["evidence_status"],
+                "arms": report["arms"],
+                "observations": report["completion"]["observations"],
+            }
         elif args.command == "baseline-report":
             from benchmark.runs.baselines import report as baseline_report
 

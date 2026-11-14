@@ -225,7 +225,9 @@ def interpret(published: PublicInput, arm: str) -> RecallRequest:
         requested_fields=fields,
         event_start=start,
         event_end=start + timedelta(days=1) if start else None,
-        candidate_limit=query.max_candidates,
+        # public-v2 separates the candidate pool (search_budget) from the 10-slot output limit;
+        # public-v1 has no budget, so its limits are unchanged.
+        candidate_limit=query.search_budget or query.max_candidates,
         final_limit=query.max_candidates,
         max_evidence_tokens=query.max_evidence_tokens,
         deadline_ms=120_000,

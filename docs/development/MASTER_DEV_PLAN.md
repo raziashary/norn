@@ -2025,18 +2025,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T20 — Re-run R0 to R3 on `public-v2`
 
-- [ ] **P06-T20**
-- **State:** PLANNED.
-- **Files:** `benchmark/runs/baselines.py`, `docs/development/evidence/baselines_multihop.md`, `tests/test_baselines_multihop.py`.
+- [x] **P06-T20**
+- **State:** DONE.
+- **Files:** `benchmark/runs/multihop_run.py`, `benchmark/runs/cli.py`, `benchmark/adapters/baseline.py`, `docs/development/evidence/baselines_multihop.md`, `docs/development/evidence/run_attestation_p06-t20-run-001.json`, `tests/test_baselines_multihop.py`.
 - **Depends:** P06-T13, P06-T18, P06-T19.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
-- **Change:** Run the conventional retrieval arms on the new fixture version with a wall-time cap in the receipt, separating slot recall from sufficiency status, and record which endpoints saturate.
+- **Change:** Run the conventional retrieval arms on the new fixture version with a wall-time cap in the receipt, separating slot recall from sufficiency status, and record which endpoints saturate. **Scope as built (14 November 2026):** a new module `benchmark/runs/multihop_run.py` and two CLI commands (`run-multihop-baselines`, `multihop-report`) replace the planned `baselines.py`; the arms' `interpret` now searches the `search_budget` pool (60) and still outputs 10; only the pilot role is read (tune and evaluation stay closed until T21 freezes margins); the run is labelled development and attested.
 - **Consumer:** T21 and T10 compare graph arms against these runs; the old public-v1 numbers are not reused.
 - **Positive proof:** R0 to R3 observations reload and validate under an external attestation; endpoint saturation is stated per family.
 - **Negative proof:** No P03 or P05 number is carried over; a run without an attestation or the development-only label is not citable.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_baselines_multihop.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-007: attested run `p06-t20-run-001` (768 pairs, all OK), `docs/development/evidence/baselines_multihop.md`, 7 model-free control tests in `tests/test_baselines_multihop.py` with six of six mutations killed. Result: M1 to M5 at FLOOR for all four arms, M6 at CEILING; primary pool R0 0/80, R1 1/80, R2 0/80, R3 0/80.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t21"></a>
