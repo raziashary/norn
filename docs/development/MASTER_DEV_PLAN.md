@@ -2061,18 +2061,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T01 — Define typed graph and canonical adjacency
 
-- [ ] **P06-T01**
-- **State:** PLANNED.
-- **Files:** `src/norn/graph/contracts.py`, `src/norn/graph/adjacency.py`, `tests/test_graph_contracts.py`.
+- [x] **P06-T01**
+- **State:** DONE.
+- **Files:** `src/norn/graph/__init__.py`, `src/norn/graph/contracts.py`, `src/norn/graph/adjacency.py`, `src/norn/governance/deletion.py`, `tests/test_graph_contracts.py`.
 - **Depends:** P06-T15, P06-T17.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Typed nodes/endpoints/relations on schema 6 (`graph_edges`, `relation_types`, shared entity nodes from the T17 policy) carry independent source support, identity, time, scope, origin and revision.
+- **Change:** Typed nodes/endpoints/relations on schema 6 (`graph_edges`, `relation_types`, shared entity nodes from the T17 policy) carry independent source support, identity, time, scope, origin and revision. **Scope as built (14 November 2026):** `write_edge` (the only governed writer of `graph_edges`, idempotent by content-derived id, validates relation, direction, provenance, validity and epistemic rules before any row exists) and `build_graph` (the principal's eligible graph at an explicit snapshot of canonical sequence and optional valid time) live in `adjacency.py`; structural edges (PART_OF_EVENT, OBSERVED_IN and MENTIONS from each atom, IDENTITY_LINK from a reviewed SAME_AS) are derived from canonical records and are not stored; a stored edge is present only when it is ACTIVE, valid at the snapshot, both endpoints are readable nodes, and every support source is readable (the T16 rule through `Access.eligible`); the digest leaves out the namespace-wide commit counter so a write the principal cannot see changes no byte it receives; a build over a budget fails with `GRAPH_BUDGET_EXCEEDED`. **Defect fixed at its owner:** the erasure closure in `src/norn/governance/deletion.py` ignored `graph_edges`, so denying a source or entity left its edges without tombstones or purge obligations; it now includes them.
 - **Consumer:** Seed and traversal readers rebuild graph from registry.
 - **Positive proof:** Exact event/atom/entity/source graph reloads deterministically.
 - **Negative proof:** Name similarity cannot merge; missing provenance or unsupported direction cannot enter eligible graph; an edge whose endpoint or support is not eligible for the principal is absent from the graph.
 - **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_contracts.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-008: `src/norn/graph/` (contracts, writer, reader), 14 tests in `tests/test_graph_contracts.py` with nine of ten mutations killed (the tenth is a redundant guard, killed only together with its twin), restart rebuild of an identical digest, byte-identical digest for a reader across worlds that differ only by a denied private write.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t02"></a>

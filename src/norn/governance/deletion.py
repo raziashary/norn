@@ -46,6 +46,20 @@ def dependents(registry: Registry, selector: str) -> list[str]:
                 current,
             ),
             ("SELECT id FROM relationships WHERE ns=? AND (from_id=? OR to_id=?)", current),
+            # A graph edge depends on both endpoints and on every support source (schema 6).
+            ("SELECT id FROM graph_edges WHERE ns=? AND (from_id=? OR to_id=?)", current),
+            (
+                "SELECT g.id FROM graph_edges g JOIN source_spans s "
+                "ON g.ns=s.ns AND g.source_span_id=s.id JOIN source_versions v "
+                "ON s.ns=v.ns AND s.version_id=v.id WHERE g.ns=? AND v.source_id=?",
+                current,
+            ),
+            (
+                "SELECT g.edge_id FROM graph_edge_support g JOIN source_spans s "
+                "ON g.ns=s.ns AND g.span_id=s.id JOIN source_versions v "
+                "ON s.ns=v.ns AND s.version_id=v.id WHERE g.ns=? AND v.source_id=?",
+                current,
+            ),
             (
                 "SELECT d.id FROM derivation_inputs i JOIN derivations d "
                 "ON i.ns=d.ns AND i.derivation_id=d.id WHERE i.ns=? AND i.input_id=?",

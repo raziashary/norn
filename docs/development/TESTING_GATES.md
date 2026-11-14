@@ -188,7 +188,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Gold/derived topology split, extraction quality, grounded seeds, BFS/path fixed controls and actual canonical path consumer.
 - **Negative / falsification control:** Unreviewed identity hypothesis-as-cause hub/private bridge or opaque index payload cannot authorize support.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required. E-P06-002 (P06-T15): schema 6 storage and upgrade proofs only; no graph writer, traversal or arm exists.
+- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required. E-P06-002 (P06-T15): schema 6 storage and upgrade proofs only; no graph writer, traversal or arm exists. E-P06-008 (P06-T01): governed edge writer and the principal's eligible typed graph with deterministic digest, ACL, tombstone and erasure-closure proofs; no extraction, seed, traversal or arm yet.
 
 ## G-DIFFUSION — PPR heat and associative completion
 
