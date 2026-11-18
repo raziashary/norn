@@ -2115,18 +2115,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T04 — Implement G1 BFS and G2 damped paths
 
-- [ ] **P06-T04**
-- **State:** PLANNED.
+- [x] **P06-T04**
+- **State:** DONE.
 - **Files:** `src/norn/graph/bfs.py`, `src/norn/graph/paths.py`, `tests/test_graph_paths.py`.
 - **Depends:** P06-T03.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Typed directions and global unique/repeated-work/hop/fanout/time limits with diagnostic path attenuation.
+- **Change:** Typed directions and global unique/repeated-work/hop/fanout/time limits with diagnostic path attenuation. **Scope as built (14 November 2026):** owner answers (question tool): the default allowlist is `REQUIRES` forward and the reviewed `IDENTITY_LINK` both ways, entity to entity (structural edges, `HYPOTHESIZES_CAUSE` and non-traversable relations are off, and only traversable relations can be requested); source candidates are the supports of the edge that reached each node plus the defining source of each reached entity; G2 scores each node by its single best simple path `s(v0) * gamma^h * product(1 / allowed out-degree)` with gamma 0.7 (a layered relaxation within the hop limit, never a sum of walks, never causal); the untuned pilot envelope is 4 hops, fanout 32, 1,000 unique nodes, 5,000 unique edges and 20,000 processed transitions, all global across seeds and layers, with every arc examined counted as a transition so revisits are bounded work. A bound that binds is a named flag (`HOP_LIMIT`, `FANOUT_LIMIT`, `NODE_BUDGET`, `EDGE_BUDGET`, `TRANSITION_BUDGET`, `EMPTY_SEED`) and the result is then a bounded approximation; a seed anchor that is not a node of the eligible graph is reported as unlinked and never walked. Both walks read only the principal's `Graph` and a `Seed`, so a denied object is not a node, an edge or a count in any result.
 - **Consumer:** Source recovery reads path-backed candidates.
 - **Positive proof:** Hand line/diamond and bounded hub fixtures recover target and expose truncation.
 - **Negative proof:** Path score is neither full PPR nor causation; cycles/denied intermediaries cannot leak; a denied bridge node is never traversed and counts, truncation flags and paths do not move when a denied object is added; unique and repeated-work budgets are global.
 - **Gate:** G-GRAPH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_graph_paths.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-011: `src/norn/graph/bfs.py`, `src/norn/graph/paths.py`, 18 tests in `tests/test_graph_paths.py` (hand line, diamond, cycle, hub and ladder graphs, global budgets, a denied private bridge in three worlds, identity link and hypothesis policy, real pilot chains) with the mutation results in the entry.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t05"></a>
