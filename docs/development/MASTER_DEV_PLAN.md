@@ -2133,18 +2133,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T05 — Implement G3 PPR and dangling policy
 
-- [ ] **P06-T05**
-- **State:** PLANNED.
+- [x] **P06-T05**
+- **State:** DONE.
 - **Files:** `src/norn/graph/ppr.py`, `tests/test_ppr.py`.
 - **Depends:** P06-T04.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Row-stochastic forward-alpha PPR with restart, declared dangling rule, global budget, residual and mass metadata.
+- **Change:** Row-stochastic forward-alpha PPR with restart, declared dangling rule, global budget, residual and mass metadata. **Scope as built (18 November 2026):** owner answers (question tool): a node with no allowed outgoing arc returns its mass to the seed distribution (total mass stays one, nothing leaks to a non-seed node); when a global node or edge budget leaves an arc out of the walked subgraph, rows still normalise by the node's full eligible out-weight, the mass sent along that arc is reported as `truncated`, never renormalised away, and the result is flagged a bounded approximation; defaults alpha 0.7, at most 60 iterations (the first answer of 40 left a three-node chain at residual 1.3e-6, so the owner raised it after the finding), L1 residual tolerance 1e-6 and a separate mass tolerance 1e-9, 1,000 unique nodes, 5,000 unique edges and 20,000 processed transitions, all untuned and all global over admission and every iteration (an iteration is reserved whole or not run); every allowed arc weighs one, with optional per-relation nonnegative finite weights (zero drops the relation; negative, non-finite and boolean are refused) and no learned or evidence-strength weights. The walked subgraph is what the allowlist (`REQUIRES` forward, reviewed `IDENTITY_LINK` both ways, as T04) reaches from the seed, admitted breadth first; the result carries the residual, the stated error bound `alpha / (1 - alpha) * residual` to the fixed point of the walked problem, the mass held, the last iteration's dangling and truncated rates and the largest mass-balance error, and a run that is not converged is flagged `NOT_CONVERGED`. `activation_candidates` proposes the defining source of each activated entity and the supports of the arc that carried most mass to it, never a truth.
 - **Consumer:** Retriever uses activation only to propose IDs.
 - **Positive proof:** Sparse iteration matches dense line/cycle/diamond/dangling oracle within tolerance.
 - **Negative proof:** Wrong transpose/restart, leaked mass, negative weight and per-iteration-only node cap fail; budgets and counts are computed over the eligible subgraph only.
 - **Gate:** G-DIFFUSION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_ppr.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-012: `src/norn/graph/ppr.py`, 24 tests in `tests/test_ppr.py` (exact rational oracle on line, cycle, diamond, dangling, hub, multi-seed and weighted graphs; budget, truncation, iteration and cancellation controls; a denied private bridge in three worlds; real pilot chains) with the mutation results in the entry.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t06"></a>

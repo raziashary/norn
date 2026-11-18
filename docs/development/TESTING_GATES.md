@@ -198,7 +198,7 @@ Record positive and negative controls, actual reader, versions, command/exit, mi
 - **Positive / completion contract:** Hand graph dense/numerical oracles verify restart transpose dangling mass residual global unique/repeated work/cancel; same-seed ablations.
 - **Negative / falsification control:** Budget-truncated/nonconverged results flagged; unsupported recurrent arm not fake attractor; extra topology/seeds not diffusion credit.
 - **Phase-local boundary:** Early producer checks do not prove later integration, longitudinal, multi-store or sealed efficacy consumers. Preserve PARTIAL until the whole declared contract is observed.
-- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required.
+- **Evidence:** NOT_RUN; exact command/artifact/reader and scope receipt required. E-P06-012 (P06-T05): G3 seeded PPR matches an exact rational oracle on line, cycle, diamond, dangling, hub, multi-seed and weighted graphs, with residual, error bound, mass and truncation metadata, global node, edge and whole-iteration transition budgets, byte-identical results for a reader across worlds that differ only by a denied private bridge, and activation of the derived pilot chains from the root; no heat kernel, recurrent arm, arm or paired comparison yet, so the gate stays NOT_RUN.
 
 ## G-CDZ — Address decoder and hybrid fidelity
 
