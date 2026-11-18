@@ -88,6 +88,14 @@ def parser() -> argparse.ArgumentParser:
     multihop_report.add_argument("--output", type=Path, required=True)
     multihop_report.add_argument("--attestation", type=Path)
     multihop_report.add_argument("--development-only", action="store_true")
+    extraction = commands.add_parser(
+        "graph-extraction-report",
+        help="Derived-graph extraction quality on the public-v2 pilot role (development only)",
+    )
+    extraction.add_argument("--output", type=Path, required=True)
+    extraction.add_argument("--work-dir", type=Path, required=True)
+    extraction.add_argument("--seed", type=int, default=47)
+    extraction.add_argument("--limit-per-family", type=int)
     baseline_report = commands.add_parser(
         "baseline-report", help="Reopen and score real baseline artifacts"
     )
@@ -351,6 +359,17 @@ def main(argv: list[str] | None = None) -> int:
                 cap_basis=args.cap_basis,
                 limit_per_family=args.limit_per_family,
             )
+        elif args.command == "graph-extraction-report":
+            from benchmark.runs.graph_extraction import run_graph_extraction
+
+            report = run_graph_extraction(
+                args.work_dir, seed=args.seed, limit_per_family=args.limit_per_family
+            )
+            result = {
+                "report_digest": write_once(args.output, report),
+                "run_kind": report["run_kind"],
+                "pooled": report["pooled"],
+            }
         elif args.command == "multihop-report":
             from benchmark.runs.multihop_run import report_multihop
 
