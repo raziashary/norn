@@ -80,6 +80,27 @@ def parser() -> argparse.ArgumentParser:
     multihop.add_argument("--limit-per-family", type=int)
     multihop.add_argument("--wall-cap-seconds", type=float, required=True)
     multihop.add_argument("--cap-basis", required=True)
+    graph_pilot = commands.add_parser(
+        "run-graph-pilot", help="G0-G4 on the public-v2 pilot role (development only)"
+    )
+    graph_pilot.add_argument("directory", type=Path)
+    graph_pilot.add_argument("--source-run", type=Path, required=True)
+    graph_pilot.add_argument("--source-attestation", type=Path, required=True)
+    graph_pilot.add_argument("--model-root", type=Path, required=True)
+    graph_pilot.add_argument("--enable-models", action="store_true")
+    graph_pilot.add_argument("--seed", type=int, default=47)
+    graph_pilot.add_argument("--limit-per-family", type=int)
+    graph_pilot.add_argument("--wall-cap-seconds", type=float, required=True)
+    graph_pilot.add_argument("--cap-basis", required=True)
+    graph_pilot.add_argument("--preregistration", type=Path)
+    graph_pilot_report = commands.add_parser(
+        "graph-pilot-report", help="Reopen, validate and score a graph pilot run"
+    )
+    graph_pilot_report.add_argument("directory", type=Path)
+    graph_pilot_report.add_argument("--model-root", type=Path, required=True)
+    graph_pilot_report.add_argument("--output", type=Path, required=True)
+    graph_pilot_report.add_argument("--attestation", type=Path)
+    graph_pilot_report.add_argument("--development-only", action="store_true")
     multihop_report = commands.add_parser(
         "multihop-report", help="Reopen, validate and score a public-v2 baseline run"
     )
@@ -359,6 +380,36 @@ def main(argv: list[str] | None = None) -> int:
                 cap_basis=args.cap_basis,
                 limit_per_family=args.limit_per_family,
             )
+        elif args.command == "run-graph-pilot":
+            from benchmark.runs.graph_pilot import run_graph_pilot
+
+            result = run_graph_pilot(
+                args.directory,
+                source_run=args.source_run,
+                source_attestation=args.source_attestation,
+                seed=args.seed,
+                model_root=args.model_root,
+                enable_models=args.enable_models,
+                wall_cap_seconds=args.wall_cap_seconds,
+                cap_basis=args.cap_basis,
+                limit_per_family=args.limit_per_family,
+                **({"preregistration": args.preregistration} if args.preregistration else {}),
+            )
+        elif args.command == "graph-pilot-report":
+            from benchmark.runs.graph_pilot import report_graph_pilot
+
+            report = report_graph_pilot(
+                args.directory,
+                args.model_root,
+                args.attestation,
+                development_only=args.development_only,
+            )
+            result = {
+                "report_digest": write_once(args.output, report),
+                "evidence_status": report["evidence_status"],
+                "observations": report["completion"]["observations"],
+                "g0_control": report["g0_control"],
+            }
         elif args.command == "graph-extraction-report":
             from benchmark.runs.graph_extraction import run_graph_extraction
 

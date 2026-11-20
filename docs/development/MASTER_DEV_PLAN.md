@@ -2043,18 +2043,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T21 — Preregister endpoints, run the pilot and propose the margins
 
-- [ ] **P06-T21**
-- **State:** PLANNED.
-- **Files:** `docs/development/evidence/p06_margin_proposal.md`, `benchmark/runs/graph_pilot.py`, `tests/test_graph_pilot.py`.
+- [x] **P06-T21**
+- **State:** DONE.
+- **Files:** `docs/development/evidence/p06_margin_proposal.md`, `benchmark/runs/graph_pilot.py`, `tests/test_graph_pilot.py`, `benchmark/runs/cli.py`, `docs/development/evidence/p06_graph_pilot_report.json`, `docs/development/evidence/run_attestation_p06-t21-run-001.json`.
 - **Depends:** P06-T06, P06-T20.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
-- **Change:** Run G0 to G4 on the pilot role only, estimate the endpoint variance, write the margin and cluster-count proposal of design section 7, and record the owner's answer before any tune-role read.
+- **Change:** Run G0 to G4 on the pilot role only, estimate the endpoint variance, write the margin and cluster-count proposal of design section 7, and record the owner's answer before any tune-role read. **Scope as built (20 November 2026):** owner answers (question tool) before the run: graph arms G1 to G4 fuse their walk's proposals with G0's ranked pool of 60 by the conventional RRF rule and package to the same 10 sources and 2,000 tokens; topologies are the text-derived edges on all four renderings (primary) plus the read-back and oracle controls on the template rendering; the stores are copies of the attested T20 pilot stores with a wall cap of 1.5 times a measured probe. The endpoints, contrasts, estimator and the rules for proposing margins were preregistered in section 2 of the proposal before the run and hashed into the manifest (rechecked on reload). Owner answers on the proposal (question tool, 20 November 2026, all four took the recommendation): margins approved as written (benefit +0.10, lower 95% bound above 0; regression bounds +0.02; privacy zero; simpler winner G0 then G1), cluster counts option (a) 40 tune and 200 evaluation, G1 to G4 frozen as run (a graph-priority merge is a later named treatment), and the false-association bound kept as written. The margins are frozen in `benchmark/runs/graph_pilot.py` (`MARGINS`, `CLUSTERS`, `verdict`).
 - **Consumer:** T10 and T12 read the frozen margins; the owner answers in ADR_LOG.
 - **Positive proof:** Every proposed margin is computed from the pilot with its denominator and interval; the owner's answer is recorded before the margins are frozen in code.
 - **Negative proof:** No tune or evaluation role is read before the answer; a margin changed after a result invalidates promotion; a pilot result is never used as a benefit claim.
 - **Gate:** G-RESEARCH. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning tests: `tests/test_graph_pilot.py`. Bind exact CLI/config/resource names in the evidence receipt before execution.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-014: attested pilot `p06-t21-run-001` (1,344 rows, G0 equals the attested R2 on 192 of 192 queries), `p06_graph_pilot_report.json`, the margin proposal, 20 tests in `tests/test_graph_pilot.py` and the mutation results in the entry.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t01"></a>
