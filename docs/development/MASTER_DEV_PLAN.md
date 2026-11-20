@@ -2151,18 +2151,18 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 
 ### P06-T06 — Implement G4 heat kernel with numerical oracle
 
-- [ ] **P06-T06**
-- **State:** PLANNED.
-- **Files:** `src/norn/graph/heat.py`, `tests/test_heat.py`.
+- [x] **P06-T06**
+- **State:** DONE.
+- **Files:** `src/norn/graph/heat.py`, `tests/test_heat.py`, `tests/test_diffusion_privacy.py`, `src/norn/graph/ppr.py`.
 - **Depends:** P06-T05.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; [design](#graph-algorithms).
-- **Change:** Exact small-graph exponential and sparse Poisson-series approximation with tail/work/time error bounds and same seed/graph.
+- **Change:** Exact small-graph exponential and sparse Poisson-series approximation with tail/work/time error bounds and same seed/graph. **Scope as built (20 November 2026):** owner answers (question tool): the default diffusion scale is t = 2.0, a mathematical scale (mean steps of the Poisson walk), never seconds, accepted in `(0, 50]` as a float; the series stops when the unsummed Poisson tail, a true L1 bound because every term has mass at most one, is at most 1e-6, or at 100 terms or when a budget binds, with weights from the recurrence `w_{k+1} = w_k t / (k + 1)` so `exp(-t)` cannot underflow at the cap (a run whose tail is not met is flagged `TAIL_NOT_MET`, never converged); `heat_exact` is an in-module pure-Python scaling-and-squaring matrix exponential refused above 64 nodes. G4 reuses G3's admitted subgraph, dangling rule (mass returns to the seeds), full-degree rows, cut-mass accounting and budgets through the shared `prepare` and `admit` of `ppr.py` (renamed from private helpers, behaviour unchanged), so a paired G3/G4 run diffuses the same seed over the same subgraph; each Poisson term is one whole pass over the walked arcs against the global transition budget. The card also carries the real M4 private-source control that the M1 plan correction required of the graph walks (`tests/test_diffusion_privacy.py`, covering G1, G2, G3 and G4).
 - **Consumer:** Paired runner compares true approximation/locality costs.
 - **Positive proof:** Mass/locality and tail tolerance match oracle on hand graphs.
 - **Negative proof:** Underflow/overflow/truncation cannot claim converged full result; diffusion scale not physical seconds; budgets and counts are computed over the eligible subgraph only.
 - **Gate:** G-DIFFUSION. Cross-cutting I1–I10 apply; later consumers keep their own obligations.
 - **Commands:** UNIT + INTEGRATION; MEASURE when changing a research result. Owning planned tests: `tests/test_heat.py`. Bind exact CLI/config/resource names in the evidence receipt before execution; planned paths are not runnable yet.
-- **Evidence:** NOT_RUN. Record exact command, environment, source/model/config hashes, exit, observations, reader/readback, limitations and cleanup in EVIDENCE_LOG.
+- **Evidence:** E-P06-013: `src/norn/graph/heat.py`, 26 tests in `tests/test_heat.py` and `tests/test_diffusion_privacy.py` (closed form, an independent exact rational oracle, tail, locality, budget, cut-mass, denied-bridge and real M4 private-source controls, real pilot chains) with the mutation results in the entry.
 - **Completion:** Owning positive/negative controls, actual consumer smoke, stack validation, evidence and review resolved. A file or proposal alone is not proof. Optional work may produce an explicit eligibility/unsupported disposition; it cannot claim an unexecuted algorithm was built or tested.
 
 <a id="p06-t07"></a>

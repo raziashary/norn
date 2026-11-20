@@ -32,6 +32,7 @@ import math
 from collections import deque
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
+from typing import Protocol
 
 from norn.canonical.registry import Registry
 from norn.contracts.errors import NornError, require
@@ -177,7 +178,7 @@ def relation_weights(relations: Mapping[str, float] | None) -> dict[str, float]:
 
 
 @dataclass
-class _Walk:
+class Walk:
     """The subgraph admitted for one run, with its rows and the work spent building it."""
 
     order: list[NodeRef]
@@ -190,13 +191,13 @@ class _Walk:
     flags: set[str]
 
 
-def _admit(
+def admit(
     graph: Graph,
     roots: list[NodeRef],
     weights: dict[str, float],
     limits: PprLimits,
     checkpoint: Callable[[], None] | None,
-) -> _Walk:
+) -> Walk:
     names = tuple(sorted(weights))
     admitted: set[NodeRef] = set()
     order: list[NodeRef] = []
@@ -259,7 +260,38 @@ def _admit(
             continue
         rows[node] = [(t, w / total, e) for t, w, e in raw[node]]
         cut[node] = cut_weight[node] / total
-    return _Walk(order, rows, cut, dangling, edges, transitions, cut_arcs, flags)
+    return Walk(order, rows, cut, dangling, edges, transitions, cut_arcs, flags)
+
+
+@dataclass
+class Prepared:
+    """The walked subgraph and the seed distribution over its kept roots (shared by G3 and G4,
+    so both diffuse the same seed over the same eligible subgraph under the same budgets)."""
+
+    walk: Walk
+    start: dict[NodeRef, float]  # sums to one over the roots the walk kept, or empty
+    unlinked: tuple[str, ...]
+    lost: float  # the seed weight on anchors that are not nodes of the graph
+    flags: set[str]
+
+
+def prepare(
+    graph: Graph,
+    seed: Seed,
+    weights: dict[str, float],
+    limits: PprLimits,
+    checkpoint: Callable[[], None] | None,
+) -> Prepared:
+    roots, unlinked, flags = roots_of(graph, seed)
+    anchor_weight = {a.entity_id: a.weight for a in seed.anchors}
+    lost = math.fsum(anchor_weight[e] for e in unlinked)
+    walk = admit(graph, [n for n, _w in roots], weights, limits, checkpoint)
+    flags |= walk.flags
+    # A root that a tiny node budget kept out of the walk is lost (flagged NODE_BUDGET).
+    taken = [(n, w) for n, w in roots if n in walk.rows]
+    kept = math.fsum(w for _n, w in taken)
+    start = {node: w / kept for node, w in taken} if kept > 0 else {}
+    return Prepared(walk, start, tuple(unlinked), lost, flags)
 
 
 def ppr(
@@ -274,15 +306,8 @@ def ppr(
     limits = limits or PprLimits()
     require(type(alpha) is float and math.isfinite(alpha) and 0.0 <= alpha < 1.0, "INVALID_ALPHA")
     weights = relation_weights(relations)
-    roots, unlinked, flags = roots_of(graph, seed)
-    anchor_weight = {a.entity_id: a.weight for a in seed.anchors}
-    lost = math.fsum(anchor_weight[e] for e in unlinked)
-    walk = _admit(graph, [n for n, _w in roots], weights, limits, checkpoint)
-    flags |= walk.flags
-    # A root that a tiny node budget kept out of the walk is lost (flagged NODE_BUDGET).
-    taken = [(n, w) for n, w in roots if n in walk.rows]
-    kept = math.fsum(w for _n, w in taken)
-    start = {node: w / kept for node, w in taken} if kept > 0 else {}
+    prepared = prepare(graph, seed, weights, limits, checkpoint)
+    walk, start, flags = prepared.walk, prepared.start, prepared.flags
     iterations = 0
     residual: float | None = None
     converged = not start  # nothing to iterate from is trivially at rest
@@ -364,14 +389,19 @@ def ppr(
         bound,
         converged,
         tuple(sorted(flags)),
-        tuple(unlinked),
-        lost,  # a seed sums to one, so the unlinked weight is also the unlinked share
+        prepared.unlinked,
+        prepared.lost,  # a seed sums to one, so the unlinked weight is also the unlinked share
         seed.digest(),
     )
 
 
+class Ranked(Protocol):
+    @property
+    def entries(self) -> tuple[Entry, ...]: ...
+
+
 def activation_candidates(
-    registry: Registry, graph: Graph, activation: Activation
+    registry: Registry, graph: Graph, activation: Ranked
 ) -> tuple[Candidate, ...]:
     """Sources the activation proposes, first reason only, in activation order.
 
