@@ -36,7 +36,7 @@ Actual runtime includes pyproject.toml, uv.lock, src/norn/{contracts,canonical,g
 | retrieval | exact/lexical/dense/ANN/fusion/rerank/source recovery | cue + eligible snapshot → cited memory candidates | P03 |
 | embedding | pinned local encoder/reranker assets, explicit CPU worker lifecycle and inference | eligible sources/cues → normalized vectors/raw rerank scores | P03/P04 actual |
 | features and later embedding research | multiple views, query/memory binding, objectives, checkpoint lineage | canonical episode → versioned derived code | P04 verified; P05 built (T0 retained, learned heads not adopted, ADR-0028); P07/P10 planned |
-| graph | grounded seeds, typed adjacency, bounded BFS/path/PPR/heat/optional recurrent | permitted canonical refs → candidate/path diagnostics | P06 |
+| graph | grounded seeds, typed adjacency, bounded BFS/path/PPR/heat (recurrent G7 is M2, disabled) | permitted canonical refs → candidate/path diagnostics | P06 |
 | consolidation | source independence, aggregates, summary proposals, review/invalidation | eligible episodes → new supported derived assertions | P08 |
 | integration | memory facade and bounded agent context | authenticated host → next-turn cited context | P01/P04 actual; P09 planned |
 | projection | local readiness then external workers/manifests/rebuild/purge/restore | canonical log/outbox → coherent derived indexes | P03/P04 actual; P11 planned |

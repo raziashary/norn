@@ -32,6 +32,7 @@ from norn.graph.bfs import (
     EDGE_BUDGET,
     FANOUT_LIMIT,
     HOP_LIMIT,
+    NO_LINKED_ANCHOR,
     NODE_BUDGET,
     TRANSITION_BUDGET,
     Limits,
@@ -307,6 +308,7 @@ def test_seeds_with_nothing_to_walk_are_explicit_and_never_invented_elsewhere(en
     graph = build_graph(engine.registry)
     isolated = bfs(graph, seed_of(engine, ent[lonely]))  # a keyed entity with no edge: not a node
     assert isolated.steps == () and isolated.unlinked == (ent[lonely],)
+    assert NO_LINKED_ANCHOR in isolated.flags and not isolated.complete
     mixed = bfs(graph, seed_of(engine, ent[a], ent[lonely]))
     assert reached(mixed) == {ent[a]: 0, ent[b]: 1} and mixed.unlinked == (ent[lonely],)
     empty = construct_seed(

@@ -245,6 +245,21 @@ def test_derived_objects_follow_their_sources_and_unknown_kinds_are_never_grante
     )
 
 
+def test_a_label_grant_does_not_open_a_namespace_whose_grant_is_revoked(engine):
+    """The label rule alone would allow it; `Access` also needs the namespace grant."""
+    _public, private = build(engine, deny=False)
+    source = source_of(engine, private["event_id"])
+    labels = Eligibility(engine.db.connection, engine.access.ns, READER)
+    engine.access.grant(READER, "READ", revoke=True)  # no namespace grant
+    engine.access.grant(READER, "READ", scope=LABEL)  # a label grant alone
+    assert labels.source_readable("READ", source)  # the label rule, taken alone
+    with reader_of(engine) as reader:
+        assert not reader.access.eligible("READ") and not reader.access.eligible("READ", source)
+    engine.access.grant(READER, "READ")  # control: the namespace grant restores access
+    with reader_of(engine) as reader:
+        assert reader.access.eligible("READ")
+
+
 def test_labelling_needs_admin_and_moves_the_epoch(engine):
     public, _private = build(engine, deny=False)
     engine.access.grant(READER, "WRITE")

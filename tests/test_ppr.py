@@ -41,6 +41,7 @@ from norn.graph import ppr as ppr_module
 from norn.graph.adjacency import build_graph, write_edge
 from norn.graph.bfs import (
     EDGE_BUDGET,
+    NO_LINKED_ANCHOR,
     NODE_BUDGET,
     TRANSITION_BUDGET,
     Limits,
@@ -389,7 +390,9 @@ def test_seeds_with_nothing_to_walk_are_explicit_and_activate_nothing_elsewhere(
     # An entity with no edge is not a node of the graph: reported, never activated.
     alone = ppr(graph, seed_of(engine, ent[names[2]]))
     assert alone.unlinked == (ent[names[2]],) and alone.entries == ()
-    assert alone.unlinked_weight == 1.0 and alone.complete
+    assert alone.unlinked_weight == 1.0
+    # Nothing to start from is flagged, so an empty result is never a complete answer.
+    assert alone.flags == (NO_LINKED_ANCHOR,) and not alone.complete
     lopsided = seed_of(engine, ent[names[0]], ent[names[2]], weights=[ent[names[0]]])
     mixed = ppr(graph, lopsided, TIGHT)
     assert mixed.unlinked == (ent[names[2]],)

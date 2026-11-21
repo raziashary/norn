@@ -234,14 +234,13 @@ def _readback(row: sqlite3.Row) -> list[Clause]:
 
 def _resolve(reader: _Reader, token: str, stating: str) -> str | None:
     """A dotted token is a governed key and must be registered. Any other token is the stating
-    entity itself (``@self``, or a display name that is consistent with the entity's labels);
-    a name is never matched against another entity."""
+    entity itself (``@self``, or a display name that is one of the entity's own labels); a name
+    is never matched against another entity, and an entity with no labels recognises no name."""
     if token == "@self":
         return stating
     if "." in token:
         return reader.key_entity.get(token)
-    labels = reader.labels(stating)
-    return stating if not labels or token in labels else None
+    return stating if token in reader.labels(stating) else None
 
 
 def _write(

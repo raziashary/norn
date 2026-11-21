@@ -1959,7 +1959,7 @@ Command profile DOC is runnable now: `python docs/development/check_docs.py` and
 - **Depends:** P06-T14, P06-T15.
 - **Source:** Pattern completion via graph activation diffusion; Damped graph propagation pseudocode; ADR-0029; [design](#graph-algorithms).
 - **Change:** Implement the owner-approved D1 to D4 decisions: label-scoped grants with deny-overrides, fail-closed multi-source objects, current ACL at query time, one `eligible` rule under `check`; retrieval and read paths use it for objects.
-- **Consumer:** Retrieval, the engine reader and the graph seed and traversal readers call `eligible`; the benchmark queries through one Engine per principal.
+- **Consumer:** Retrieval, the engine reader and the graph seed and traversal readers call `eligible`. The benchmark queries as one principal and does not label its sources yet (`set_scope` is called only in tests; R44), so label denial is proven by `tests/test_object_acl.py` and the T06 walk control, not by a benchmark run.
 - **Positive proof:** A principal with a namespace grant is denied a labelled source; a REVOKE at a label overrides a '*' GRANT; a denied neighbour leaves the response unchanged; multi-source atoms and citations are filtered as designed.
 - **Negative proof:** Denied and absent objects stay indistinguishable; counts, truncation flags and paths do not move when a denied object is added; a mid-read label change raises QUERY_SECURITY_CHANGED; no existing namespace-wide test regresses.
 - **Gate:** G-ACL, G-SECURITY. Cross-cutting I1–I10 apply; later consumers keep their own obligations.

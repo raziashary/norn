@@ -12,6 +12,8 @@ Pure, non-raising and uncached: every call reads the current grants and labels. 
   only if its output and every input are.
 
 Tombstones are not decided here; ``Access`` combines both so one rule serves every caller.
+``Access`` also requires the namespace-wide ('*') grant for the operation before any label is
+consulted, so a label GRANT alone never opens a namespace whose '*' grant is revoked (fail closed).
 """
 
 import json

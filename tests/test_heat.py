@@ -38,7 +38,14 @@ from norn.contracts.errors import NornError
 from norn.extraction.relations import TRACK_TEXT, extract_relations
 from norn.graph import heat as heat_module
 from norn.graph.adjacency import build_graph, write_edge
-from norn.graph.bfs import EDGE_BUDGET, NODE_BUDGET, TRANSITION_BUDGET, Limits, bfs
+from norn.graph.bfs import (
+    EDGE_BUDGET,
+    NO_LINKED_ANCHOR,
+    NODE_BUDGET,
+    TRANSITION_BUDGET,
+    Limits,
+    bfs,
+)
 from norn.graph.contracts import EdgeSpec, NodeRef
 from norn.graph.heat import (
     DEFAULT_SCALE,
@@ -401,7 +408,8 @@ def test_seeds_with_nothing_to_walk_are_explicit_and_activate_nothing_elsewhere(
         result = run(graph, empty)
         assert result.flags == (EMPTY_SEED,) and result.entries == () and not result.complete
         alone = run(graph, seed_of(engine, ent[names[2]]))
-        assert alone.unlinked == (ent[names[2]],) and alone.entries == () and alone.complete
+        assert alone.unlinked == (ent[names[2]],) and alone.entries == ()
+        assert alone.flags == (NO_LINKED_ANCHOR,) and not alone.complete
         assert alone.unlinked_weight == 1.0
         lopsided = seed_of(engine, ent[names[0]], ent[names[2]], weights=[ent[names[0]]])
         mixed = run(graph, lopsided)

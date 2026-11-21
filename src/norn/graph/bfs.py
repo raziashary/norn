@@ -37,6 +37,7 @@ from norn.graph.contracts import RELATIONS, Arc, NodeRef
 from norn.graph.seeds import EMPTY_SEED, Seed
 
 DEFAULT_RELATIONS = frozenset({"REQUIRES", "IDENTITY_LINK"})
+NO_LINKED_ANCHOR = "NO_LINKED_ANCHOR"
 HOP_LIMIT = "HOP_LIMIT"
 FANOUT_LIMIT = "FANOUT_LIMIT"
 NODE_BUDGET = "NODE_BUDGET"
@@ -162,6 +163,8 @@ def roots_of(graph: Graph, seed: Seed) -> tuple[list[tuple[NodeRef, float]], lis
             roots.append((node, anchor.weight))
         else:
             unlinked.append(anchor.entity_id)
+    if seed.anchors and not roots:
+        flags.add(NO_LINKED_ANCHOR)  # nothing to start from is not a complete, empty answer
     return roots, unlinked, flags
 
 

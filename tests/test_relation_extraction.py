@@ -419,6 +419,27 @@ def test_unknown_keys_and_bare_names_stay_unresolved_and_equal_names_never_merge
     assert not [e for e in graph.edges if e.relation == "IDENTITY_LINK"]  # same name, no merge
 
 
+class _Stub:
+    """Just the two reader lookups ``_resolve`` uses."""
+
+    def __init__(self, labels: dict[str, set[str]], keys: dict[str, str]):
+        self._labels, self.key_entity = labels, keys
+
+    def labels(self, entity: str) -> set[str]:
+        return self._labels.get(entity, set())
+
+
+def test_a_name_resolves_to_the_stating_entity_only_when_it_is_one_of_its_own_labels():
+    reader = _Stub({"e.known": {"Svc-known"}, "e.bare": set()}, {"svc.key00001": "e.other"})
+    resolve = relations._resolve
+    assert resolve(reader, "@self", "e.known") == "e.known"
+    assert resolve(reader, "Svc-known", "e.known") == "e.known"  # positive control
+    assert resolve(reader, "Svc-other", "e.known") is None  # a name of another entity
+    assert resolve(reader, "Svc-other", "e.bare") is None  # no labels recognise no name
+    assert resolve(reader, "svc.key00001", "e.known") == "e.other"  # a governed key
+    assert resolve(reader, "svc.unknown", "e.known") is None
+
+
 def test_a_source_the_principal_cannot_read_yields_no_edge_and_leaks_no_key(engine):
     label = "secret"
     receipts = built(
